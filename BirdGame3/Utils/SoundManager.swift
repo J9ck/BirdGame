@@ -2,43 +2,151 @@
 //  SoundManager.swift
 //  BirdGame3
 //
-//  Audio management for epic bird sounds
+//  Complete audio management for epic bird sounds
 //
 
 import AVFoundation
 import SpriteKit
+import SwiftUI
 
-class SoundManager {
+class SoundManager: ObservableObject {
     
     static let shared = SoundManager()
     
     private var audioPlayers: [String: AVAudioPlayer] = [:]
-    private var isMuted: Bool = false
     
-    // Sound effect types
-    enum SoundEffect: String {
+    // Published properties for settings
+    @Published var musicVolume: Float = 0.7 {
+        didSet { save() }
+    }
+    @Published var sfxVolume: Float = 0.8 {
+        didSet { save() }
+    }
+    @Published var hapticsEnabled: Bool = true {
+        didSet { save() }
+    }
+    @Published var isMuted: Bool = false {
+        didSet { save() }
+    }
+    
+    // Persistence keys
+    private let musicVolumeKey = "birdgame3_musicVolume"
+    private let sfxVolumeKey = "birdgame3_sfxVolume"
+    private let hapticsKey = "birdgame3_haptics"
+    private let mutedKey = "birdgame3_muted"
+    
+    // Sound effect types - Complete list for all game actions
+    enum SoundEffect: String, CaseIterable {
+        // Combat sounds
         case peck = "peck"
         case block = "block"
         case hit = "hit"
         case ability = "ability"
+        case sprint = "sprint"
+        case dodge = "dodge"
+        case criticalHit = "critical_hit"
+        
+        // Match sounds
         case victory = "victory"
         case defeat = "defeat"
-        case menuSelect = "menu_select"
         case countdown = "countdown"
         case fight = "fight"
+        case matchFound = "match_found"
         
-        // Meme descriptions for when sounds would play
+        // UI sounds
+        case menuSelect = "menu_select"
+        case menuBack = "menu_back"
+        case buttonPress = "button_press"
+        case tabSwitch = "tab_switch"
+        case notification = "notification"
+        case error = "error"
+        case success = "success"
+        
+        // Shop/rewards sounds
+        case purchase = "purchase"
+        case coinCollect = "coin_collect"
+        case levelUp = "level_up"
+        case achievementUnlock = "achievement_unlock"
+        case rewardClaim = "reward_claim"
+        case chestOpen = "chest_open"
+        
+        // Social sounds
+        case friendOnline = "friend_online"
+        case partyJoin = "party_join"
+        case partyLeave = "party_leave"
+        case chatMessage = "chat_message"
+        case voiceActivate = "voice_activate"
+        
+        // Open world sounds
+        case resourceGather = "resource_gather"
+        case nestBuild = "nest_build"
+        case raidAlert = "raid_alert"
+        case biomeEnter = "biome_enter"
+        case weatherChange = "weather_change"
+        
+        // Emote sounds
+        case emotePlay = "emote_play"
+        case emoteWave = "emote_wave"
+        case emoteLaugh = "emote_laugh"
+        case emoteDance = "emote_dance"
+        
+        // Description for debugging
         var description: String {
             switch self {
             case .peck: return "PECK! 🐦"
             case .block: return "BLOCKED! 🛡️"
             case .hit: return "OOF! 💥"
             case .ability: return "SPECIAL! ✨"
+            case .sprint: return "WHOOSH! 💨"
+            case .dodge: return "MISS! ➡️"
+            case .criticalHit: return "CRITICAL! 💥💥"
             case .victory: return "VICTORY SCREECH! 🎉"
             case .defeat: return "sad bird noises 😢"
-            case .menuSelect: return "*click* 🔘"
             case .countdown: return "3... 2... 1..."
             case .fight: return "FIGHT! ⚔️"
+            case .matchFound: return "MATCH FOUND! 🎮"
+            case .menuSelect: return "*click* 🔘"
+            case .menuBack: return "*whoosh* ⬅️"
+            case .buttonPress: return "*tap* 👆"
+            case .tabSwitch: return "*swipe* 📱"
+            case .notification: return "*ding* 🔔"
+            case .error: return "*buzz* ❌"
+            case .success: return "*chime* ✅"
+            case .purchase: return "KA-CHING! 💰"
+            case .coinCollect: return "*clink* 🪙"
+            case .levelUp: return "LEVEL UP! ⬆️"
+            case .achievementUnlock: return "ACHIEVEMENT! 🏆"
+            case .rewardClaim: return "*sparkle* ✨"
+            case .chestOpen: return "*creak* 📦"
+            case .friendOnline: return "*pop* 👋"
+            case .partyJoin: return "*join* 🎉"
+            case .partyLeave: return "*leave* 👋"
+            case .chatMessage: return "*blip* 💬"
+            case .voiceActivate: return "*beep* 🎙️"
+            case .resourceGather: return "*rustle* 🌿"
+            case .nestBuild: return "*build* 🪺"
+            case .raidAlert: return "⚠️ ALERT! ⚠️"
+            case .biomeEnter: return "*ambient* 🌍"
+            case .weatherChange: return "*wind* 🌤️"
+            case .emotePlay: return "*emote* 🎭"
+            case .emoteWave: return "👋"
+            case .emoteLaugh: return "😂"
+            case .emoteDance: return "💃"
+            }
+        }
+        
+        var hapticStyle: UIImpactFeedbackGenerator.FeedbackStyle {
+            switch self {
+            case .peck, .menuSelect, .buttonPress, .tabSwitch, .coinCollect:
+                return .light
+            case .block, .dodge, .notification, .chatMessage, .resourceGather:
+                return .medium
+            case .hit, .ability, .sprint, .criticalHit, .raidAlert, .nestBuild:
+                return .heavy
+            case .countdown, .fight, .matchFound, .levelUp, .achievementUnlock:
+                return .rigid
+            default:
+                return .soft
             }
         }
     }
@@ -63,6 +171,7 @@ class SoundManager {
     }
     
     private init() {
+        loadSettings()
         setupAudioSession()
     }
     
@@ -75,19 +184,36 @@ class SoundManager {
         }
     }
     
+    // MARK: - Persistence
+    
+    private func loadSettings() {
+        musicVolume = UserDefaults.standard.object(forKey: musicVolumeKey) as? Float ?? 0.7
+        sfxVolume = UserDefaults.standard.object(forKey: sfxVolumeKey) as? Float ?? 0.8
+        hapticsEnabled = UserDefaults.standard.object(forKey: hapticsKey) as? Bool ?? true
+        isMuted = UserDefaults.standard.object(forKey: mutedKey) as? Bool ?? false
+    }
+    
+    private func save() {
+        UserDefaults.standard.set(musicVolume, forKey: musicVolumeKey)
+        UserDefaults.standard.set(sfxVolume, forKey: sfxVolumeKey)
+        UserDefaults.standard.set(hapticsEnabled, forKey: hapticsKey)
+        UserDefaults.standard.set(isMuted, forKey: mutedKey)
+    }
+    
     // MARK: - Public Methods
     
     func playSound(_ sound: SoundEffect) {
         guard !isMuted else { return }
         
         // In a real implementation, this would play actual sound files
-        // For now, we'll just print what would play
         #if DEBUG
         print("🔊 Playing sound: \(sound.description)")
         #endif
         
         // Haptic feedback as audio substitute
-        provideFeedback(for: sound)
+        if hapticsEnabled {
+            provideFeedback(for: sound)
+        }
     }
     
     func playBirdSound(_ sound: BirdSound) {
@@ -98,8 +224,10 @@ class SoundManager {
         #endif
         
         // Light haptic for bird sounds
-        let generator = UIImpactFeedbackGenerator(style: .light)
-        generator.impactOccurred()
+        if hapticsEnabled {
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.impactOccurred()
+        }
     }
     
     func playBirdSound(for type: BirdType) {
@@ -118,27 +246,28 @@ class SoundManager {
     }
     
     private func provideFeedback(for sound: SoundEffect) {
-        let generator: UIImpactFeedbackGenerator
+        guard hapticsEnabled else { return }
         
+        // Special notification haptics
         switch sound {
-        case .peck, .menuSelect:
-            generator = UIImpactFeedbackGenerator(style: .light)
-        case .block:
-            generator = UIImpactFeedbackGenerator(style: .medium)
-        case .hit, .ability:
-            generator = UIImpactFeedbackGenerator(style: .heavy)
-        case .victory:
+        case .victory, .success, .achievementUnlock, .levelUp:
             let notificationGenerator = UINotificationFeedbackGenerator()
             notificationGenerator.notificationOccurred(.success)
             return
-        case .defeat:
+        case .defeat, .error:
             let notificationGenerator = UINotificationFeedbackGenerator()
             notificationGenerator.notificationOccurred(.error)
             return
-        case .countdown, .fight:
-            generator = UIImpactFeedbackGenerator(style: .rigid)
+        case .raidAlert, .notification:
+            let notificationGenerator = UINotificationFeedbackGenerator()
+            notificationGenerator.notificationOccurred(.warning)
+            return
+        default:
+            break
         }
         
+        // Standard impact haptics
+        let generator = UIImpactFeedbackGenerator(style: sound.hapticStyle)
         generator.impactOccurred()
     }
     
@@ -195,11 +324,15 @@ class MusicManager {
     private var backgroundMusicPlayer: AVAudioPlayer?
     private var isMusicEnabled: Bool = true
     
-    enum MusicTrack: String {
+    enum MusicTrack: String, CaseIterable {
         case mainMenu = "menu_theme"
         case battle = "battle_theme"
         case victory = "victory_theme"
         case defeat = "defeat_theme"
+        case openWorld = "open_world_theme"
+        case lobby = "lobby_theme"
+        case shop = "shop_theme"
+        case boss = "boss_theme"
         
         var description: String {
             switch self {
@@ -207,6 +340,10 @@ class MusicManager {
             case .battle: return "🎵 Epic combat music"
             case .victory: return "🎵 Triumphant fanfare"
             case .defeat: return "🎵 Sad trombone"
+            case .openWorld: return "🎵 Ambient exploration"
+            case .lobby: return "🎵 Social hangout beats"
+            case .shop: return "🎵 Shopping muzak"
+            case .boss: return "🎵 Intense boss battle"
             }
         }
     }

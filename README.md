@@ -67,12 +67,45 @@ Bird Game 3 is a fast-paced bird fighting game inspired by the viral AI-generate
 | Feather Density | Nothing | Everything |
 | Coo Power | Also Nothing | Also Everything |
 
-## 🎯 Controls
+## 🎯 Controls - "The Wolf" Style
 
-- **Tap** - Basic Attack (peck!)
-- **Tap Upper Screen** - Special Ability (when ready)
-- **Swipe Left/Right** - Move
-- **Hold Right Side** - Block (blocks 70% damage)
+Bird Game 3 features a control scheme inspired by **"The Wolf: Animal Game MMORPG"** for a proper mobile action game feel.
+
+### Control Layout
+
+```
+┌─────────────────────────────────────────────────┐
+│  [Health Bar]              [Enemy Health Bar]   │
+│  [Bird Name]                [Enemy Bird Name]   │
+│                                                 │
+│           [GAME ARENA / COMBAT AREA]            │
+│                                                 │
+│                                                 │
+│  ┌───┐                          [Skill1][Skill2]│
+│  │ J │  <-- Joystick            [Skill3][Skill4]│
+│  │ O │                      [TARGET][SPRINT]    │
+│  │ Y │                              [ATTACK]    │
+│  └───┘                                          │
+└─────────────────────────────────────────────────┘
+```
+
+### Movement Controls (Left Side)
+- **Virtual Joystick**: Smooth 360-degree directional control
+  - Semi-transparent when idle, more visible when touched
+  - Spring animation when released
+
+### Action Buttons (Right Side)
+- **Primary Attack Button**: Large red button for basic peck/attack
+- **4 Special Skill Buttons**: Arranged in a 2x2 grid with cooldown timers
+- **Sprint/Dash Button**: Quick movement bursts (with cooldown)
+- **Lock-On/Target Button**: Lock onto enemy bird
+
+### Control Polish Features
+- ✅ Haptic feedback on button presses (UIImpactFeedbackGenerator)
+- ✅ Visual feedback when buttons are pressed (scale/glow effect)
+- ✅ Joystick returns to center with spring animation
+- ✅ Responsive controls for action game feel
+- ✅ Cooldown visualization on skill buttons
 
 ## 🏆 Ranking System
 
