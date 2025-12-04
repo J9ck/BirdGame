@@ -25,6 +25,14 @@
 		A10000000000000000000016 /* TrashTalkGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000016 /* TrashTalkGenerator.swift */; };
 		A10000000000000000000017 /* SoundManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000017 /* SoundManager.swift */; };
 		A10000000000000000000018 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000018 /* Assets.xcassets */; };
+		A10000000000000000000019 /* ShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000020 /* ShopView.swift */; };
+		A10000000000000000000021 /* SettingsView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000021 /* SettingsView.swift */; };
+		A10000000000000000000022 /* CurrencyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000022 /* CurrencyManager.swift */; };
+		A10000000000000000000023 /* SkinManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000023 /* SkinManager.swift */; };
+		A10000000000000000000024 /* PrestigeManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000024 /* PrestigeManager.swift */; };
+		A10000000000000000000025 /* VoiceChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000025 /* VoiceChatManager.swift */; };
+		A10000000000000000000026 /* VirtualJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000026 /* VirtualJoystick.swift */; };
+		A10000000000000000000027 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000027 /* ActionButton.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -47,6 +55,14 @@
 		A20000000000000000000017 /* SoundManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SoundManager.swift; sourceTree = "<group>"; };
 		A20000000000000000000018 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		A20000000000000000000019 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		A20000000000000000000020 /* ShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ShopView.swift; sourceTree = "<group>"; };
+		A20000000000000000000021 /* SettingsView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SettingsView.swift; sourceTree = "<group>"; };
+		A20000000000000000000022 /* CurrencyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CurrencyManager.swift; sourceTree = "<group>"; };
+		A20000000000000000000023 /* SkinManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SkinManager.swift; sourceTree = "<group>"; };
+		A20000000000000000000024 /* PrestigeManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PrestigeManager.swift; sourceTree = "<group>"; };
+		A20000000000000000000025 /* VoiceChatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceChatManager.swift; sourceTree = "<group>"; };
+		A20000000000000000000026 /* VirtualJoystick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualJoystick.swift; sourceTree = "<group>"; };
+		A20000000000000000000027 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
 		A30000000000000000000001 /* BirdGame3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BirdGame3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -78,6 +94,7 @@
 				A50000000000000000000006 /* Models */,
 				A50000000000000000000007 /* Components */,
 				A50000000000000000000008 /* Utils */,
+				A50000000000000000000009 /* Managers */,
 				A20000000000000000000018 /* Assets.xcassets */,
 				A20000000000000000000019 /* Info.plist */,
 			);
@@ -99,6 +116,8 @@
 				A20000000000000000000010 /* CharacterSelectView.swift */,
 				A20000000000000000000011 /* GameView.swift */,
 				A20000000000000000000012 /* ResultsView.swift */,
+				A20000000000000000000020 /* ShopView.swift */,
+				A20000000000000000000021 /* SettingsView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -130,6 +149,8 @@
 				A20000000000000000000013 /* HealthBar.swift */,
 				A20000000000000000000014 /* AbilityButton.swift */,
 				A20000000000000000000015 /* TrashTalkOverlay.swift */,
+				A20000000000000000000026 /* VirtualJoystick.swift */,
+				A20000000000000000000027 /* ActionButton.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -141,6 +162,17 @@
 				A20000000000000000000017 /* SoundManager.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		A50000000000000000000009 /* Managers */ = {
+			isa = PBXGroup;
+			children = (
+				A20000000000000000000022 /* CurrencyManager.swift */,
+				A20000000000000000000023 /* SkinManager.swift */,
+				A20000000000000000000024 /* PrestigeManager.swift */,
+				A20000000000000000000025 /* VoiceChatManager.swift */,
+			);
+			path = Managers;
 			sourceTree = "<group>";
 		};
 		A50000000000000000000010 /* Products */ = {
@@ -237,6 +269,14 @@
 				A10000000000000000000015 /* TrashTalkOverlay.swift in Sources */,
 				A10000000000000000000016 /* TrashTalkGenerator.swift in Sources */,
 				A10000000000000000000017 /* SoundManager.swift in Sources */,
+				A10000000000000000000019 /* ShopView.swift in Sources */,
+				A10000000000000000000021 /* SettingsView.swift in Sources */,
+				A10000000000000000000022 /* CurrencyManager.swift in Sources */,
+				A10000000000000000000023 /* SkinManager.swift in Sources */,
+				A10000000000000000000024 /* PrestigeManager.swift in Sources */,
+				A10000000000000000000025 /* VoiceChatManager.swift in Sources */,
+				A10000000000000000000026 /* VirtualJoystick.swift in Sources */,
+				A10000000000000000000027 /* ActionButton.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

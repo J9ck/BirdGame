@@ -7,13 +7,33 @@
 
 import AVFoundation
 import SpriteKit
+import SwiftUI
 
-class SoundManager {
+class SoundManager: ObservableObject {
     
     static let shared = SoundManager()
     
     private var audioPlayers: [String: AVAudioPlayer] = [:]
-    private var isMuted: Bool = false
+    
+    // Published properties for settings
+    @Published var musicVolume: Float = 0.7 {
+        didSet { save() }
+    }
+    @Published var sfxVolume: Float = 0.8 {
+        didSet { save() }
+    }
+    @Published var hapticsEnabled: Bool = true {
+        didSet { save() }
+    }
+    @Published var isMuted: Bool = false {
+        didSet { save() }
+    }
+    
+    // Persistence keys
+    private let musicVolumeKey = "birdgame3_musicVolume"
+    private let sfxVolumeKey = "birdgame3_sfxVolume"
+    private let hapticsKey = "birdgame3_haptics"
+    private let mutedKey = "birdgame3_muted"
     
     // Sound effect types
     enum SoundEffect: String {
@@ -63,6 +83,7 @@ class SoundManager {
     }
     
     private init() {
+        loadSettings()
         setupAudioSession()
     }
     
@@ -73,6 +94,22 @@ class SoundManager {
         } catch {
             print("Failed to setup audio session: \(error)")
         }
+    }
+    
+    // MARK: - Persistence
+    
+    private func loadSettings() {
+        musicVolume = UserDefaults.standard.object(forKey: musicVolumeKey) as? Float ?? 0.7
+        sfxVolume = UserDefaults.standard.object(forKey: sfxVolumeKey) as? Float ?? 0.8
+        hapticsEnabled = UserDefaults.standard.object(forKey: hapticsKey) as? Bool ?? true
+        isMuted = UserDefaults.standard.object(forKey: mutedKey) as? Bool ?? false
+    }
+    
+    private func save() {
+        UserDefaults.standard.set(musicVolume, forKey: musicVolumeKey)
+        UserDefaults.standard.set(sfxVolume, forKey: sfxVolumeKey)
+        UserDefaults.standard.set(hapticsEnabled, forKey: hapticsKey)
+        UserDefaults.standard.set(isMuted, forKey: mutedKey)
     }
     
     // MARK: - Public Methods
@@ -87,7 +124,9 @@ class SoundManager {
         #endif
         
         // Haptic feedback as audio substitute
-        provideFeedback(for: sound)
+        if hapticsEnabled {
+            provideFeedback(for: sound)
+        }
     }
     
     func playBirdSound(_ sound: BirdSound) {
@@ -98,8 +137,10 @@ class SoundManager {
         #endif
         
         // Light haptic for bird sounds
-        let generator = UIImpactFeedbackGenerator(style: .light)
-        generator.impactOccurred()
+        if hapticsEnabled {
+            let generator = UIImpactFeedbackGenerator(style: .light)
+            generator.impactOccurred()
+        }
     }
     
     func playBirdSound(for type: BirdType) {
@@ -118,6 +159,8 @@ class SoundManager {
     }
     
     private func provideFeedback(for sound: SoundEffect) {
+        guard hapticsEnabled else { return }
+        
         let generator: UIImpactFeedbackGenerator
         
         switch sound {

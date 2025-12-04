@@ -9,6 +9,9 @@ import SwiftUI
 
 struct MainMenuView: View {
     @EnvironmentObject var gameState: GameState
+    @ObservedObject var currencyManager = CurrencyManager.shared
+    @ObservedObject var prestigeManager = PrestigeManager.shared
+    
     @State private var showingLoadingTips = false
     @State private var currentTip = ""
     @State private var titleScale: CGFloat = 1.0
@@ -59,7 +62,10 @@ struct MainMenuView: View {
                     )
             }
             
-            VStack(spacing: 20) {
+            VStack(spacing: 16) {
+                // Top bar with currency and settings
+                topBar
+                
                 // Title
                 VStack(spacing: 8) {
                     Text("🐦 BIRD GAME 3 🐦")
@@ -86,18 +92,19 @@ struct MainMenuView: View {
                         .font(.caption2)
                         .foregroundColor(.gray.opacity(0.6))
                 }
-                .padding(.top, 40)
                 
                 // Spinning pigeon mascot
                 Text("🐦")
-                    .font(.system(size: 80))
+                    .font(.system(size: 60))
                     .rotationEffect(.degrees(pigeonRotation))
                     .onAppear {
                         withAnimation(.linear(duration: 20).repeatForever(autoreverses: false)) {
                             pigeonRotation = 360
                         }
                     }
-                    .padding()
+                
+                // Player level and XP bar
+                levelProgressView
                 
                 // Fake online players
                 HStack {
@@ -116,14 +123,14 @@ struct MainMenuView: View {
                 Spacer()
                 
                 // Menu buttons
-                VStack(spacing: 16) {
+                VStack(spacing: 12) {
                     MenuButton(title: "⚔️ QUICK MATCH", subtitle: "Fight a random opponent") {
                         showLoadingTip {
                             gameState.startQuickMatch()
                         }
                     }
                     
-                    MenuButton(title: "🏆 ARCADE MODE", subtitle: "Climb the ranks!") {
+                    MenuButton(title: "🏆 ARCADE MODE", subtitle: "Stage \(gameState.playerStats.highestArcadeStage) | Climb the ranks!") {
                         showLoadingTip {
                             gameState.startArcade()
                         }
@@ -133,6 +140,11 @@ struct MainMenuView: View {
                         showLoadingTip {
                             gameState.startTraining()
                         }
+                    }
+                    
+                    // Shop button
+                    MenuButton(title: "🛒 SKIN SHOP", subtitle: "Drip or drown", style: .shop) {
+                        gameState.openShop()
                     }
                 }
                 .padding(.horizontal, 40)
@@ -151,7 +163,7 @@ struct MainMenuView: View {
                         StatBadge(label: "Ping", value: "\(gameState.fakeServerPing)ms")
                     }
                 }
-                .padding(.bottom, 30)
+                .padding(.bottom, 20)
             }
             
             // Loading tip overlay
@@ -159,6 +171,70 @@ struct MainMenuView: View {
                 LoadingTipOverlay(tip: currentTip)
             }
         }
+    }
+    
+    // MARK: - Top Bar
+    
+    private var topBar: some View {
+        HStack {
+            // Settings button
+            Button(action: { gameState.openSettings() }) {
+                Image(systemName: "gearshape.fill")
+                    .font(.title2)
+                    .foregroundColor(.white.opacity(0.7))
+                    .padding(8)
+            }
+            
+            Spacer()
+            
+            // Currency display
+            HStack(spacing: 12) {
+                CurrencyBadge(icon: "🪙", amount: currencyManager.coins, color: .yellow)
+                CurrencyBadge(icon: "🪶", amount: currencyManager.feathers, color: .cyan)
+            }
+        }
+        .padding(.horizontal)
+        .padding(.top, 8)
+    }
+    
+    // MARK: - Level Progress View
+    
+    private var levelProgressView: some View {
+        VStack(spacing: 4) {
+            HStack {
+                Text(prestigeManager.displayLevel)
+                    .font(.caption)
+                    .fontWeight(.bold)
+                    .foregroundColor(.purple)
+                
+                Spacer()
+                
+                Text("\(prestigeManager.currentXP)/\(prestigeManager.xpToNextLevel) XP")
+                    .font(.caption2)
+                    .foregroundColor(.gray)
+            }
+            
+            // XP Progress bar
+            GeometryReader { geometry in
+                ZStack(alignment: .leading) {
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.gray.opacity(0.3))
+                        .frame(height: 8)
+                    
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(
+                            LinearGradient(
+                                colors: [.purple, .pink],
+                                startPoint: .leading,
+                                endPoint: .trailing
+                            )
+                        )
+                        .frame(width: geometry.size.width * prestigeManager.levelProgress, height: 8)
+                }
+            }
+            .frame(height: 8)
+        }
+        .padding(.horizontal, 40)
     }
     
     private func showLoadingTip(completion: @escaping () -> Void) {
@@ -177,7 +253,13 @@ struct MainMenuView: View {
 struct MenuButton: View {
     let title: String
     let subtitle: String
+    var style: MenuButtonStyle = .primary
     let action: () -> Void
+    
+    enum MenuButtonStyle {
+        case primary
+        case shop
+    }
     
     @State private var isPressed = false
     
@@ -194,19 +276,37 @@ struct MenuButton: View {
                     .foregroundColor(.white.opacity(0.7))
             }
             .frame(maxWidth: .infinity)
-            .padding(.vertical, 16)
-            .background(
-                LinearGradient(
-                    colors: [Color.blue, Color.purple],
-                    startPoint: .leading,
-                    endPoint: .trailing
-                )
-            )
+            .padding(.vertical, 14)
+            .background(backgroundGradient)
             .cornerRadius(12)
-            .shadow(color: .purple.opacity(0.5), radius: 8, x: 0, y: 4)
+            .shadow(color: shadowColor.opacity(0.5), radius: 8, x: 0, y: 4)
         }
         .scaleEffect(isPressed ? 0.95 : 1.0)
         .animation(.spring(response: 0.3), value: isPressed)
+    }
+    
+    private var backgroundGradient: LinearGradient {
+        switch style {
+        case .primary:
+            return LinearGradient(
+                colors: [Color.blue, Color.purple],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+        case .shop:
+            return LinearGradient(
+                colors: [Color.orange, Color.pink],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+        }
+    }
+    
+    private var shadowColor: Color {
+        switch style {
+        case .primary: return .purple
+        case .shop: return .orange
+        }
     }
 }
 

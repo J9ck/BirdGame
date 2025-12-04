@@ -34,6 +34,10 @@ struct ContentView: View {
                 GameView()
             case .results:
                 ResultsView()
+            case .shop:
+                ShopView()
+            case .settings:
+                SettingsView()
             }
         }
         .animation(.easeInOut(duration: 0.3), value: gameState.currentScreen)

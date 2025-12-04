@@ -7,7 +7,7 @@
 
 import Foundation
 
-enum BirdType: String, CaseIterable, Identifiable {
+enum BirdType: String, CaseIterable, Identifiable, Codable {
     case pigeon
     case hummingbird
     case eagle
