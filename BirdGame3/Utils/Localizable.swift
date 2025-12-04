@@ -96,9 +96,22 @@ class LocalizationManager: ObservableObject {
     // MARK: - Localized Strings
     
     func localized(_ key: String) -> String {
-        // In production, this would fetch from Localizable.strings files
-        // For now, returns the key or default English
+        // First try NSLocalizedString for proper .strings file lookup
+        let localizedFromBundle = NSLocalizedString(key, tableName: nil, bundle: .main, value: "", comment: "")
+        
+        // If NSLocalizedString returns the key itself, fall back to our dictionary
+        if localizedFromBundle != key {
+            return localizedFromBundle
+        }
+        
+        // Fallback to built-in English strings
         return localizedStrings[key] ?? key
+    }
+    
+    /// Get localized string with format arguments
+    func localized(_ key: String, _ arguments: CVarArg...) -> String {
+        let format = localized(key)
+        return String(format: format, arguments: arguments)
     }
 }
 

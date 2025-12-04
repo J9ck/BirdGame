@@ -104,44 +104,69 @@ class AccessibilityManager: ObservableObject {
     
     // MARK: - Color Adjustments
     
+    /// Adjusts a color based on color blind mode
+    /// Uses SwiftUI Color transformations to simulate color-blind friendly alternatives
     func adjustedColor(_ color: Color, for mode: ColorBlindMode? = nil) -> Color {
         let activeMode = mode ?? settings.colorBlindMode
         
         guard activeMode != .none else { return color }
         
-        // Note: In production, this would use proper color transformation matrices
-        // This is a simplified version
+        // Convert to UIColor to get RGB components
+        let uiColor = UIColor(color)
+        var red: CGFloat = 0, green: CGFloat = 0, blue: CGFloat = 0, alpha: CGFloat = 0
+        uiColor.getRed(&red, green: &green, blue: &blue, alpha: &alpha)
+        
+        // Apply color blind simulation matrices
+        // These are simplified Daltonization algorithms
+        let (newRed, newGreen, newBlue): (CGFloat, CGFloat, CGFloat)
+        
         switch activeMode {
         case .none:
             return color
+            
         case .protanopia:
-            // Shift reds toward yellow
-            return color
+            // Red-blind: Shift reds toward yellows/blues
+            newRed = 0.567 * red + 0.433 * green + 0.0 * blue
+            newGreen = 0.558 * red + 0.442 * green + 0.0 * blue
+            newBlue = 0.0 * red + 0.242 * green + 0.758 * blue
+            
         case .deuteranopia:
-            // Shift greens toward yellow
-            return color
+            // Green-blind: Shift greens toward yellows/blues
+            newRed = 0.625 * red + 0.375 * green + 0.0 * blue
+            newGreen = 0.7 * red + 0.3 * green + 0.0 * blue
+            newBlue = 0.0 * red + 0.3 * green + 0.7 * blue
+            
         case .tritanopia:
-            // Shift blues toward cyan
-            return color
+            // Blue-blind: Shift blues toward cyans/magentas
+            newRed = 0.95 * red + 0.05 * green + 0.0 * blue
+            newGreen = 0.0 * red + 0.433 * green + 0.567 * blue
+            newBlue = 0.0 * red + 0.475 * green + 0.525 * blue
         }
+        
+        return Color(
+            red: Double(min(1, max(0, newRed))),
+            green: Double(min(1, max(0, newGreen))),
+            blue: Double(min(1, max(0, newBlue))),
+            opacity: Double(alpha)
+        )
     }
     
-    // Color-blind friendly palette
+    // Color-blind friendly palette - pre-defined safe colors for UI elements
     var healthBarColor: Color {
         switch settings.colorBlindMode {
         case .none: return .red
-        case .protanopia: return .orange
-        case .deuteranopia: return .orange
-        case .tritanopia: return .red
+        case .protanopia: return Color(red: 1.0, green: 0.6, blue: 0.0) // Orange
+        case .deuteranopia: return Color(red: 1.0, green: 0.6, blue: 0.0) // Orange
+        case .tritanopia: return Color(red: 1.0, green: 0.2, blue: 0.2) // Red works
         }
     }
     
     var friendlyColor: Color {
         switch settings.colorBlindMode {
         case .none: return .green
-        case .protanopia: return .blue
-        case .deuteranopia: return .blue
-        case .tritanopia: return .green
+        case .protanopia: return Color(red: 0.0, green: 0.6, blue: 1.0) // Blue
+        case .deuteranopia: return Color(red: 0.0, green: 0.6, blue: 1.0) // Blue
+        case .tritanopia: return Color(red: 0.0, green: 0.8, blue: 0.4) // Green works
         }
     }
     

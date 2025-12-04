@@ -312,10 +312,32 @@ class BattlePassManager: ObservableObject {
     
     // MARK: - Premium Purchase
     
+    /// Purchase premium via In-App Purchase
+    /// Note: In production, use StoreKit to process $3.99 USD payment
+    /// This method is called after successful IAP transaction
     func purchasePremium() -> Bool {
         guard !isPremium else { return false }
         
-        if CurrencyManager.shared.spendFeathers(premiumPrice, reason: "Battle Pass Premium") {
+        // In production, this would be called after StoreKit confirms purchase
+        // For now, we mark as purchased directly
+        isPremium = true
+        saveProgress()
+        
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
+        
+        // Track purchase
+        AnalyticsManager.shared.trackBattlePassPurchased()
+        AchievementManager.shared.unlockBadge("badge_supporter")
+        
+        return true
+    }
+    
+    /// Alternative: Purchase with in-game feathers (for testing/fallback)
+    func purchasePremiumWithFeathers(amount: Int = 950) -> Bool {
+        guard !isPremium else { return false }
+        
+        if CurrencyManager.shared.spendFeathers(amount, reason: "Battle Pass Premium") {
             isPremium = true
             saveProgress()
             
