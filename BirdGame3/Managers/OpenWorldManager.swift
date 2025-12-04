@@ -129,7 +129,7 @@ enum ResourceType: String, Codable, CaseIterable {
         case .bugs: return "🐛"
         case .shinyObjects: return "✨"
         case .moss: return "🌿"
-        case .mud: return "💩"
+        case .mud: return "🟤"
         }
     }
     

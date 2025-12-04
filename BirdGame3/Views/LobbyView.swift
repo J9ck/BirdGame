@@ -20,6 +20,8 @@ struct LobbyView: View {
     @State private var showFriendsList = false
     @State private var joinPartyCode = ""
     @State private var showJoinParty = false
+    @State private var joinError: String?
+    @State private var showJoinError = false
     
     var body: some View {
         ZStack {
@@ -81,10 +83,16 @@ struct LobbyView: View {
             Button("Join") {
                 multiplayer.joinParty(code: joinPartyCode) { success, error in
                     if !success {
-                        // Show error
+                        joinError = error ?? "Failed to join party"
+                        showJoinError = true
                     }
                 }
             }
+        }
+        .alert("Error", isPresented: $showJoinError) {
+            Button("OK") { }
+        } message: {
+            Text(joinError ?? "An error occurred")
         }
     }
     

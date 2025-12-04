@@ -187,6 +187,7 @@ struct LoginView: View {
                 }
             }
             .navigationBarHidden(true)
+            .toolbar(.hidden, for: .navigationBar)
         }
         .onChange(of: account.isLoggedIn) { _, isLoggedIn in
             if isLoggedIn {
