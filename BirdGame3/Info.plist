@@ -26,6 +26,8 @@
 	<string>public.app-category.games</string>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>Bird Game 3 uses the microphone for voice chat with other players during multiplayer matches.</string>
 	<key>NSUserTrackingUsageDescription</key>
 	<string>Bird Game 3 uses this to show you personalized content and improve your gaming experience.</string>
 	<key>UIApplicationSceneManifest</key>

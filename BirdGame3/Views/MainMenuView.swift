@@ -333,6 +333,18 @@ struct MenuButton: View {
         }
         .scaleEffect(isPressed ? 0.95 : 1.0)
         .animation(.spring(response: 0.3), value: isPressed)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibleTitle)
+        .accessibilityHint(subtitle)
+    }
+    
+    private var accessibleTitle: String {
+        // Remove emojis from title for accessibility
+        let filtered = title.unicodeScalars.filter { scalar in
+            !scalar.properties.isEmoji
+        }
+        return String(String.UnicodeScalarView(filtered))
+            .trimmingCharacters(in: .whitespaces)
     }
     
     private var backgroundGradient: LinearGradient {

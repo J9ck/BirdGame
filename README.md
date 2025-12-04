@@ -169,9 +169,42 @@ Key meme elements preserved:
 - **Pigeon Mains Worldwide** - Coo coo
 - **Everyone Who Said "Nerf Hummingbird"** - We tried. We failed.
 
+## 📱 Download
+
+[![App Store](https://img.shields.io/badge/App_Store-Coming_Soon-blue.svg)](https://apps.apple.com/app/bird-game-3)
+
+*App Store link will be updated upon release.*
+
+## 🔒 Privacy
+
+We take your privacy seriously. Read our full [Privacy Policy](PRIVACY_POLICY.md).
+
+**Key Points:**
+- We collect minimal data necessary for gameplay
+- Your data is never sold to third parties
+- You can request data deletion at any time
+
 ## 📜 License
 
-MIT License - Because birds should be free.
+MIT License - Because birds should be free. See [LICENSE](LICENSE) for details.
+
+## 🛠️ Building for Release
+
+### Debug Build
+1. Open `BirdGame3.xcodeproj` in Xcode 15+
+2. Select your target device or simulator
+3. Press `Cmd + R` to build and run
+
+### Release Build
+1. Open `BirdGame3.xcodeproj` in Xcode 15+
+2. Select "Any iOS Device (arm64)" as the build target
+3. Set the scheme to "Release" configuration
+4. Product > Archive
+5. In the Organizer, select the archive and click "Distribute App"
+6. Follow the prompts to upload to App Store Connect
+
+### Pre-Submission
+Review the [Release Checklist](RELEASE_CHECKLIST.md) before submitting to the App Store.
 
 ## ⚠️ Disclaimer
 

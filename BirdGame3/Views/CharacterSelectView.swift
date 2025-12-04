@@ -96,6 +96,7 @@ struct CharacterSelectView: View {
                             .background(Color.gray.opacity(0.5))
                             .cornerRadius(10)
                     }
+                    .accessibilityLabel("Go back to main menu")
                     
                     Button(action: {
                         gameState.startBattle()
@@ -117,6 +118,8 @@ struct CharacterSelectView: View {
                         .cornerRadius(10)
                         .shadow(color: .red.opacity(0.5), radius: 8)
                     }
+                    .accessibilityLabel("Start battle with \(gameState.selectedBird.displayName)")
+                    .accessibilityHint("Double tap to begin the fight")
                 }
                 .padding(.bottom, 30)
             }
@@ -161,6 +164,7 @@ struct CharacterCard: View {
                 
                 Text(bird.emoji)
                     .font(.system(size: 80))
+                    .accessibilityHidden(true)
             }
             
             // Name
@@ -224,6 +228,10 @@ struct CharacterCard: View {
                 )
         )
         .padding(.horizontal, 20)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel("\(bird.displayName). Special ability: \(bird.abilityName)")
+        .accessibilityValue("Health \(Int(bird.baseStats.maxHealth)), Attack \(Int(bird.baseStats.attack)), Speed \(Int(bird.baseStats.speed))")
+        .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
     }
 }
 
