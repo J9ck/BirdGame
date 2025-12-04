@@ -676,8 +676,9 @@ class SupabaseManager: ObservableObject {
         var newLevel = profile.level
         var newPrestige = profile.prestigeLevel
         
-        // Calculate level ups (simplified - should match PrestigeManager logic)
-        let xpForLevel = PrestigeManager.shared.xpRequired(for: newLevel)
+        // Calculate level ups using simplified XP curve matching PrestigeManager
+        // XP required increases with level: base * multiplier^(level-1)
+        let xpForLevel = calculateXPRequired(for: newLevel)
         if newXP >= xpForLevel && newLevel < 50 {
             newLevel += 1
         } else if newXP >= xpForLevel && newLevel >= 50 {
@@ -694,7 +695,7 @@ class SupabaseManager: ObservableObject {
     }
     
     func recordMatchResult(won: Bool, kills: Int, xpEarned: Int, coinsEarned: Int) async throws {
-        guard var profile = currentProfile else { throw SupabaseError.unauthorized }
+        guard let profile = currentProfile else { throw SupabaseError.unauthorized }
         
         try await updatePlayerProfile([
             "total_matches": profile.totalMatches + 1,
