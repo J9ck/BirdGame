@@ -16,13 +16,13 @@ import Combine
 
 // MARK: - Configuration
 
-/// Supabase configuration - Replace with your actual values from Supabase dashboard
+/// Supabase configuration - Your Bird Game 3 Supabase project
 struct SupabaseConfig {
-    /// Your Supabase project URL (e.g., "https://xyzcompany.supabase.co")
-    static let projectURL = "YOUR_SUPABASE_PROJECT_URL"
+    /// Your Supabase project URL
+    static let projectURL = "https://xwuaipfwvdlrrqhzahey.supabase.co"
     
-    /// Your Supabase anon/public key
-    static let anonKey = "YOUR_SUPABASE_ANON_KEY"
+    /// Your Supabase anon/public key (safe for client-side use with RLS enabled)
+    static let anonKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh3dWFpcGZ3dmRscnJxaHphaGV5Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NjQ4NTkzMjUsImV4cCI6MjA4MDQzNTMyNX0.89ZZ5lnE8_1bye5nyzaW2O0Aie3ikDVItpu1VlHM6Y0"
     
     /// REST API base URL
     static var restURL: String { "\(projectURL)/rest/v1" }
