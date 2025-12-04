@@ -198,7 +198,7 @@ enum PreyType: String, CaseIterable {
         case .caterpillar: return "🐛"
         case .beetle: return "🪲"
         case .grasshopper: return "🦗"
-        case .dragonfly: return "🪰"
+        case .dragonfly: return "🦟" // Using mosquito as closest to dragonfly
         case .fish: return "🐟"
         case .frog: return "🐸"
         case .mouse: return "🐭"
@@ -1072,8 +1072,9 @@ class OpenWorldManager: ObservableObject {
             // Prey still alive, update it
             huntingTarget = target
             
-            // Prey might flee
-            if target.isAlerted && Bool.random() {
+            // Prey might flee - probability based on prey speed (faster prey more likely to flee)
+            let fleeProbability = target.type.speed / 10.0 // Speed ranges from 0.5 to 7.0
+            if target.isAlerted && Double.random(in: 0...1) < fleeProbability {
                 let fleeDist = target.type.speed * 5
                 nearbyPrey[index].position.x += Double.random(in: -fleeDist...fleeDist)
                 nearbyPrey[index].position.y += Double.random(in: -fleeDist...fleeDist)
@@ -1128,10 +1129,17 @@ class OpenWorldManager: ObservableObject {
             "Frozen Peaks", "Desert Dunes", "Jungle Depths"
         ]
         
+        let flockNames = ["Sky Warriors", "Feathered Fury", "Wing Legends", "Talon Squad", "Nest Raiders"]
+        
         territories = territoryNames.enumerated().map { index, name in
             let angle = Double(index) * (2 * .pi / Double(territoryNames.count))
             let distance = 2000.0
             let biome = Biome.allCases[index % Biome.allCases.count]
+            
+            // Decide if territory is controlled - tie ID and name together
+            let isControlled = Bool.random()
+            let flockId: String? = isControlled ? UUID().uuidString : nil
+            let flockName: String? = isControlled ? flockNames.randomElement() : nil
             
             return Territory(
                 id: UUID().uuidString,
@@ -1142,13 +1150,13 @@ class OpenWorldManager: ObservableObject {
                     z: biome == .mountain ? 200 : (biome == .beach ? 20 : 50)
                 ),
                 radius: 800,
-                controllingFlockId: Bool.random() ? UUID().uuidString : nil,
-                controllingFlockName: Bool.random() ? ["Sky Warriors", "Feathered Fury", "Wing Legends"].randomElement() : nil,
-                controlPoints: Int.random(in: 0...100),
+                controllingFlockId: flockId,
+                controllingFlockName: flockName,
+                controlPoints: isControlled ? 100 : Int.random(in: 0...50),
                 maxControlPoints: 100,
                 biome: biome,
                 bonusMultiplier: Double.random(in: 1.1...1.5),
-                lastCaptured: Bool.random() ? Date().addingTimeInterval(-Double.random(in: 0...86400)) : nil
+                lastCaptured: isControlled ? Date().addingTimeInterval(-Double.random(in: 0...86400)) : nil
             )
         }
     }

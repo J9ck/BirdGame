@@ -824,13 +824,19 @@ struct PreyMarker: View {
                 }
             }
         }
-        .offset(
-            x: CGFloat.random(in: -100...100),
-            y: CGFloat.random(in: -50...50)
-        )
+        .offset(x: offsetX, y: offsetY)
         .opacity(prey.isAlerted ? 0.7 : 1.0)
         .scaleEffect(isTarget ? 1.2 : 1.0)
         .animation(.easeInOut, value: isTarget)
+    }
+    
+    // Calculate offset based on actual world position relative to player
+    private var offsetX: CGFloat {
+        CGFloat((prey.position.x.truncatingRemainder(dividingBy: 200)) - 100).clamped(to: -140...140)
+    }
+    
+    private var offsetY: CGFloat {
+        CGFloat((prey.position.y.truncatingRemainder(dividingBy: 100)) - 50).clamped(to: -70...70)
     }
 }
 
@@ -847,10 +853,16 @@ struct PlayerMarker: View {
                 .foregroundColor(player.isHostile ? .red : .cyan)
                 .lineLimit(1)
         }
-        .offset(
-            x: CGFloat.random(in: -120...120),
-            y: CGFloat.random(in: -60...60)
-        )
+        .offset(x: offsetX, y: offsetY)
+    }
+    
+    // Calculate offset based on actual world position
+    private var offsetX: CGFloat {
+        CGFloat((player.position.x.truncatingRemainder(dividingBy: 240)) - 120).clamped(to: -140...140)
+    }
+    
+    private var offsetY: CGFloat {
+        CGFloat((player.position.y.truncatingRemainder(dividingBy: 120)) - 60).clamped(to: -70...70)
     }
 }
 
@@ -871,11 +883,17 @@ struct ResourceMarker: View {
                 }
             }
         }
-        .offset(
-            x: CGFloat.random(in: -140...140),
-            y: CGFloat.random(in: -70...70)
-        )
+        .offset(x: offsetX, y: offsetY)
         .opacity(resource.canHarvest ? 1.0 : 0.5)
+    }
+    
+    // Calculate offset based on actual world position
+    private var offsetX: CGFloat {
+        CGFloat((resource.position.x.truncatingRemainder(dividingBy: 280)) - 140).clamped(to: -140...140)
+    }
+    
+    private var offsetY: CGFloat {
+        CGFloat((resource.position.y.truncatingRemainder(dividingBy: 140)) - 70).clamped(to: -70...70)
     }
 }
 
@@ -988,6 +1006,14 @@ struct WorldActionButton: View {
             .background(Color.black.opacity(0.4))
             .cornerRadius(16)
         }
+    }
+}
+
+// MARK: - CGFloat Extension for clamping
+
+extension CGFloat {
+    func clamped(to range: ClosedRange<CGFloat>) -> CGFloat {
+        return Swift.min(Swift.max(self, range.lowerBound), range.upperBound)
     }
 }
 
