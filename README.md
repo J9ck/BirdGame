@@ -18,6 +18,46 @@ Bird Game 3 is a fast-paced bird fighting game inspired by the viral AI-generate
 - **⚔️ Quick Match** - Fight against a random AI opponent
 - **🏆 Arcade Mode** - Progress through increasingly difficult bird opponents
 - **🎯 Training Mode** - Practice your pecks and perfect your combos
+- **🌍 Open World Mode** - Explore, hunt, build nests, and survive! (Inspired by "The Wolf" MMORPG)
+
+### 🌍 Open World Features (NEW!)
+
+Bird Game 3 now features a full open world survival experience inspired by **"The Wolf: Animal Game MMORPG"**:
+
+#### 🦎 Hunting System
+Hunt prey animals to survive! Each biome has different prey types:
+- **Easy**: 🪱 Worms, 🐛 Caterpillars
+- **Medium**: 🪲 Beetles, 🦗 Grasshoppers, 🪰 Dragonflies
+- **Hard**: 🐟 Fish, 🐸 Frogs, 🐭 Mice
+- **Expert**: 🐰 Rabbits, 🐍 Snakes
+
+Track your hunting streak and earn bonus XP!
+
+#### 🏔️ Biomes to Explore
+- 🌲 **Forest** - Resource-rich woodlands
+- 🏜️ **Desert** - Harsh but rewarding
+- 🏔️ **Mountain** - High altitude challenges
+- 🐊 **Swamp** - Dangerous wetlands
+- 🏖️ **Beach** - Coastal paradise
+- ❄️ **Tundra** - Frozen wilderness
+- 🌴 **Jungle** - Dense tropical forests
+- 🌾 **Plains** - Starting zone
+
+#### 🪺 Nest Building
+Build and upgrade your nest with components:
+- Foundation, Walls, Roof
+- Storage Boxes for resources
+- Defenses against raiders
+- Decorations and perches
+
+#### ⚔️ Territory Control
+Join a Flock (clan) and compete for territory control! Capture zones for bonus resources and bragging rights.
+
+#### 🎮 Controls
+- **Virtual Joystick** - Move your bird around the world
+- **Attack Button** - Hunt prey or fight enemies
+- **Sprint Button** - Move faster (costs energy)
+- **Minimap** - Navigate the world easily
 
 ## 🐤 Playable Birds
 
