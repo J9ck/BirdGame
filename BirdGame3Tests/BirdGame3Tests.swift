@@ -190,6 +190,168 @@ final class BirdGame3Tests: XCTestCase {
         }
     }
     
+    // MARK: - Prey System Tests (Like "The Wolf" MMORPG)
+    
+    func testAllPreyTypesHaveEmoji() {
+        for preyType in PreyType.allCases {
+            XCTAssertFalse(preyType.emoji.isEmpty)
+        }
+    }
+    
+    func testAllPreyTypesHaveDisplayName() {
+        for preyType in PreyType.allCases {
+            XCTAssertFalse(preyType.displayName.isEmpty)
+        }
+    }
+    
+    func testPreyTypeHungerRestore() {
+        for preyType in PreyType.allCases {
+            XCTAssertGreaterThan(preyType.hungerRestore, 0)
+        }
+    }
+    
+    func testPreyTypeXPReward() {
+        for preyType in PreyType.allCases {
+            XCTAssertGreaterThan(preyType.xpReward, 0)
+        }
+    }
+    
+    func testPreyTypeBaseHealth() {
+        for preyType in PreyType.allCases {
+            XCTAssertGreaterThan(preyType.baseHealth, 0)
+        }
+    }
+    
+    func testPreyTypeSpeed() {
+        for preyType in PreyType.allCases {
+            XCTAssertGreaterThan(preyType.speed, 0)
+        }
+    }
+    
+    func testPreyTypeDifficultyTiers() {
+        for preyType in PreyType.allCases {
+            XCTAssertGreaterThanOrEqual(preyType.difficultyTier, 1)
+            XCTAssertLessThanOrEqual(preyType.difficultyTier, 5)
+        }
+    }
+    
+    func testPreyTypeHasPreferredBiomes() {
+        for preyType in PreyType.allCases {
+            XCTAssertFalse(preyType.preferredBiomes.isEmpty, "\(preyType.displayName) should have preferred biomes")
+        }
+    }
+    
+    func testPreyCreation() {
+        let prey = Prey(
+            id: "test_prey",
+            type: .worm,
+            position: WorldPosition(x: 0, y: 0, z: 0),
+            health: 10,
+            maxHealth: 10,
+            isAlerted: false,
+            fleeDirection: nil
+        )
+        
+        XCTAssertEqual(prey.health, 10)
+        XCTAssertFalse(prey.isDead)
+        XCTAssertEqual(prey.healthPercent, 1.0)
+    }
+    
+    func testPreyDamageAndDeath() {
+        var prey = Prey(
+            id: "test_prey",
+            type: .worm,
+            position: WorldPosition(x: 0, y: 0, z: 0),
+            health: 10,
+            maxHealth: 10,
+            isAlerted: false,
+            fleeDirection: nil
+        )
+        
+        // Deal partial damage
+        prey.health -= 5
+        XCTAssertEqual(prey.health, 5)
+        XCTAssertFalse(prey.isDead)
+        XCTAssertEqual(prey.healthPercent, 0.5, accuracy: 0.001)
+        
+        // Kill the prey
+        prey.health = 0
+        XCTAssertTrue(prey.isDead)
+        XCTAssertEqual(prey.healthPercent, 0)
+    }
+    
+    // MARK: - Territory System Tests
+    
+    func testTerritoryCreation() {
+        let territory = Territory(
+            id: "test_territory",
+            name: "Test Plains",
+            centerPosition: WorldPosition(x: 100, y: 100, z: 50),
+            radius: 500,
+            controllingFlockId: nil,
+            controllingFlockName: nil,
+            controlPoints: 0,
+            maxControlPoints: 100,
+            biome: .plains,
+            bonusMultiplier: 1.2,
+            lastCaptured: nil
+        )
+        
+        XCTAssertTrue(territory.isNeutral)
+        XCTAssertFalse(territory.isContested)
+        XCTAssertEqual(territory.controlPercent, 0)
+    }
+    
+    func testTerritoryContested() {
+        let territory = Territory(
+            id: "test_territory",
+            name: "Test Plains",
+            centerPosition: WorldPosition(x: 100, y: 100, z: 50),
+            radius: 500,
+            controllingFlockId: "flock_1",
+            controllingFlockName: "Sky Warriors",
+            controlPoints: 50,
+            maxControlPoints: 100,
+            biome: .plains,
+            bonusMultiplier: 1.2,
+            lastCaptured: nil
+        )
+        
+        XCTAssertFalse(territory.isNeutral)
+        XCTAssertTrue(territory.isContested)
+        XCTAssertEqual(territory.controlPercent, 0.5, accuracy: 0.001)
+    }
+    
+    func testHuntResultSuccess() {
+        let result = HuntResult(
+            success: true,
+            message: "Caught the prey!",
+            hungerRestored: 20,
+            xpGained: 50,
+            preyType: .rabbit
+        )
+        
+        XCTAssertTrue(result.success)
+        XCTAssertEqual(result.hungerRestored, 20)
+        XCTAssertEqual(result.xpGained, 50)
+        XCTAssertEqual(result.preyType, .rabbit)
+    }
+    
+    func testHuntResultFailure() {
+        let result = HuntResult(
+            success: false,
+            message: "Prey escaped!",
+            hungerRestored: 0,
+            xpGained: 0,
+            preyType: nil
+        )
+        
+        XCTAssertFalse(result.success)
+        XCTAssertEqual(result.hungerRestored, 0)
+        XCTAssertEqual(result.xpGained, 0)
+        XCTAssertNil(result.preyType)
+    }
+    
     // MARK: - Chat Manager Tests
     
     func testChatManagerBlockUser() {

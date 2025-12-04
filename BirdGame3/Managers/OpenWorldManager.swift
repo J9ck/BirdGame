@@ -160,6 +160,175 @@ enum ResourceType: String, Codable, CaseIterable {
     }
 }
 
+// MARK: - Prey (Wildlife to Hunt - Like "The Wolf" MMORPG)
+
+/// Prey animals that birds can hunt for food in the open world
+struct Prey: Identifiable {
+    let id: String
+    let type: PreyType
+    var position: WorldPosition
+    var health: Double
+    var maxHealth: Double
+    var isAlerted: Bool
+    var fleeDirection: WorldPosition?
+    
+    var isDead: Bool { health <= 0 }
+    var healthPercent: Double { health / maxHealth }
+}
+
+enum PreyType: String, CaseIterable {
+    case worm
+    case caterpillar
+    case beetle
+    case grasshopper
+    case dragonfly
+    case fish
+    case frog
+    case mouse
+    case rabbit
+    case snake
+    
+    var displayName: String {
+        rawValue.capitalized
+    }
+    
+    var emoji: String {
+        switch self {
+        case .worm: return "🪱"
+        case .caterpillar: return "🐛"
+        case .beetle: return "🪲"
+        case .grasshopper: return "🦗"
+        case .dragonfly: return "🦟" // Using mosquito as closest to dragonfly
+        case .fish: return "🐟"
+        case .frog: return "🐸"
+        case .mouse: return "🐭"
+        case .rabbit: return "🐰"
+        case .snake: return "🐍"
+        }
+    }
+    
+    /// How much hunger is restored when eaten
+    var hungerRestore: Double {
+        switch self {
+        case .worm: return 5
+        case .caterpillar: return 8
+        case .beetle: return 10
+        case .grasshopper: return 12
+        case .dragonfly: return 15
+        case .fish: return 25
+        case .frog: return 20
+        case .mouse: return 30
+        case .rabbit: return 40
+        case .snake: return 35
+        }
+    }
+    
+    /// XP gained from hunting this prey
+    var xpReward: Int {
+        switch self {
+        case .worm: return 5
+        case .caterpillar: return 8
+        case .beetle: return 10
+        case .grasshopper: return 12
+        case .dragonfly: return 15
+        case .fish: return 25
+        case .frog: return 30
+        case .mouse: return 40
+        case .rabbit: return 50
+        case .snake: return 60
+        }
+    }
+    
+    /// Base health of this prey type
+    var baseHealth: Double {
+        switch self {
+        case .worm: return 10
+        case .caterpillar: return 15
+        case .beetle: return 25
+        case .grasshopper: return 20
+        case .dragonfly: return 15
+        case .fish: return 30
+        case .frog: return 40
+        case .mouse: return 50
+        case .rabbit: return 70
+        case .snake: return 80
+        }
+    }
+    
+    /// How fast this prey can flee
+    var speed: Double {
+        switch self {
+        case .worm: return 0.5
+        case .caterpillar: return 1.0
+        case .beetle: return 2.0
+        case .grasshopper: return 5.0
+        case .dragonfly: return 6.0
+        case .fish: return 4.0
+        case .frog: return 3.5
+        case .mouse: return 4.5
+        case .rabbit: return 7.0
+        case .snake: return 3.0
+        }
+    }
+    
+    /// Difficulty tier (1-5)
+    var difficultyTier: Int {
+        switch self {
+        case .worm, .caterpillar: return 1
+        case .beetle, .grasshopper: return 2
+        case .dragonfly, .fish: return 3
+        case .frog, .mouse: return 4
+        case .rabbit, .snake: return 5
+        }
+    }
+    
+    /// Which biomes this prey appears in
+    var preferredBiomes: [Biome] {
+        switch self {
+        case .worm: return [.forest, .plains, .jungle, .swamp]
+        case .caterpillar: return [.forest, .jungle, .plains]
+        case .beetle: return [.forest, .jungle, .desert]
+        case .grasshopper: return [.plains, .forest, .desert]
+        case .dragonfly: return [.swamp, .beach, .jungle]
+        case .fish: return [.beach, .swamp]
+        case .frog: return [.swamp, .jungle, .beach]
+        case .mouse: return [.plains, .forest, .desert, .tundra]
+        case .rabbit: return [.plains, .forest, .tundra]
+        case .snake: return [.desert, .jungle, .swamp]
+        }
+    }
+}
+
+/// Result of a hunt attempt
+struct HuntResult {
+    let success: Bool
+    let message: String
+    let hungerRestored: Double
+    let xpGained: Int
+    let preyType: PreyType?
+}
+
+// MARK: - Territory System (Like "The Wolf" MMORPG)
+
+/// Territory that flocks can control
+struct Territory: Identifiable, Codable {
+    let id: String
+    var name: String
+    var centerPosition: WorldPosition
+    var radius: Double
+    var controllingFlockId: String?
+    var controllingFlockName: String?
+    var controlPoints: Int
+    var maxControlPoints: Int
+    var biome: Biome
+    var bonusMultiplier: Double
+    var lastCaptured: Date?
+    
+    var isContested: Bool { controlPoints < maxControlPoints && controlPoints > 0 }
+    var isNeutral: Bool { controllingFlockId == nil }
+    var controlPercent: Double { Double(controlPoints) / Double(maxControlPoints) }
+}
+
 // MARK: - Nest
 
 struct Nest: Identifiable, Codable {
@@ -389,6 +558,16 @@ class OpenWorldManager: ObservableObject {
     
     // Player's nest
     @Published var homeNest: Nest?
+    
+    // MARK: - Prey System (Like "The Wolf" MMORPG)
+    @Published var nearbyPrey: [Prey] = []
+    @Published var huntingTarget: Prey?
+    @Published var totalPreyHunted: Int = 0
+    @Published var huntingStreak: Int = 0
+    
+    // MARK: - Territory System
+    @Published var territories: [Territory] = []
+    @Published var currentTerritory: Territory?
     
     // MARK: - Constants
     
@@ -751,6 +930,25 @@ class OpenWorldManager: ObservableObject {
             )
         }
         
+        // Generate prey animals based on current biome (Like "The Wolf" MMORPG)
+        let biomePreyTypes = PreyType.allCases.filter { $0.preferredBiomes.contains(playerState.currentBiome) }
+        nearbyPrey = (0..<Int.random(in: 3...10)).compactMap { _ in
+            guard let preyType = biomePreyTypes.randomElement() ?? PreyType.allCases.randomElement() else { return nil }
+            return Prey(
+                id: UUID().uuidString,
+                type: preyType,
+                position: WorldPosition(
+                    x: playerState.position.x + Double.random(in: -resourceScanRadius...resourceScanRadius),
+                    y: playerState.position.y + Double.random(in: -resourceScanRadius...resourceScanRadius),
+                    z: max(0, playerState.position.z + Double.random(in: -30...10))
+                ),
+                health: preyType.baseHealth,
+                maxHealth: preyType.baseHealth,
+                isAlerted: false,
+                fleeDirection: nil
+            )
+        }
+        
         // Generate fake nearby nests
         nearbyNests = (0..<Int.random(in: 2...5)).map { _ in
             let names = ["xX_NestMaster_Xx", "PigeonPalace", "EagleEyrie", "CrowsNest420", "FeatheredFortress"]
@@ -792,6 +990,203 @@ class OpenWorldManager: ObservableObject {
                 isHostile: Bool.random()
             )
         }
+        
+        // Update current territory
+        updateCurrentTerritory()
+    }
+    
+    // MARK: - Hunting System (Like "The Wolf" MMORPG)
+    
+    /// Start hunting a prey target
+    func startHunting(_ prey: Prey) {
+        huntingTarget = prey
+        
+        // Alert the prey
+        if let index = nearbyPrey.firstIndex(where: { $0.id == prey.id }) {
+            nearbyPrey[index].isAlerted = true
+            nearbyPrey[index].fleeDirection = WorldPosition(
+                x: Double.random(in: -1...1),
+                y: Double.random(in: -1...1),
+                z: 0
+            )
+        }
+    }
+    
+    /// Attack the hunting target
+    func attackPrey(attackPower: Double) -> HuntResult {
+        guard var target = huntingTarget,
+              let index = nearbyPrey.firstIndex(where: { $0.id == target.id }) else {
+            return HuntResult(success: false, message: "No prey targeted!", hungerRestored: 0, xpGained: 0, preyType: nil)
+        }
+        
+        let distance = playerState.position.distance(to: target.position)
+        
+        // Must be close enough to attack
+        guard distance < 30 else {
+            return HuntResult(success: false, message: "Too far away! Get closer!", hungerRestored: 0, xpGained: 0, preyType: nil)
+        }
+        
+        // Check energy
+        guard playerState.energy >= 5 else {
+            return HuntResult(success: false, message: "Not enough energy to attack!", hungerRestored: 0, xpGained: 0, preyType: nil)
+        }
+        
+        // Consume energy for attack
+        playerState.energy -= 5
+        
+        // Calculate damage (base attack + some randomness)
+        let damage = attackPower * Double.random(in: 0.8...1.2)
+        target.health -= damage
+        nearbyPrey[index] = target
+        
+        if target.isDead {
+            // Successful hunt!
+            let preyType = target.type
+            
+            // Restore hunger
+            playerState.hunger = min(100, playerState.hunger + preyType.hungerRestore)
+            
+            // Grant XP
+            let xp = preyType.xpReward
+            _ = PrestigeManager.shared.addXP(xp)
+            
+            // Update stats
+            totalPreyHunted += 1
+            huntingStreak += 1
+            
+            // Remove prey
+            nearbyPrey.remove(at: index)
+            huntingTarget = nil
+            
+            save()
+            
+            let streakBonus = huntingStreak > 1 ? " 🔥 Streak x\(huntingStreak)!" : ""
+            return HuntResult(
+                success: true,
+                message: "Caught the \(preyType.emoji) \(preyType.displayName)!\(streakBonus)",
+                hungerRestored: preyType.hungerRestore,
+                xpGained: xp,
+                preyType: preyType
+            )
+        } else {
+            // Prey still alive, update it
+            huntingTarget = target
+            
+            // Prey might flee - probability based on prey speed (faster prey more likely to flee)
+            let fleeProbability = target.type.speed / 10.0 // Speed ranges from 0.5 to 7.0
+            if target.isAlerted && Double.random(in: 0...1) < fleeProbability {
+                let fleeDist = target.type.speed * 5
+                nearbyPrey[index].position.x += Double.random(in: -fleeDist...fleeDist)
+                nearbyPrey[index].position.y += Double.random(in: -fleeDist...fleeDist)
+            }
+            
+            return HuntResult(
+                success: false,
+                message: "Hit for \(Int(damage)) damage! (\(Int(target.health))/\(Int(target.maxHealth)) HP)",
+                hungerRestored: 0,
+                xpGained: 0,
+                preyType: nil
+            )
+        }
+    }
+    
+    /// Stop hunting and reset streak
+    func stopHunting() {
+        huntingTarget = nil
+        if huntingStreak > 0 {
+            huntingStreak = 0
+        }
+    }
+    
+    /// Get prey by difficulty for current biome
+    func getPreyByDifficulty() -> [Int: [Prey]] {
+        var result: [Int: [Prey]] = [:]
+        for prey in nearbyPrey {
+            let tier = prey.type.difficultyTier
+            result[tier, default: []].append(prey)
+        }
+        return result
+    }
+    
+    // MARK: - Territory System
+    
+    private func updateCurrentTerritory() {
+        // Generate territories if empty
+        if territories.isEmpty {
+            generateTerritories()
+        }
+        
+        // Find current territory
+        currentTerritory = territories.first { territory in
+            playerState.position.distance(to: territory.centerPosition) <= territory.radius
+        }
+    }
+    
+    private func generateTerritories() {
+        let territoryNames = [
+            "Northern Woodlands", "Southern Plains", "Eastern Mountains",
+            "Western Shores", "Central Valley", "Dark Swamp",
+            "Frozen Peaks", "Desert Dunes", "Jungle Depths"
+        ]
+        
+        let flockNames = ["Sky Warriors", "Feathered Fury", "Wing Legends", "Talon Squad", "Nest Raiders"]
+        
+        territories = territoryNames.enumerated().map { index, name in
+            let angle = Double(index) * (2 * .pi / Double(territoryNames.count))
+            let distance = 2000.0
+            let biome = Biome.allCases[index % Biome.allCases.count]
+            
+            // Decide if territory is controlled - tie ID and name together
+            let isControlled = Bool.random()
+            let flockId: String? = isControlled ? UUID().uuidString : nil
+            let flockName: String? = isControlled ? flockNames.randomElement() : nil
+            
+            return Territory(
+                id: UUID().uuidString,
+                name: name,
+                centerPosition: WorldPosition(
+                    x: cos(angle) * distance,
+                    y: sin(angle) * distance,
+                    z: biome == .mountain ? 200 : (biome == .beach ? 20 : 50)
+                ),
+                radius: 800,
+                controllingFlockId: flockId,
+                controllingFlockName: flockName,
+                controlPoints: isControlled ? 100 : Int.random(in: 0...50),
+                maxControlPoints: 100,
+                biome: biome,
+                bonusMultiplier: Double.random(in: 1.1...1.5),
+                lastCaptured: isControlled ? Date().addingTimeInterval(-Double.random(in: 0...86400)) : nil
+            )
+        }
+    }
+    
+    /// Contribute to capturing current territory
+    func captureTerritory() -> Bool {
+        guard var territory = currentTerritory,
+              let index = territories.firstIndex(where: { $0.id == territory.id }) else {
+            return false
+        }
+        
+        // Check if player is in a flock
+        guard let flock = FlockManager.shared.currentFlock else {
+            return false
+        }
+        
+        // Add control points
+        territory.controlPoints = min(territory.maxControlPoints, territory.controlPoints + 5)
+        
+        // Check if territory is captured
+        if territory.controlPoints >= territory.maxControlPoints {
+            territory.controllingFlockId = flock.id
+            territory.controllingFlockName = flock.name
+            territory.lastCaptured = Date()
+        }
+        
+        territories[index] = territory
+        currentTerritory = territory
+        
+        return true
     }
     
     // MARK: - Persistence

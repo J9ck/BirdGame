@@ -94,20 +94,13 @@ class GameState: ObservableObject {
     }
     
     func openLobby() {
-        // Check if logged in first
-        if AccountManager.shared.isLoggedIn {
-            navigateTo(.lobby)
-        } else {
-            navigateTo(.login)
-        }
+        // Allow browsing lobby without login - login required only for joining matches
+        navigateTo(.lobby)
     }
     
     func openOpenWorld() {
-        if AccountManager.shared.isLoggedIn {
-            navigateTo(.openWorld)
-        } else {
-            navigateTo(.login)
-        }
+        // Open World is the primary mode - no login required (like The Wolf MMORPG)
+        navigateTo(.openWorld)
     }
     
     func startBattle() {
