@@ -148,8 +148,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         // Add bowling pins in background
         addBowlingPinsBackground()
         
-        // Play bowling alley music
-        MusicManager.shared.playMusic(.bowlingAlley)
+        // Play bowling alley music (deferred to ensure MusicManager is ready)
+        DispatchQueue.main.async {
+            MusicManager.shared.playMusic(.bowlingAlley)
+        }
     }
     
     private func setupSkyTempleArena() {

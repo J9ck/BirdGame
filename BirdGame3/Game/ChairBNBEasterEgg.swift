@@ -571,13 +571,20 @@ class ChairBNBNode: SKNode {
 struct ChairBNBView: View {
     @State private var discovered = false
     @State private var showingRewards = false
+    @State private var scene: SKScene?  // Store scene to avoid recreating on every body evaluation
     
     var body: some View {
         ZStack {
             // Placeholder for SpriteKit integration
-            SpriteView(scene: createChairBNBScene())
-                .frame(width: 300, height: 250)
-                .cornerRadius(16)
+            if let scene = scene {
+                SpriteView(scene: scene)
+                    .frame(width: 300, height: 250)
+                    .cornerRadius(16)
+            } else {
+                Color.gray
+                    .frame(width: 300, height: 250)
+                    .cornerRadius(16)
+            }
             
             if showingRewards {
                 VStack(spacing: 16) {
@@ -612,6 +619,10 @@ struct ChairBNBView: View {
             }
         }
         .onAppear {
+            // Create scene once on appear
+            if scene == nil {
+                scene = createChairBNBScene()
+            }
             if !discovered {
                 discovered = true
                 DispatchQueue.main.asyncAfter(deadline: .now() + 1.0) {
@@ -622,15 +633,15 @@ struct ChairBNBView: View {
     }
     
     private func createChairBNBScene() -> SKScene {
-        let scene = SKScene(size: CGSize(width: 300, height: 250))
-        scene.backgroundColor = SKColor(red: 0.6, green: 0.8, blue: 0.6, alpha: 1.0) // Grassy green
+        let newScene = SKScene(size: CGSize(width: 300, height: 250))
+        newScene.backgroundColor = SKColor(red: 0.6, green: 0.8, blue: 0.6, alpha: 1.0) // Grassy green
         
         let chairBNB = ChairBNBNode()
         chairBNB.position = CGPoint(x: 150, y: 125)
         chairBNB.setScale(0.8)
-        scene.addChild(chairBNB)
+        newScene.addChild(chairBNB)
         
-        return scene
+        return newScene
     }
 }
 

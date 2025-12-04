@@ -534,8 +534,10 @@ class BowlingAlleyScene: SKScene {
         let generator = UINotificationFeedbackGenerator()
         generator.notificationOccurred(.success)
         
-        // Sound effect (placeholder)
-        SoundManager.shared.playSound(.achievementUnlock)
+        // Sound effect (deferred to avoid circular dependency)
+        DispatchQueue.main.async {
+            SoundManager.shared.playSound(.achievementUnlock)
+        }
     }
     
     // MARK: - Reset Pins

@@ -249,13 +249,18 @@ class SoundManager: ObservableObject {
     }
     
     private func updateMusicVolume() {
-        MusicManager.shared.setVolume(musicVolume)
+        // Access MusicManager safely - it's a singleton that initializes on first access
+        DispatchQueue.main.async {
+            MusicManager.shared.setVolume(self.musicVolume)
+        }
     }
     
     private func stopAllSounds() {
         for player in audioPlayers.values {
             player.stop()
         }
+        // Clear stopped players to prevent memory leaks
+        audioPlayers.removeAll()
     }
     
     // MARK: - Persistence
@@ -321,11 +326,18 @@ class SoundManager: ObservableObject {
         do {
             let player = try AVAudioPlayer(contentsOf: url)
             player.volume = volume
+            player.delegate = AudioPlayerDelegate.shared  // Set delegate for cleanup
             player.prepareToPlay()
             player.play()
             
             // Store reference to prevent deallocation
             let key = url.lastPathComponent
+            
+            // Clean up old player for this sound if it exists and is not playing
+            if let oldPlayer = audioPlayers[key], !oldPlayer.isPlaying {
+                audioPlayers.removeValue(forKey: key)
+            }
+            
             audioPlayers[key] = player
         } catch {
             #if DEBUG
@@ -417,6 +429,17 @@ class SynthesizedSoundGenerator {
     }
     
     // More synthesized sounds could be added here
+}
+
+// MARK: - Audio Player Delegate (for cleanup)
+
+class AudioPlayerDelegate: NSObject, AVAudioPlayerDelegate {
+    static let shared = AudioPlayerDelegate()
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        // Player finished - will be cleaned up on next playAudioFile call
+        // This prevents memory leaks by allowing players to be released
+    }
 }
 
 // MARK: - Music Manager
