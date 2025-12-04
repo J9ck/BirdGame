@@ -4,9 +4,31 @@
 //
 //  Where the epic bird battles unfold
 //
+//  Map Assets (Royalty-Free):
+//  - Bowling Alley: See BowlingAlleyScene.swift for neon arcade map
+//  - Backgrounds: https://kenney.nl/assets, https://opengameart.org
+//  - See ASSETS_README.md for complete asset guide
+//
 
 import SpriteKit
 import SwiftUI
+
+/// Available battle arena maps
+enum BattleArena: String, CaseIterable {
+    case birdDome = "Bird Dome Arena"
+    case bowlingAlley = "Bird Bowl Alley"
+    case skyTemple = "Sky Temple"
+    case ancientTree = "Ancient Tree"
+    
+    var emoji: String {
+        switch self {
+        case .birdDome: return "🏟️"
+        case .bowlingAlley: return "🎳"
+        case .skyTemple: return "⛩️"
+        case .ancientTree: return "🌳"
+        }
+    }
+}
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
@@ -18,6 +40,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var playerType: BirdType = .pigeon
     var opponentType: BirdType = .eagle
     var isTrainingMode: Bool = false
+    var selectedArena: BattleArena = .birdDome
     
     private var lastUpdateTime: TimeInterval = 0
     private var battleStartTime: TimeInterval = 0
@@ -66,12 +89,26 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func setupScene() {
-        backgroundColor = SKColor(red: 0.1, green: 0.1, blue: 0.15, alpha: 1.0)
         physicsWorld.contactDelegate = self
         physicsWorld.gravity = CGVector(dx: 0, dy: -5)
         
-        // Add ground
-        let ground = SKSpriteNode(color: SKColor(red: 0.2, green: 0.3, blue: 0.2, alpha: 1.0), size: CGSize(width: size.width, height: 100))
+        // Setup arena-specific background
+        switch selectedArena {
+        case .birdDome:
+            setupBirdDomeArena()
+        case .bowlingAlley:
+            setupBowlingAlleyArena()
+        case .skyTemple:
+            setupSkyTempleArena()
+        case .ancientTree:
+            setupAncientTreeArena()
+        }
+        
+        // Add ground (common to all arenas)
+        let groundColor = selectedArena == .bowlingAlley 
+            ? SKColor(red: 0.87, green: 0.72, blue: 0.53, alpha: 1.0)  // Wood floor
+            : SKColor(red: 0.2, green: 0.3, blue: 0.2, alpha: 1.0)    // Grass
+        let ground = SKSpriteNode(color: groundColor, size: CGSize(width: size.width, height: 100))
         ground.position = CGPoint(x: size.width / 2, y: 50)
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
         ground.physicsBody?.isDynamic = false
@@ -80,6 +117,88 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Add some background elements
         addBackgroundElements()
+    }
+    
+    private func setupBirdDomeArena() {
+        backgroundColor = SKColor(red: 0.1, green: 0.1, blue: 0.15, alpha: 1.0)
+    }
+    
+    private func setupBowlingAlleyArena() {
+        // Neon arcade vibes
+        backgroundColor = SKColor(red: 0.18, green: 0.11, blue: 0.31, alpha: 1.0)
+        
+        // Add neon glow effects
+        let neonPink = SKColor(red: 1.0, green: 0.08, blue: 0.58, alpha: 0.3)
+        let neonBlue = SKColor(red: 0.0, green: 0.75, blue: 1.0, alpha: 0.3)
+        
+        let leftGlow = SKShapeNode(rectOf: CGSize(width: size.width / 3, height: size.height))
+        leftGlow.fillColor = neonPink
+        leftGlow.strokeColor = .clear
+        leftGlow.position = CGPoint(x: size.width / 6, y: size.height / 2)
+        leftGlow.zPosition = -20
+        addChild(leftGlow)
+        
+        let rightGlow = SKShapeNode(rectOf: CGSize(width: size.width / 3, height: size.height))
+        rightGlow.fillColor = neonBlue
+        rightGlow.strokeColor = .clear
+        rightGlow.position = CGPoint(x: size.width * 5/6, y: size.height / 2)
+        rightGlow.zPosition = -20
+        addChild(rightGlow)
+        
+        // Add bowling pins in background
+        addBowlingPinsBackground()
+        
+        // Play bowling alley music
+        MusicManager.shared.playMusic(.bowlingAlley)
+    }
+    
+    private func setupSkyTempleArena() {
+        // Ethereal sky colors
+        backgroundColor = SKColor(red: 0.4, green: 0.6, blue: 0.9, alpha: 1.0)
+        
+        // Add floating clouds
+        for _ in 0..<8 {
+            let cloud = SKShapeNode(ellipseOf: CGSize(width: CGFloat.random(in: 100...200), height: CGFloat.random(in: 40...80)))
+            cloud.fillColor = .white
+            cloud.strokeColor = .clear
+            cloud.alpha = 0.7
+            cloud.position = CGPoint(x: CGFloat.random(in: -100...size.width + 100), y: CGFloat.random(in: 0...size.height))
+            cloud.zPosition = -15
+            addChild(cloud)
+        }
+    }
+    
+    private func setupAncientTreeArena() {
+        // Forest green tones
+        backgroundColor = SKColor(red: 0.15, green: 0.25, blue: 0.15, alpha: 1.0)
+        
+        // Add tree trunk in center background
+        let trunk = SKShapeNode(rectOf: CGSize(width: 80, height: size.height))
+        trunk.fillColor = SKColor(red: 0.4, green: 0.25, blue: 0.15, alpha: 0.5)
+        trunk.strokeColor = .clear
+        trunk.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        trunk.zPosition = -15
+        addChild(trunk)
+    }
+    
+    private func addBowlingPinsBackground() {
+        // Decorative bowling pins
+        let pinPositions: [CGPoint] = [
+            CGPoint(x: size.width * 0.15, y: size.height * 0.7),
+            CGPoint(x: size.width * 0.85, y: size.height * 0.7),
+            CGPoint(x: size.width * 0.1, y: size.height * 0.5),
+            CGPoint(x: size.width * 0.9, y: size.height * 0.5)
+        ]
+        
+        for pos in pinPositions {
+            let pin = SKShapeNode(ellipseOf: CGSize(width: 15, height: 30))
+            pin.fillColor = .white
+            pin.strokeColor = .lightGray
+            pin.position = pos
+            pin.zPosition = -10
+            pin.alpha = 0.4
+            addChild(pin)
+        }
     }
     
     private func addBackgroundElements() {
@@ -98,9 +217,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             cloud.run(SKAction.repeatForever(cloudMove))
         }
         
-        // Arena name
+        // Arena name (dynamic based on selected arena)
         let arenaLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        arenaLabel.text = "🏟️ BIRD DOME ARENA 🏟️"
+        arenaLabel.text = "\(selectedArena.emoji) \(selectedArena.rawValue.uppercased()) \(selectedArena.emoji)"
         arenaLabel.fontSize = 14
         arenaLabel.fontColor = .white.withAlphaComponent(0.5)
         arenaLabel.position = CGPoint(x: size.width / 2, y: size.height - 30)

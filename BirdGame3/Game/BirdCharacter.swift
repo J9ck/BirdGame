@@ -129,33 +129,45 @@ class BirdCharacter: SKNode {
         }
     }
     
+    /// Bright, whimsical, cartoon-styled colors for viral mobile game appeal
+    /// See ASSETS_README.md for sprite sources: https://opengameart.org/content/bird-sprites
     private func colorForType() -> SKColor {
         switch birdType {
         case .pigeon:
-            return SKColor(red: 0.6, green: 0.6, blue: 0.7, alpha: 1.0)
+            // Classic gray-blue with purple iridescence
+            return SKColor(red: 0.55, green: 0.55, blue: 0.75, alpha: 1.0)
         case .hummingbird:
-            return SKColor(red: 0.2, green: 0.8, blue: 0.4, alpha: 1.0)
+            // Vibrant emerald green
+            return SKColor(red: 0.2, green: 0.9, blue: 0.5, alpha: 1.0)
         case .eagle:
-            return SKColor(red: 0.4, green: 0.25, blue: 0.15, alpha: 1.0)
+            // Rich brown with warm tones
+            return SKColor(red: 0.55, green: 0.35, blue: 0.2, alpha: 1.0)
         case .crow:
-            return SKColor(red: 0.15, green: 0.15, blue: 0.2, alpha: 1.0)
+            // Deep purple-black (mysterious!)
+            return SKColor(red: 0.2, green: 0.15, blue: 0.3, alpha: 1.0)
         case .pelican:
-            return SKColor(red: 0.95, green: 0.95, blue: 0.9, alpha: 1.0)
+            // Bright white with warm undertones
+            return SKColor(red: 1.0, green: 0.97, blue: 0.92, alpha: 1.0)
         }
     }
     
     private func beakColorForType() -> SKColor {
         switch birdType {
         case .pigeon:
-            return SKColor(red: 0.8, green: 0.6, blue: 0.3, alpha: 1.0)
+            // Bright orange-coral beak
+            return SKColor(red: 1.0, green: 0.6, blue: 0.4, alpha: 1.0)
         case .hummingbird:
+            // Sleek dark beak
             return SKColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0)
         case .eagle:
-            return SKColor(red: 0.9, green: 0.8, blue: 0.2, alpha: 1.0)
+            // Bright golden yellow beak
+            return SKColor(red: 1.0, green: 0.85, blue: 0.2, alpha: 1.0)
         case .crow:
-            return SKColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0)
+            // Glossy black beak
+            return SKColor(red: 0.15, green: 0.15, blue: 0.2, alpha: 1.0)
         case .pelican:
-            return SKColor(red: 0.9, green: 0.7, blue: 0.3, alpha: 1.0)
+            // Bright orange pouch beak
+            return SKColor(red: 1.0, green: 0.55, blue: 0.2, alpha: 1.0)
         }
     }
     
