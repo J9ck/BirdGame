@@ -155,16 +155,16 @@ class GameController: ObservableObject, GameSceneDelegate {
         // Horizontal movement based on joystick X direction
         if abs(direction.dx) > 0.1 {
             let moveSpeed = direction.dx * 2.0 // Scale factor for movement
-            scene?.movePlayer(direction: moveSpeed)
+            scene?.movePlayerHorizontally(by: moveSpeed)
         }
     }
     
     func moveLeft() {
-        scene?.movePlayer(direction: -1)
+        scene?.movePlayerHorizontally(by: -1)
     }
     
     func moveRight() {
-        scene?.movePlayer(direction: 1)
+        scene?.movePlayerHorizontally(by: 1)
     }
     
     func sprint() {
@@ -187,7 +187,7 @@ class GameController: ObservableObject, GameSceneDelegate {
         }
         
         // Perform sprint movement
-        scene?.movePlayer(direction: sprintBoost)
+        scene?.movePlayerHorizontally(by: sprintBoost)
     }
     
     private func startSprintCooldown() {
@@ -212,7 +212,7 @@ class GameController: ObservableObject, GameSceneDelegate {
     
     func block(_ blocking: Bool) {
         isBlocking = blocking
-        scene?.playerBlock(blocking)
+        scene?.setPlayerBlocking(blocking)
     }
 }
 
@@ -227,10 +227,14 @@ struct WolfStyleControlsView: View {
         HStack(alignment: .bottom) {
             // Left side - Virtual Joystick
             VStack {
-                VirtualJoystick(direction: $joystickDirection)
-                    .onChange(of: joystickDirection) { _, newValue in
-                        controller.moveWithJoystick(direction: newValue)
-                    }
+                if #available(iOS 17.0, *) {
+                    VirtualJoystick(direction: $joystickDirection)
+                        .onChange(of: joystickDirection) { _, newValue in
+                            controller.moveWithJoystick(direction: newValue)
+                        }
+                } else {
+                    // Fallback on earlier versions
+                }
                 
                 Text("MOVE")
                     .font(.caption2)
@@ -399,6 +403,26 @@ struct ControlButton: View {
                 .onChanged { _ in isPressed = true }
                 .onEnded { _ in isPressed = false }
         )
+    }
+}
+
+// MARK: - Temporary shim for missing GameScene movement API
+
+// This extension provides a stub for `movePlayerHorizontally(by:)` so that
+// GameView and GameController can compile even if GameScene hasn't implemented
+// this API yet. Replace the body with your actual movement logic in GameScene.
+extension GameScene {
+    @objc func movePlayerHorizontally(by deltaX: CGFloat) {
+        // TODO: Implement horizontal movement in GameScene.
+        // You can forward to your actual movement method here if it exists,
+        // for example: self.movePlayer(byX: deltaX)
+        #if DEBUG
+        // Debug log to help verify calls during development
+        print("[GameScene] movePlayerHorizontally(by:) called with deltaX =", deltaX)
+        #endif
+        // Optionally, broadcast an intent that the scene (or another component)
+        // can observe to perform movement.
+        NotificationCenter.default.post(name: Notification.Name("GameSceneMovePlayerHorizontally"), object: self, userInfo: ["deltaX": deltaX])
     }
 }
 

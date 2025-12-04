@@ -1,0 +1,44 @@
+# Xcode
+.DS_Store
+.build/
+DerivedData/
+build/
+xcuserdata/
+*.xcuserstate
+*.xcworkspace/xcuserdata
+*.xcworkspace/contents.xcworkspacedata
+# Swift Package Manager
+/.build
+/Packages
+.swiftpm
+/*.xcodeproj/project.xcworkspace
+Package.resolved
+ CocoaPods
+Pods/
+Podfile.lock
+*.xcworkspace
+
+# Carthage
+Carthage/Build/
+
+# Fastlane
+fastlane/report.xml
+fastlane/Preview.html
+fastlane/screenshots
+
+# App-level
+*.ipa
+*.app
+*.dSYM.zip
+*.dSYM
+
+# Archives
+*.xcarchive
+
+# macOS
+.DS_Store
+
+# Secrets and signing
+*.p12
+*.mobileprovision
+exportOptions.plist

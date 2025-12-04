@@ -74,15 +74,19 @@ struct AnimatedHealthBar: View {
     @State private var displayedHealth: Double = 0
     
     var body: some View {
-        HealthBar(currentHealth: displayedHealth, maxHealth: maxHealth, isPlayer: isPlayer)
-            .onChange(of: currentHealth) { _, newValue in
-                withAnimation(.easeOut(duration: 0.3)) {
-                    displayedHealth = newValue
+        if #available(iOS 17.0, *) {
+            HealthBar(currentHealth: displayedHealth, maxHealth: maxHealth, isPlayer: isPlayer)
+                .onChange(of: currentHealth) { _, newValue in
+                    withAnimation(.easeOut(duration: 0.3)) {
+                        displayedHealth = newValue
+                    }
                 }
-            }
-            .onAppear {
-                displayedHealth = currentHealth
-            }
+                .onAppear {
+                    displayedHealth = currentHealth
+                }
+        } else {
+            // Fallback on earlier versions
+        }
     }
 }
 

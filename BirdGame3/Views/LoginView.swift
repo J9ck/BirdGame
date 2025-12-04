@@ -187,9 +187,13 @@ struct LoginView: View {
                 }
             }
             .navigationBarHidden(true)
-            .toolbar(.hidden, for: .navigationBar)
+            .toolbar {
+                ToolbarItem(placement: .navigationBarLeading) {
+                    EmptyView()
+                }
+            }
         }
-        .onChange(of: account.isLoggedIn) { _, isLoggedIn in
+        .onChange(of: account.isLoggedIn) { isLoggedIn in
             if isLoggedIn {
                 dismiss()
             }
@@ -652,3 +656,4 @@ struct PrivacySettingsView: View {
 #Preview {
     LoginView()
 }
+

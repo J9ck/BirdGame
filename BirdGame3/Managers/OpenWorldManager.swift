@@ -1020,19 +1020,44 @@ extension OpenWorldManager {
         // Mark as discovered
         UserDefaults.standard.set(true, forKey: discoveryKey)
         
+        // --- Replace this section inside triggerLocationDiscovery(...) ---
         // Unlock badge if applicable
         if let badgeId = location.badgeId, withCorrectBird {
             if location.id == "bowling_alley" {
-                AchievementManager.shared.trackBowlingAlleyVisit(asCrow: true)
-                ProfileIconManager.shared.unlockIcon("icon_bowling")
+                // Post a notification to track the bowling alley visit (as crow)
+                NotificationCenter.default.post(
+                    name: Notification.Name("BirdGame3.TrackBowlingAlleyVisit"),
+                    object: nil,
+                    userInfo: ["asCrow": true, "locationId": location.id]
+                )
+
+                // Post a notification to unlock the profile icon
+                NotificationCenter.default.post(
+                    name: Notification.Name("BirdGame3.UnlockProfileIcon"),
+                    object: nil,
+                    userInfo: ["iconId": "icon_bowling", "locationId": location.id]
+                )
             } else if location.id == "chairbnb" {
-                AchievementManager.shared.trackChairBNBVisit()
-                ProfileIconManager.shared.unlockIcon("icon_chairbnb")
+                NotificationCenter.default.post(
+                    name: Notification.Name("BirdGame3.TrackChairBNBVisit"),
+                    object: nil,
+                    userInfo: ["locationId": location.id]
+                )
+
+                NotificationCenter.default.post(
+                    name: Notification.Name("BirdGame3.UnlockProfileIcon"),
+                    object: nil,
+                    userInfo: ["iconId": "icon_chairbnb", "locationId": location.id]
+                )
             } else {
-                AchievementManager.shared.unlockBadge(badgeId)
+                // Generic badge unlock
+                NotificationCenter.default.post(
+                    name: Notification.Name("BirdGame3.UnlockBadge"),
+                    object: nil,
+                    userInfo: ["badgeId": badgeId, "locationId": location.id]
+                )
             }
         }
-        
         // Add world event
         let event = WorldEvent(
             id: UUID().uuidString,

@@ -368,11 +368,13 @@ struct LevelUpCardView: View {
                         }
                     }
                     
-                    if reward.hasSkin, let skinId = reward.skinUnlock {
+                    if reward.hasSkin, let _ = reward.skinUnlock {
                         HStack {
                             Text("🎨 Skin Unlocked!")
                                 .font(.caption)
                                 .foregroundColor(.orange)
+                            // If you want to show skin details:
+                            // Text(skin.name).font(.caption2).foregroundColor(.white)
                         }
                     }
                 }

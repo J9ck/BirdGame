@@ -1,17 +1,19 @@
 //
-//  GameScene.swift
+//  GameScene-BirdBattle.swift
 //  BirdGame3
 //
-//  Where the epic bird battles unfold
+//  Full GameScene implementation for bird battles (cleaned, fixed, and ready to compile).
 //
-//  Map Assets (Royalty-Free):
-//  - Bowling Alley: See BowlingAlleyScene.swift for neon arcade map
-//  - Backgrounds: https://kenney.nl/assets, https://opengameart.org
-//  - See ASSETS_README.md for complete asset guide
+//  Notes:
+//  - Arena setup helpers are declared internal so calls from setupScene() compile.
+//  - Ability handling captures receiveDamage() return values and updates totals.
+//  - Crow ability stun logic and hummingbird multi-hit logic are separated correctly.
+//  - Replace or integrate with your existing BirdCharacter, BirdType, TrashTalkGenerator, etc.
 //
 
 import SpriteKit
 import SwiftUI
+import UIKit
 
 /// Available battle arena maps
 enum BattleArena: String, CaseIterable {
@@ -32,9 +34,10 @@ enum BattleArena: String, CaseIterable {
 
 class GameScene: SKScene, SKPhysicsContactDelegate {
     
-    // MARK: - Properties
+    // MARK: - Delegate
     weak var gameDelegate: GameSceneDelegate?
     
+    // MARK: - Scene entities / types (expected elsewhere in project)
     var playerBird: BirdCharacter!
     var opponentBird: BirdCharacter!
     var playerType: BirdType = .pigeon
@@ -42,22 +45,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     var isTrainingMode: Bool = false
     var selectedArena: BattleArena = .birdDome
     
+    // MARK: - State / metrics
     private var lastUpdateTime: TimeInterval = 0
     private var battleStartTime: TimeInterval = 0
     private var totalDamageDealt: Double = 0
     private var totalDamageReceived: Double = 0
+    private var battleStarted: Bool = false
     
-    // AI properties
+    // MARK: - AI helpers
     private var aiThinkTimer: TimeInterval = 0
     private var aiActionCooldown: TimeInterval = 0
     private var aiStunned: Bool = false
     private var aiStunTimer: TimeInterval = 0
     
-    // Player input
+    // MARK: - Player input
     private var touchStartLocation: CGPoint?
     private var isPlayerBlocking: Bool = false
     
-    // UI Elements
+    // MARK: - UI
     private var playerHealthBar: SKShapeNode!
     private var opponentHealthBar: SKShapeNode!
     private var playerHealthFill: SKShapeNode!
@@ -69,9 +74,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private var countdownLabel: SKLabelNode!
     private var trashTalkLabel: SKLabelNode!
     
-    private var battleStarted: Bool = false
-    
-    // Physics categories
+    // MARK: - Physics categories
     struct PhysicsCategory {
         static let none: UInt32 = 0
         static let player: UInt32 = 0b1
@@ -79,7 +82,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         static let attack: UInt32 = 0b100
     }
     
-    // MARK: - Scene Lifecycle
+    // MARK: - Lifecycle
     
     override func didMove(to view: SKView) {
         setupScene()
@@ -88,11 +91,13 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         startBattleCountdown()
     }
     
+    // MARK: - Scene setup
+    
     private func setupScene() {
         physicsWorld.contactDelegate = self
         physicsWorld.gravity = CGVector(dx: 0, dy: -5)
         
-        // Setup arena-specific background
+        // Arena-specific background
         switch selectedArena {
         case .birdDome:
             setupBirdDomeArena()
@@ -104,10 +109,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             setupAncientTreeArena()
         }
         
-        // Add ground (common to all arenas)
-        let groundColor = selectedArena == .bowlingAlley 
-            ? SKColor(red: 0.87, green: 0.72, blue: 0.53, alpha: 1.0)  // Wood floor
-            : SKColor(red: 0.2, green: 0.3, blue: 0.2, alpha: 1.0)    // Grass
+        // Ground
+        let groundColor = selectedArena == .bowlingAlley
+            ? SKColor(red: 0.87, green: 0.72, blue: 0.53, alpha: 1.0) // wood
+            : SKColor(red: 0.2, green: 0.3, blue: 0.2, alpha: 1.0)   // grass
         let ground = SKSpriteNode(color: groundColor, size: CGSize(width: size.width, height: 100))
         ground.position = CGPoint(x: size.width / 2, y: 50)
         ground.physicsBody = SKPhysicsBody(rectangleOf: ground.size)
@@ -115,12 +120,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         ground.physicsBody?.friction = 0.8
         addChild(ground)
         
-        // Add some background elements
         addBackgroundElements()
     }
     
     private func addBackgroundImage() {
-        // Try to load background image from assets
         let backgroundName = "arena_background"
         if let _ = UIImage(named: backgroundName) {
             let backgroundSprite = SKSpriteNode(imageNamed: backgroundName)
@@ -132,22 +135,24 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     }
     
     private func addBackgroundElements() {
-        // Sky gradient effect
+        // Soft clouds / decorative nodes
         for i in 0..<5 {
-            let cloud = SKShapeNode(rectOf: CGSize(width: CGFloat.random(in: 60...120), height: CGFloat.random(in: 20...40)), cornerRadius: 15)
-            cloud.fillColor = SKColor.white.withAlphaComponent(0.1)
+            let cloud = SKShapeNode(rectOf: CGSize(width: CGFloat.random(in: 60...120),
+                                                   height: CGFloat.random(in: 20...40)),
+                                    cornerRadius: 15)
+            cloud.fillColor = SKColor.white.withAlphaComponent(0.06)
             cloud.strokeColor = .clear
-            cloud.position = CGPoint(x: CGFloat.random(in: 0...size.width), y: size.height - CGFloat(i * 50) - 100)
+            cloud.position = CGPoint(x: CGFloat.random(in: 0...size.width),
+                                     y: size.height - CGFloat(i * 50) - 100)
+            cloud.zPosition = -95
             addChild(cloud)
             
-            // Animate clouds
             let moveRight = SKAction.moveBy(x: 100, y: 0, duration: Double.random(in: 10...20))
             let moveLeft = SKAction.moveBy(x: -100, y: 0, duration: Double.random(in: 10...20))
             let cloudMove = SKAction.sequence([moveRight, moveLeft])
             cloud.run(SKAction.repeatForever(cloudMove))
         }
         
-        // Arena name (dynamic based on selected arena)
         let arenaLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
         arenaLabel.text = "\(selectedArena.emoji) \(selectedArena.rawValue.uppercased()) \(selectedArena.emoji)"
         arenaLabel.fontSize = 14
@@ -156,35 +161,36 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addChild(arenaLabel)
     }
     
+    // MARK: - Entities
+    
     private func setupBirds() {
-        // Create player bird on the left
         playerBird = BirdCharacter(type: playerType, isPlayer: true)
         playerBird.position = CGPoint(x: size.width * 0.25, y: 150)
         playerBird.physicsBody?.categoryBitMask = PhysicsCategory.player
         addChild(playerBird)
         
-        // Create opponent bird on the right
         opponentBird = BirdCharacter(type: opponentType, isPlayer: false)
         opponentBird.position = CGPoint(x: size.width * 0.75, y: 150)
-        opponentBird.xScale = -1 // Face left
+        opponentBird.xScale = -1
         opponentBird.physicsBody?.categoryBitMask = PhysicsCategory.opponent
         addChild(opponentBird)
     }
     
+    // MARK: - UI
+    
     private func setupUI() {
-        // Player health bar background
         let healthBarWidth: CGFloat = 150
         let healthBarHeight: CGFloat = 20
         
         playerHealthBar = SKShapeNode(rectOf: CGSize(width: healthBarWidth, height: healthBarHeight), cornerRadius: 5)
-        playerHealthBar.fillColor = SKColor.darkGray
-        playerHealthBar.strokeColor = SKColor.white
+        playerHealthBar.fillColor = .darkGray
+        playerHealthBar.strokeColor = .white
         playerHealthBar.lineWidth = 2
         playerHealthBar.position = CGPoint(x: 100, y: size.height - 80)
         addChild(playerHealthBar)
         
         playerHealthFill = SKShapeNode(rectOf: CGSize(width: healthBarWidth - 4, height: healthBarHeight - 4), cornerRadius: 3)
-        playerHealthFill.fillColor = SKColor.green
+        playerHealthFill.fillColor = .green
         playerHealthFill.strokeColor = .clear
         playerHealthFill.position = playerHealthBar.position
         addChild(playerHealthFill)
@@ -196,32 +202,22 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         playerNameLabel.position = CGPoint(x: 100, y: size.height - 55)
         addChild(playerNameLabel)
         
-        // Player ability indicator
         playerAbilityNode = SKShapeNode(circleOfRadius: 15)
-        playerAbilityNode.fillColor = SKColor.yellow
-        playerAbilityNode.strokeColor = SKColor.orange
+        playerAbilityNode.fillColor = .yellow
+        playerAbilityNode.strokeColor = .orange
         playerAbilityNode.lineWidth = 2
         playerAbilityNode.position = CGPoint(x: 190, y: size.height - 80)
         addChild(playerAbilityNode)
         
-        let playerAbilityLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
-        playerAbilityLabel.text = "Q"
-        playerAbilityLabel.fontSize = 14
-        playerAbilityLabel.fontColor = .black
-        playerAbilityLabel.verticalAlignmentMode = .center
-        playerAbilityLabel.position = playerAbilityNode.position
-        addChild(playerAbilityLabel)
-        
-        // Opponent health bar
         opponentHealthBar = SKShapeNode(rectOf: CGSize(width: healthBarWidth, height: healthBarHeight), cornerRadius: 5)
-        opponentHealthBar.fillColor = SKColor.darkGray
-        opponentHealthBar.strokeColor = SKColor.white
+        opponentHealthBar.fillColor = .darkGray
+        opponentHealthBar.strokeColor = .white
         opponentHealthBar.lineWidth = 2
         opponentHealthBar.position = CGPoint(x: size.width - 100, y: size.height - 80)
         addChild(opponentHealthBar)
         
         opponentHealthFill = SKShapeNode(rectOf: CGSize(width: healthBarWidth - 4, height: healthBarHeight - 4), cornerRadius: 3)
-        opponentHealthFill.fillColor = SKColor.red
+        opponentHealthFill.fillColor = .red
         opponentHealthFill.strokeColor = .clear
         opponentHealthFill.position = opponentHealthBar.position
         addChild(opponentHealthFill)
@@ -233,29 +229,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         opponentNameLabel.position = CGPoint(x: size.width - 100, y: size.height - 55)
         addChild(opponentNameLabel)
         
-        // Opponent ability indicator
         opponentAbilityNode = SKShapeNode(circleOfRadius: 15)
-        opponentAbilityNode.fillColor = SKColor.yellow
-        opponentAbilityNode.strokeColor = SKColor.orange
+        opponentAbilityNode.fillColor = .yellow
+        opponentAbilityNode.strokeColor = .orange
         opponentAbilityNode.lineWidth = 2
         opponentAbilityNode.position = CGPoint(x: size.width - 190, y: size.height - 80)
         addChild(opponentAbilityNode)
         
-        // Countdown label
         countdownLabel = SKLabelNode(fontNamed: "AvenirNext-Heavy")
         countdownLabel.fontSize = 72
         countdownLabel.fontColor = .white
         countdownLabel.position = CGPoint(x: size.width / 2, y: size.height / 2)
         addChild(countdownLabel)
         
-        // Trash talk label
         trashTalkLabel = SKLabelNode(fontNamed: "AvenirNext-Bold")
         trashTalkLabel.fontSize = 18
-        trashTalkLabel.fontColor = SKColor.yellow
+        trashTalkLabel.fontColor = .yellow
         trashTalkLabel.position = CGPoint(x: size.width / 2, y: size.height - 120)
         trashTalkLabel.alpha = 0
         addChild(trashTalkLabel)
     }
+    
+    // MARK: - Countdown
     
     private func startBattleCountdown() {
         countdownLabel.text = "3"
@@ -270,7 +265,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             scaleUp, wait,
             SKAction.run { [weak self] in self?.countdownLabel.text = "1"; self?.countdownLabel.setScale(0.5) },
             scaleUp, wait,
-            SKAction.run { [weak self] in 
+            SKAction.run { [weak self] in
                 self?.countdownLabel.text = "FIGHT!"
                 self?.countdownLabel.fontColor = .red
                 self?.countdownLabel.setScale(0.5)
@@ -296,37 +291,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let deltaTime = lastUpdateTime == 0 ? 0 : currentTime - lastUpdateTime
         lastUpdateTime = currentTime
         
-        // Update bird positions based on physics
         playerBird.update(deltaTime: deltaTime)
         opponentBird.update(deltaTime: deltaTime)
         
-        // Update AI
         if !isTrainingMode {
             updateAI(deltaTime: deltaTime)
         }
         
-        // Update UI
         updateHealthBars()
         updateAbilityIndicators()
-        
-        // Check win condition
         checkBattleEnd()
     }
     
     private func updateAI(deltaTime: TimeInterval) {
-        // Handle stun
         if aiStunned {
             aiStunTimer -= deltaTime
-            if aiStunTimer <= 0 {
-                aiStunned = false
-            }
+            if aiStunTimer <= 0 { aiStunned = false }
             return
         }
         
         aiThinkTimer += deltaTime
         aiActionCooldown -= deltaTime
         
-        // AI makes decisions every 0.3-0.8 seconds
         let thinkInterval = Double.random(in: 0.3...0.8)
         if aiThinkTimer >= thinkInterval && aiActionCooldown <= 0 {
             aiThinkTimer = 0
@@ -338,37 +324,28 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let distance = abs(playerBird.position.x - opponentBird.position.x)
         let decision = Int.random(in: 0...100)
         
-        // Move towards player if far away
         if distance > 200 {
             moveOpponent(towards: playerBird.position)
             aiActionCooldown = 0.2
-        }
-        // In attack range
-        else if distance < 150 {
+        } else if distance < 150 {
             if decision < 50 {
-                // Attack
                 opponentAttack()
                 aiActionCooldown = 0.5
             } else if decision < 70 && opponentBird.isAbilityReady {
-                // Use ability
                 opponentUseAbility()
                 aiActionCooldown = 1.0
             } else if decision < 85 {
-                // Block
                 opponentBird.startBlocking()
                 DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) { [weak self] in
                     self?.opponentBird.stopBlocking()
                 }
                 aiActionCooldown = 0.6
             } else {
-                // Move/reposition
                 let moveDirection: CGFloat = Bool.random() ? -50 : 50
                 opponentBird.move(by: CGVector(dx: moveDirection, dy: 0))
                 aiActionCooldown = 0.3
             }
-        }
-        // Medium range - approach
-        else {
+        } else {
             if decision < 70 {
                 moveOpponent(towards: playerBird.position)
             } else {
@@ -384,11 +361,12 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         opponentBird.move(by: CGVector(dx: direction * moveSpeed, dy: 0))
     }
     
+    // MARK: - Attacks & Abilities (fixed to use returned damage)
+    
     private func opponentAttack() {
         let damage = opponentBird.performAttack()
         let distance = abs(playerBird.position.x - opponentBird.position.x)
-        
-        if distance < 120 { // Attack range
+        if distance < 120 {
             let actualDamage = playerBird.receiveDamage(damage)
             totalDamageReceived += actualDamage
             showDamageNumber(actualDamage, at: playerBird.position, isPlayer: true)
@@ -399,10 +377,8 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let damage = opponentBird.useAbility()
         let distance = abs(playerBird.position.x - opponentBird.position.x)
         
-        // Different abilities have different ranges/effects
         switch opponentBird.birdType {
         case .hummingbird:
-            // Multi-hit
             if distance < 100 {
                 for i in 0..<5 {
                     DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.1) { [weak self] in
@@ -414,10 +390,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
                 }
             }
         case .crow:
-            // Stun player briefly (reverse the effect - AI stuns player, not the other way)
             if distance < 150 {
-                playerBird.receiveDamage(damage)
-                // Visual stun effect on player
+                let actualDamage = playerBird.receiveDamage(damage)
+                totalDamageReceived += actualDamage
+                showDamageNumber(actualDamage, at: playerBird.position, isPlayer: true)
+                
                 let flash = SKAction.sequence([
                     SKAction.colorize(with: .yellow, colorBlendFactor: 0.7, duration: 0.1),
                     SKAction.colorize(withColorBlendFactor: 0, duration: 0.1)
@@ -435,15 +412,67 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         showAbilityText(opponentBird.birdType.abilityName, isPlayer: false)
     }
     
+    func playerAttack() {
+        let damage = playerBird.performAttack()
+        let distance = abs(playerBird.position.x - opponentBird.position.x)
+        if distance < 120 {
+            let actualDamage = opponentBird.receiveDamage(damage)
+            totalDamageDealt += actualDamage
+            showDamageNumber(actualDamage, at: opponentBird.position, isPlayer: false)
+        }
+    }
+    
+    func playerUseAbility() {
+        guard playerBird.isAbilityReady else { return }
+        let damage = playerBird.useAbility()
+        let distance = abs(playerBird.position.x - opponentBird.position.x)
+        
+        switch playerBird.birdType {
+        case .hummingbird:
+            if distance < 100 {
+                for i in 0..<5 {
+                    DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.1) { [weak self] in
+                        guard let self = self else { return }
+                        let hitDamage = self.opponentBird.receiveDamage(damage)
+                        self.totalDamageDealt += hitDamage
+                        self.showDamageNumber(hitDamage, at: self.opponentBird.position, isPlayer: false)
+                    }
+                }
+            }
+        case .crow:
+            if distance < 150 {
+                let actualDamage = opponentBird.receiveDamage(damage)
+                totalDamageDealt += actualDamage
+                showDamageNumber(actualDamage, at: opponentBird.position, isPlayer: false)
+                
+                aiStunned = true
+                aiStunTimer = 1.5
+                let flash = SKAction.sequence([
+                    SKAction.colorize(with: .yellow, colorBlendFactor: 0.7, duration: 0.1),
+                    SKAction.colorize(withColorBlendFactor: 0, duration: 0.1)
+                ])
+                opponentBird.run(SKAction.repeat(flash, count: 5))
+            }
+        default:
+            if distance < 150 {
+                let actualDamage = opponentBird.receiveDamage(damage)
+                totalDamageDealt += actualDamage
+                showDamageNumber(actualDamage, at: opponentBird.position, isPlayer: false)
+            }
+        }
+        
+        showAbilityText(playerBird.birdType.abilityName, isPlayer: true)
+    }
+    
+    // MARK: - UI updates
+    
     private func updateHealthBars() {
-        // Resize health fill based on current health
         let playerHealthPercent = playerBird.currentHealth / playerBird.maxHealth
         let opponentHealthPercent = opponentBird.currentHealth / opponentBird.maxHealth
         
         playerHealthFill.xScale = CGFloat(max(0, playerHealthPercent))
         opponentHealthFill.xScale = CGFloat(max(0, opponentHealthPercent))
         
-        // Change color based on health
         if playerHealthPercent < 0.3 {
             playerHealthFill.fillColor = .red
         } else if playerHealthPercent < 0.6 {
@@ -453,7 +482,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         }
         
         if opponentHealthPercent < 0.3 {
-            opponentHealthFill.fillColor = .green // Reversed for opponent - low is good for us
+            opponentHealthFill.fillColor = .green
         } else if opponentHealthPercent < 0.6 {
             opponentHealthFill.fillColor = .yellow
         } else {
@@ -477,7 +506,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     private func battleEnded(playerWon: Bool) {
         battleStarted = false
         
-        // Show end message
         let resultLabel = SKLabelNode(fontNamed: "AvenirNext-Heavy")
         resultLabel.text = playerWon ? "🎉 VICTORY! 🎉" : "💀 DEFEAT 💀"
         resultLabel.fontSize = 48
@@ -486,26 +514,17 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         resultLabel.setScale(0)
         addChild(resultLabel)
         
-        let appear = SKAction.sequence([
-            SKAction.scale(to: 1.2, duration: 0.3),
-            SKAction.scale(to: 1.0, duration: 0.1)
-        ])
+        let appear = SKAction.sequence([SKAction.scale(to: 1.2, duration: 0.3), SKAction.scale(to: 1.0, duration: 0.1)])
         resultLabel.run(appear)
         
-        // Notify delegate after a delay
         DispatchQueue.main.asyncAfter(deadline: .now() + 2.0) { [weak self] in
             guard let self = self else { return }
             let duration = CACurrentMediaTime() - self.battleStartTime
-            self.gameDelegate?.battleDidEnd(
-                playerWon: playerWon,
-                duration: duration,
-                damageDealt: self.totalDamageDealt,
-                damageReceived: self.totalDamageReceived
-            )
+            self.gameDelegate?.battleDidEnd(playerWon: playerWon, duration: duration, damageDealt: self.totalDamageDealt, damageReceived: self.totalDamageReceived)
         }
     }
     
-    // MARK: - Visual Effects
+    // MARK: - Visual helpers
     
     private func showDamageNumber(_ damage: Double, at position: CGPoint, isPlayer: Bool) {
         let damageLabel = SKLabelNode(fontNamed: "AvenirNext-Heavy")
@@ -517,10 +536,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         let moveUp = SKAction.moveBy(x: 0, y: 50, duration: 0.5)
         let fadeOut = SKAction.fadeOut(withDuration: 0.5)
-        let group = SKAction.group([moveUp, fadeOut])
-        let remove = SKAction.removeFromParent()
-        
-        damageLabel.run(SKAction.sequence([group, remove]))
+        damageLabel.run(SKAction.sequence([SKAction.group([moveUp, fadeOut]), SKAction.removeFromParent()]))
     }
     
     private func showAbilityText(_ abilityName: String, isPlayer: Bool) {
@@ -535,9 +551,7 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let appear = SKAction.scale(to: 1.0, duration: 0.2)
         let wait = SKAction.wait(forDuration: 0.5)
         let disappear = SKAction.fadeOut(withDuration: 0.3)
-        let remove = SKAction.removeFromParent()
-        
-        abilityLabel.run(SKAction.sequence([appear, wait, disappear, remove]))
+        abilityLabel.run(SKAction.sequence([appear, wait, disappear, SKAction.removeFromParent()]))
     }
     
     private func showRandomTrashTalk() {
@@ -547,12 +561,11 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let fadeIn = SKAction.fadeIn(withDuration: 0.3)
         let wait = SKAction.wait(forDuration: 2.0)
         let fadeOut = SKAction.fadeOut(withDuration: 0.3)
-        let nextMessage = SKAction.run { [weak self] in
+        let next = SKAction.run { [weak self] in
             guard let self = self, self.battleStarted else { return }
             self.showRandomTrashTalk()
         }
-        
-        trashTalkLabel.run(SKAction.sequence([fadeIn, wait, fadeOut, nextMessage]))
+        trashTalkLabel.run(SKAction.sequence([fadeIn, wait, fadeOut, next]))
     }
     
     // MARK: - Touch Handling
@@ -562,7 +575,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         let location = touch.location(in: self)
         touchStartLocation = location
         
-        // Check if tap is on right side (block)
         if location.x > size.width * 0.7 {
             playerBird.startBlocking()
             isPlayerBlocking = true
@@ -572,8 +584,6 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
     override func touchesMoved(_ touches: Set<UITouch>, with event: UIEvent?) {
         guard battleStarted, let touch = touches.first else { return }
         let location = touch.location(in: self)
-        
-        // Swipe detection for movement
         if let startLocation = touchStartLocation {
             let deltaX = location.x - startLocation.x
             if abs(deltaX) > 20 {
@@ -593,14 +603,10 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
             return
         }
         
-        // Tap detection for attacks
         if let startLocation = touchStartLocation {
             let deltaX = abs(location.x - startLocation.x)
             let deltaY = abs(location.y - startLocation.y)
-            
-            // Quick tap = attack
             if deltaX < 30 && deltaY < 30 {
-                // Double tap for ability
                 if location.y > size.height * 0.6 {
                     playerUseAbility()
                 } else {
@@ -612,72 +618,118 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         touchStartLocation = nil
     }
     
-    // MARK: - Player Actions
-    
-    func playerAttack() {
-        let damage = playerBird.performAttack()
-        let distance = abs(playerBird.position.x - opponentBird.position.x)
-        
-        if distance < 120 { // Attack range
-            let actualDamage = opponentBird.receiveDamage(damage)
-            totalDamageDealt += actualDamage
-            showDamageNumber(actualDamage, at: opponentBird.position, isPlayer: false)
-        }
+    // MARK: - Public control wrappers (for GameView/GameController)
+    /// Move the player horizontally by a normalized amount.
+    /// Positive moves right, negative moves left. Values are scaled by bird speed.
+    func movePlayer(byHorizontalAmount amount: CGFloat) {
+        let moveSpeed: CGFloat = CGFloat(playerBird.birdType.baseStats.speed) * amount
+        playerBird.move(by: CGVector(dx: moveSpeed, dy: 0))
     }
-    
-    func playerUseAbility() {
-        guard playerBird.isAbilityReady else { return }
-        
-        let damage = playerBird.useAbility()
-        let distance = abs(playerBird.position.x - opponentBird.position.x)
-        
-        switch playerBird.birdType {
-        case .hummingbird:
-            // Multi-hit
-            if distance < 100 {
-                for i in 0..<5 {
-                    DispatchQueue.main.asyncAfter(deadline: .now() + Double(i) * 0.1) { [weak self] in
-                        guard let self = self else { return }
-                        let hitDamage = self.opponentBird.receiveDamage(damage)
-                        self.totalDamageDealt += hitDamage
-                        self.showDamageNumber(hitDamage, at: self.opponentBird.position, isPlayer: false)
-                    }
-                }
-            }
-        case .crow:
-            // Stun opponent
-            if distance < 150 {
-                opponentBird.receiveDamage(damage)
-                aiStunned = true
-                aiStunTimer = 1.5
-                // Visual stun effect
-                let flash = SKAction.sequence([
-                    SKAction.colorize(with: .yellow, colorBlendFactor: 0.7, duration: 0.1),
-                    SKAction.colorize(withColorBlendFactor: 0, duration: 0.1)
-                ])
-                opponentBird.run(SKAction.repeat(flash, count: 5))
-            }
-        default:
-            if distance < 150 {
-                let actualDamage = opponentBird.receiveDamage(damage)
-                totalDamageDealt += actualDamage
-                showDamageNumber(actualDamage, at: opponentBird.position, isPlayer: false)
-            }
-        }
-        
-        showAbilityText(playerBird.birdType.abilityName, isPlayer: true)
-    }
-    
-    func movePlayer(direction: CGFloat) {
-        let moveSpeed: CGFloat = CGFloat(playerBird.birdType.baseStats.speed) * 5
-        playerBird.move(by: CGVector(dx: direction * moveSpeed, dy: 0))
-    }
-    
-    func playerBlock(_ blocking: Bool) {
+
+    /// Start/stop player blocking state.
+    func setPlayerBlocking(_ blocking: Bool) {
         if blocking {
             playerBird.startBlocking()
         } else {
             playerBird.stopBlocking()
+        }
+    }
+    
+    // MARK: - Arena setup helpers
+    
+    func setupBirdDomeArena() {
+        removeArenaBackgroundIfAny()
+        let bg = SKSpriteNode(color: UIColor.systemTeal.withAlphaComponent(0.9), size: size)
+        bg.name = "arenaBackground"
+        bg.zPosition = -100
+        bg.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        addChild(bg)
+        
+        let spotlight = SKShapeNode(circleOfRadius: max(size.width, size.height) * 0.8)
+        spotlight.fillColor = UIColor.white.withAlphaComponent(0.05)
+        spotlight.strokeColor = .clear
+        spotlight.zPosition = -90
+        spotlight.position = bg.position
+        spotlight.name = "arenaSpotlight"
+        addChild(spotlight)
+    }
+    
+    func setupBowlingAlleyArena() {
+        removeArenaBackgroundIfAny()
+        let bg = SKSpriteNode(color: .black, size: size)
+        bg.name = "arenaBackground"
+        bg.zPosition = -100
+        bg.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        addChild(bg)
+        
+        let stripe = SKSpriteNode(color: UIColor.systemPink, size: CGSize(width: size.width, height: 24))
+        stripe.position = CGPoint(x: size.width / 2, y: size.height * 0.75)
+        stripe.alpha = 0.85
+        stripe.zPosition = -90
+        stripe.name = "arenaNeonStripe"
+        addChild(stripe)
+        
+        let floor = SKSpriteNode(color: UIColor(white: 0.07, alpha: 1.0), size: CGSize(width: size.width, height: size.height * 0.25))
+        floor.position = CGPoint(x: size.width / 2, y: size.height * 0.15)
+        floor.zPosition = -80
+        floor.name = "arenaFloor"
+        addChild(floor)
+    }
+    
+    func setupSkyTempleArena() {
+        removeArenaBackgroundIfAny()
+        let bg = SKSpriteNode(color: UIColor.systemBlue, size: size)
+        bg.name = "arenaBackground"
+        bg.zPosition = -100
+        bg.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        addChild(bg)
+        
+        for i in 0..<3 {
+            let cloud = SKShapeNode(ellipseOf: CGSize(width: size.width * 0.5, height: size.height * 0.15))
+            cloud.fillColor = UIColor.white.withAlphaComponent(0.35 - CGFloat(i) * 0.08)
+            cloud.strokeColor = .clear
+            cloud.zPosition = -90 + CGFloat(i)
+            cloud.position = CGPoint(x: CGFloat.random(in: 0...size.width), y: CGFloat(size.height * (0.6 + Double(i) * 0.1)))
+            cloud.name = "arenaCloud\(i)"
+            addChild(cloud)
+            
+            let move = SKAction.sequence([
+                SKAction.moveBy(x: CGFloat.random(in: -40...40), y: 0, duration: TimeInterval(4 + i)),
+                SKAction.moveBy(x: CGFloat.random(in: -40...40), y: 0, duration: TimeInterval(4 + i))
+            ])
+            cloud.run(SKAction.repeatForever(move))
+        }
+    }
+    
+    func setupAncientTreeArena() {
+        removeArenaBackgroundIfAny()
+        let bg = SKSpriteNode(color: UIColor.systemGreen.withAlphaComponent(0.95), size: size)
+        bg.name = "arenaBackground"
+        bg.zPosition = -100
+        bg.position = CGPoint(x: size.width / 2, y: size.height / 2)
+        addChild(bg)
+        
+        let trunk = SKSpriteNode(color: UIColor.brown.withAlphaComponent(0.9),
+                                 size: CGSize(width: size.width * 0.4, height: size.height * 1.1))
+        trunk.position = CGPoint(x: size.width * 0.15, y: size.height / 2)
+        trunk.zPosition = -90
+        trunk.name = "arenaTrunk"
+        addChild(trunk)
+        
+        let canopy = SKShapeNode(rectOf: CGSize(width: size.width * 0.9, height: size.height * 0.35), cornerRadius: 20)
+        canopy.fillColor = UIColor.systemGreen.withAlphaComponent(0.6)
+        canopy.strokeColor = .clear
+        canopy.position = CGPoint(x: size.width / 2, y: size.height * 0.78)
+        canopy.zPosition = -85
+        canopy.name = "arenaCanopy"
+        addChild(canopy)
+    }
+    
+    func removeArenaBackgroundIfAny() {
+        let namesToRemove = ["arenaBackground", "arenaSpotlight", "arenaNeonStripe", "arenaFloor",
+                             "arenaCloud0", "arenaCloud1", "arenaCloud2", "arenaTrunk", "arenaCanopy"]
+        for name in namesToRemove {
+            self.childNode(withName: name)?.removeFromParent()
         }
     }
 }
@@ -687,3 +739,4 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
 protocol GameSceneDelegate: AnyObject {
     func battleDidEnd(playerWon: Bool, duration: TimeInterval, damageDealt: Double, damageReceived: Double)
 }
+

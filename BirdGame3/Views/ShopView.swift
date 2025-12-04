@@ -269,16 +269,33 @@ struct BirdTypeTab: View {
     }
 }
 
-// MARK: - Skin Card
+// --- Replace the SkinCard struct in ShopView.swift with this implementation ---
 
 struct SkinCard: View {
     let skin: BirdSkin
     let isOwned: Bool
     let isEquipped: Bool
     let onTap: () -> Void
-    
+
     var body: some View {
-        Button(action: onTap) {
+        // Break complex expressions into local values to help the type checker
+        let primaryColor: Color = {
+            if let c = Color(hex: skin.colorScheme.primary) { return c }
+            return Color.gray
+        }()
+
+        let secondaryColor: Color = {
+            if let c = Color(hex: skin.colorScheme.secondary) { return c }
+            return Color(UIColor.darkGray)
+        }()
+
+        let bgGradient = LinearGradient(
+            colors: [primaryColor, secondaryColor],
+            startPoint: .topLeading,
+            endPoint: .bottomTrailing
+        )
+
+        return Button(action: onTap) {
             VStack(spacing: 8) {
                 // Skin preview
                 ZStack {
@@ -286,147 +303,50 @@ struct SkinCard: View {
                     RoundedRectangle(cornerRadius: 16)
                         .fill(skin.rarity.glowColor)
                         .blur(radius: 10)
-                    
+
                     RoundedRectangle(cornerRadius: 16)
-                        .fill(
-                            LinearGradient(
-                                colors: [
-                                    Color(hex: skin.colorScheme.primary) ?? .gray,
-                                    Color(hex: skin.colorScheme.secondary) ?? .darkGray
-                                ],
-                                startPoint: .topLeading,
-                                endPoint: .bottomTrailing
-                            )
-                        )
-                    
-                    // Bird emoji
-                    if let birdType = BirdType(rawValue: skin.birdType) {
-                        Text(birdType.emoji)
-                            .font(.system(size: 50))
-                    }
-                    
-                    // Effect indicator
-                    if let effect = skin.colorScheme.effect {
-                        effectOverlay(effect)
-                    }
-                    
-                    // Equipped badge
-                    if isEquipped {
-                        VStack {
-                            HStack {
-                                Spacer()
-                                Image(systemName: "checkmark.circle.fill")
-                                    .foregroundColor(.green)
-                                    .background(Circle().fill(.white).padding(2))
-                            }
-                            Spacer()
-                        }
-                        .padding(8)
-                    }
-                    
-                    // Lock overlay if not owned
-                    if !isOwned {
-                        Color.black.opacity(0.5)
-                        Image(systemName: "lock.fill")
-                            .font(.title)
-                            .foregroundColor(.white)
-                    }
+                        .fill(bgGradient)
+                        .frame(height: 120)
+
+                    // Optionally an image/emoji placeholder
+                    Text(BirdType(rawValue: skin.birdType)?.emoji ?? "🐦")
+                        .font(.system(size: 48))
                 }
                 .frame(height: 120)
-                .clipShape(RoundedRectangle(cornerRadius: 16))
+                .cornerRadius(16)
                 
-                // Skin info
-                VStack(spacing: 4) {
+                // Name and status
+                VStack(alignment: .leading, spacing: 4) {
                     Text(skin.name)
-                        .font(.subheadline)
-                        .fontWeight(.bold)
+                        .font(.headline)
                         .foregroundColor(.white)
-                        .lineLimit(1)
-                    
-                    // Rarity
-                    Text(skin.rarity.displayName)
-                        .font(.caption2)
-                        .fontWeight(.medium)
-                        .foregroundColor(skin.rarity.color)
-                    
-                    // Price or status
-                    if isOwned {
-                        Text(isEquipped ? "EQUIPPED" : "OWNED")
-                            .font(.caption2)
-                            .fontWeight(.bold)
-                            .foregroundColor(isEquipped ? .green : .gray)
-                    } else if let requirement = skin.unlockRequirement {
-                        Text("🔒 \(requirement.description)")
-                            .font(.caption2)
-                            .foregroundColor(.orange)
-                            .lineLimit(1)
-                    } else {
-                        priceLabel
+                    HStack(spacing: 8) {
+                        if isOwned {
+                            Text("Owned")
+                                .font(.caption2)
+                                .foregroundColor(.green)
+                                .padding(4)
+                                .background(Color.black.opacity(0.4))
+                                .cornerRadius(6)
+                        }
+                        if isEquipped {
+                            Text("Equipped")
+                                .font(.caption2)
+                                .foregroundColor(.yellow)
+                                .padding(4)
+                                .background(Color.black.opacity(0.4))
+                                .cornerRadius(6)
+                        }
                     }
                 }
+                .frame(maxWidth: .infinity, alignment: .leading)
             }
-            .padding(8)
-            .background(
-                RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.gray.opacity(0.15))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 20)
-                            .stroke(skin.rarity.color.opacity(0.3), lineWidth: 1)
-                    )
-            )
+            .padding()
+            .background(RoundedRectangle(cornerRadius: 16).fill(Color.black.opacity(0.25)))
         }
         .buttonStyle(PlainButtonStyle())
     }
-    
-    @ViewBuilder
-    private var priceLabel: some View {
-        HStack(spacing: 4) {
-            if skin.price.coins > 0 {
-                Text("🪙\(skin.price.coins)")
-                    .font(.caption)
-                    .foregroundColor(.yellow)
-            }
-            if skin.price.feathers > 0 {
-                Text("🪶\(skin.price.feathers)")
-                    .font(.caption)
-                    .foregroundColor(.cyan)
-            }
-        }
-    }
-    
-    @ViewBuilder
-    private func effectOverlay(_ effect: SkinColorScheme.SkinEffect) -> some View {
-        switch effect {
-        case .sparkle:
-            Image(systemName: "sparkles")
-                .foregroundColor(.yellow.opacity(0.5))
-                .font(.title)
-        case .fire:
-            Image(systemName: "flame.fill")
-                .foregroundColor(.orange.opacity(0.5))
-                .font(.title)
-        case .ice:
-            Image(systemName: "snowflake")
-                .foregroundColor(.cyan.opacity(0.5))
-                .font(.title)
-        case .electric:
-            Image(systemName: "bolt.fill")
-                .foregroundColor(.yellow.opacity(0.5))
-                .font(.title)
-        case .shadow:
-            Image(systemName: "moon.fill")
-                .foregroundColor(.purple.opacity(0.5))
-                .font(.title)
-        case .glow:
-            EmptyView()
-        case .rainbow:
-            Image(systemName: "rainbow")
-                .foregroundColor(.white.opacity(0.5))
-                .font(.title)
-        }
-    }
 }
-
 // MARK: - Color Extension
 
 extension Color {

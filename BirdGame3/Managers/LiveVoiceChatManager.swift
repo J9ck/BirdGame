@@ -8,6 +8,7 @@
 import Foundation
 import AVFoundation
 import SwiftUI
+import UIKit
 
 // MARK: - Voice Chat Participant
 
@@ -140,7 +141,7 @@ class LiveVoiceChatManager: NSObject, ObservableObject {
     private func setupAudioSession() {
         do {
             let session = AVAudioSession.sharedInstance()
-            try session.setCategory(.playAndRecord, mode: .voiceChat, options: [.defaultToSpeaker, .allowBluetooth])
+            try session.setCategory(.playAndRecord, mode: .voiceChat, options: [.defaultToSpeaker, .allowBluetoothHFP])
             try session.setActive(true)
         } catch {
             print("Failed to setup audio session: \(error)")
@@ -148,7 +149,7 @@ class LiveVoiceChatManager: NSObject, ObservableObject {
     }
     
     private func requestMicrophonePermission() {
-        AVAudioSession.sharedInstance().requestRecordPermission { [weak self] granted in
+        AVAudioSession.sharedInstance().requestRecordPermission { granted in
             DispatchQueue.main.async {
                 if !granted {
                     print("Microphone permission denied")
@@ -620,3 +621,4 @@ struct VoiceChatControlsView: View {
         }
     }
 }
+

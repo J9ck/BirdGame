@@ -27,7 +27,7 @@ class BirdCharacter: SKNode {
     var maxHealth: Double
     var attack: Double
     var defense: Double
-    var speed: Double
+    var movementSpeed: Double
     var isAbilityReady: Bool = true
     var abilityCooldown: Double
     var abilityDamage: Double
@@ -47,7 +47,7 @@ class BirdCharacter: SKNode {
         self.currentHealth = stats.maxHealth
         self.attack = stats.attack
         self.defense = stats.defense
-        self.speed = stats.speed
+        self.movementSpeed = stats.speed
         self.abilityCooldown = stats.abilityCooldown
         self.abilityDamage = stats.abilityDamage
         

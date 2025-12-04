@@ -609,7 +609,7 @@ class AccountManager: ObservableObject {
     // MARK: - Cloud Sync
     
     func saveToCloud(completion: ((Bool) -> Void)? = nil) {
-        guard let account = currentAccount else {
+        guard currentAccount != nil else {
             completion?(false)
             return
         }
@@ -617,7 +617,7 @@ class AccountManager: ObservableObject {
         isSyncing = true
         
         // Gather all game data
-        let saveData = CloudSaveData(
+        _ = CloudSaveData(
             playerStats: GameState().playerStats, // Would need proper access
             currencyCoins: CurrencyManager.shared.coins,
             currencyFeathers: CurrencyManager.shared.feathers,

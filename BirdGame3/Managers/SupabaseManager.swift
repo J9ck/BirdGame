@@ -353,6 +353,7 @@ struct ChatMessage: Codable, Identifiable {
 
 // MARK: - Supabase Manager
 
+@MainActor
 class SupabaseManager: ObservableObject {
     static let shared = SupabaseManager()
     
@@ -668,6 +669,16 @@ class SupabaseManager: ObservableObject {
     }
     
     // MARK: - Progression
+    
+    /// XP required for a given level using a simple exponential curve.
+    /// Base XP is 1000 for level 1 and increases by 10% per level.
+    private func calculateXPRequired(for level: Int) -> Int {
+        guard level > 1 else { return 1000 }
+        let base: Double = 1000
+        let multiplier: Double = 1.1
+        let required = base * pow(multiplier, Double(level - 1))
+        return Int(required.rounded())
+    }
     
     func addXP(_ amount: Int) async throws {
         guard let profile = currentProfile else { throw SupabaseError.unauthorized }
@@ -1191,3 +1202,4 @@ class SupabaseManager: ObservableObject {
  CREATE INDEX idx_chat_messages_created ON chat_messages(created_at DESC);
 
  */
+

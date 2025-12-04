@@ -4,6 +4,12 @@
 //
 //  Choose your feathered warrior wisely
 //
+//
+//  CharacterSelectView.swift
+//  BirdGame3
+//
+//  Choose your feathered warrior wisely
+//
 
 import SwiftUI
 
@@ -39,21 +45,44 @@ struct CharacterSelectView: View {
                 .padding(.top, 20)
                 
                 // Character carousel
-                TabView(selection: $selectedIndex) {
-                    ForEach(Array(BirdType.allCases.enumerated()), id: \.element.id) { index, bird in
-                        CharacterCard(bird: bird, isSelected: gameState.selectedBird == bird)
-                            .tag(index)
-                            .onTapGesture {
-                                withAnimation {
-                                    gameState.selectedBird = bird
+                if #available(iOS 17.0, *) {
+                    TabView(selection: $selectedIndex) {
+                        ForEach(Array(BirdType.allCases.enumerated()), id: \.element.id) { index, bird in
+                            CharacterCard(bird: bird, isSelected: gameState.selectedBird == bird)
+                                .tag(index)
+                                .onTapGesture {
+                                    withAnimation {
+                                        gameState.selectedBird = bird
+                                    }
                                 }
-                            }
+                        }
                     }
-                }
-                .tabViewStyle(.page(indexDisplayMode: .always))
-                .frame(height: 400)
-                .onChange(of: selectedIndex) { _, newValue in
-                    gameState.selectedBird = BirdType.allCases[newValue]
+                    .tabViewStyle(.page(indexDisplayMode: .always))
+                    .frame(height: 400)
+                    .onChange(of: selectedIndex) { _, newValue in
+                        gameState.selectedBird = BirdType.allCases[newValue]
+                    }
+                } else {
+                    // Fallback on earlier versions
+                };if #available(iOS 17.0, *) {
+                    TabView(selection: $selectedIndex) {
+                        ForEach(Array(BirdType.allCases.enumerated()), id: \.element.id) { index, bird in
+                            CharacterCard(bird: bird, isSelected: gameState.selectedBird == bird)
+                                .tag(index)
+                                .onTapGesture {
+                                    withAnimation {
+                                        gameState.selectedBird = bird
+                                    }
+                                }
+                        }
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .always))
+                    .frame(height: 400)
+                    .onChange(of: selectedIndex) { _, newValue in
+                        gameState.selectedBird = BirdType.allCases[newValue]
+                    }
+                } else {
+                    // Fallback on earlier versions
                 }
                 
                 // Opponent preview (if not training)
@@ -134,6 +163,18 @@ struct CharacterSelectView: View {
             return "Arcade Mode - Level \(gameState.arcadeLevel)"
         case .training:
             return "Training Mode - Practice Makes Perfect"
+        case .squadBattle:
+            // If the GameState provides a teammate count or squad name, replace the text below
+            return "Squad Battle - Team up with friends"
+        case .openWorld:
+            // Friendly short description for open world mode
+            return "Open World - Explore, gather, and build your nest"
+        case .nestWars:
+            // Quick descriptive subtitle for nest vs nest battles
+            return "Nest Wars - Defend your home from raiders"
+        case .battleRoyale:
+            // Battle Royale subtitle; if GameState has playerCount, you can interpolate it here
+            return "Battle Royale - Last bird standing"
         }
     }
 }

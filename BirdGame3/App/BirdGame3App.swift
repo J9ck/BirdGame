@@ -28,7 +28,7 @@ struct ContentView: View {
     
     var body: some View {
         ZStack {
-            NavigationStack {
+            NavigationCompat {
                 switch gameState.currentScreen {
                 case .mainMenu:
                     MainMenuView()
@@ -366,6 +366,20 @@ struct BuildOptionCard: View {
             .padding()
             .background(Color.white.opacity(0.1))
             .cornerRadius(12)
+        }
+    }
+}
+
+// MARK: - Navigation Compatibility Wrapper
+
+/// A wrapper that uses NavigationStack on iOS 16+ and falls back to NavigationView on earlier versions.
+struct NavigationCompat<Content: View>: View {
+    @ViewBuilder var content: () -> Content
+    var body: some View {
+        if #available(iOS 16.0, *) {
+            NavigationStack { content() }
+        } else {
+            NavigationView { content() }
         }
     }
 }

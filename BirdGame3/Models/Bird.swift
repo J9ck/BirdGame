@@ -52,8 +52,9 @@ class Bird: ObservableObject, Identifiable {
         self.description = type.flavorText
         self.abilityName = type.abilityName
         self.abilityDescription = type.abilityDescription
-        self.stats = type.baseStats
-        self.currentHealth = stats.maxHealth
+        let baseStats = type.baseStats
+        self.stats = baseStats
+        self.currentHealth = baseStats.maxHealth
     }
     
     func takeDamage(_ amount: Double) {

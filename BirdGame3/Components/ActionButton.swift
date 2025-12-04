@@ -198,7 +198,7 @@ struct ActionButtonStyle: ButtonStyle {
         configuration.label
             .scaleEffect(configuration.isPressed && !isDisabled ? 0.85 : 1.0)
             .animation(.easeInOut(duration: 0.08), value: configuration.isPressed)
-            .onChange(of: configuration.isPressed) { _, newValue in
+            .onChange(of: configuration.isPressed) { newValue in
                 isPressed = newValue
             }
     }
