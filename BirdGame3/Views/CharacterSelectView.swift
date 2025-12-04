@@ -229,7 +229,8 @@ struct CharacterCard: View {
         )
         .padding(.horizontal, 20)
         .accessibilityElement(children: .combine)
-        .accessibilityLabel("\(bird.displayName), \(bird.flavorText). Health \(Int(bird.baseStats.maxHealth)), Attack \(Int(bird.baseStats.attack)), Defense \(Int(bird.baseStats.defense)), Speed \(Int(bird.baseStats.speed)). Special ability: \(bird.abilityName)")
+        .accessibilityLabel("\(bird.displayName). Special ability: \(bird.abilityName)")
+        .accessibilityValue("Health \(Int(bird.baseStats.maxHealth)), Attack \(Int(bird.baseStats.attack)), Speed \(Int(bird.baseStats.speed))")
         .accessibilityAddTraits(isSelected ? [.isSelected, .isButton] : .isButton)
     }
 }

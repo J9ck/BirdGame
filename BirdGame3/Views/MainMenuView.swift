@@ -339,9 +339,9 @@ struct MenuButton: View {
     }
     
     private var accessibleTitle: String {
-        // Remove emojis from title for accessibility using scalar properties
+        // Remove emojis from title for accessibility
         let filtered = title.unicodeScalars.filter { scalar in
-            !scalar.properties.isEmoji || scalar.properties.isEmojiPresentation == false
+            !scalar.properties.isEmoji
         }
         return String(String.UnicodeScalarView(filtered))
             .trimmingCharacters(in: .whitespaces)
