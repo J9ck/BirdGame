@@ -14,6 +14,7 @@ class SoundManager: ObservableObject {
     static let shared = SoundManager()
     
     private var audioPlayers: [String: AVAudioPlayer] = [:]
+    private var activePlayers: [AVAudioPlayer] = []
     
     // Published properties for settings
     @Published var musicVolume: Float = 0.7 {
@@ -90,6 +91,11 @@ class SoundManager: ObservableObject {
         case emoteLaugh = "emote_laugh"
         case emoteDance = "emote_dance"
         
+        /// The audio file name for this sound effect (without extension)
+        var audioFileName: String {
+            return rawValue
+        }
+        
         // Description for debugging
         var description: String {
             switch self {
@@ -151,13 +157,13 @@ class SoundManager: ObservableObject {
         }
     }
     
-    // Bird-specific sounds
+    // Bird-specific sounds with file mappings
     enum BirdSound: String {
-        case pigeonCoo = "coo"
-        case hummingbirdBuzz = "buzz"
-        case eagleScreech = "screech"
-        case crowCaw = "caw"
-        case pelicanGulp = "gulp"
+        case pigeonCoo = "pigeon_coo"
+        case hummingbirdBuzz = "hummingbird_buzz"
+        case eagleScreech = "eagle_screech"
+        case crowCaw = "crow_caw"
+        case pelicanGulp = "pelican_gulp"
         
         var description: String {
             switch self {
@@ -168,11 +174,17 @@ class SoundManager: ObservableObject {
             case .pelicanGulp: return "*menacing gulp* 🦆"
             }
         }
+        
+        /// The audio file name for this bird sound (without extension)
+        var audioFileName: String {
+            return rawValue
+        }
     }
     
     private init() {
         loadSettings()
         setupAudioSession()
+        preloadSounds()
     }
     
     private func setupAudioSession() {
@@ -181,6 +193,47 @@ class SoundManager: ObservableObject {
             try AVAudioSession.sharedInstance().setActive(true)
         } catch {
             print("Failed to setup audio session: \(error)")
+        }
+    }
+    
+    /// Preload commonly used sounds for better performance
+    private func preloadSounds() {
+        // Preload bird sounds
+        for sound in [BirdSound.pigeonCoo, .hummingbirdBuzz, .eagleScreech, .crowCaw, .pelicanGulp] {
+            _ = loadAudioPlayer(for: sound.audioFileName)
+        }
+        
+        // Preload common sound effects
+        for sound in [SoundEffect.peck, .hit, .block, .ability, .menuSelect, .countdown] {
+            _ = loadAudioPlayer(for: sound.audioFileName)
+        }
+    }
+    
+    /// Load an audio player for a given sound file name
+    private func loadAudioPlayer(for fileName: String) -> AVAudioPlayer? {
+        // Check cache first
+        if let cachedPlayer = audioPlayers[fileName] {
+            return cachedPlayer
+        }
+        
+        // Try to load from bundle
+        guard let url = Bundle.main.url(forResource: fileName, withExtension: "wav") else {
+            #if DEBUG
+            print("⚠️ Sound file not found: \(fileName).wav")
+            #endif
+            return nil
+        }
+        
+        do {
+            let player = try AVAudioPlayer(contentsOf: url)
+            player.prepareToPlay()
+            audioPlayers[fileName] = player
+            return player
+        } catch {
+            #if DEBUG
+            print("❌ Failed to load sound \(fileName): \(error)")
+            #endif
+            return nil
         }
     }
     
@@ -205,12 +258,14 @@ class SoundManager: ObservableObject {
     func playSound(_ sound: SoundEffect) {
         guard !isMuted else { return }
         
-        // In a real implementation, this would play actual sound files
+        // Play audio file
+        playAudioFile(sound.audioFileName)
+        
         #if DEBUG
         print("🔊 Playing sound: \(sound.description)")
         #endif
         
-        // Haptic feedback as audio substitute
+        // Haptic feedback
         if hapticsEnabled {
             provideFeedback(for: sound)
         }
@@ -218,6 +273,9 @@ class SoundManager: ObservableObject {
     
     func playBirdSound(_ sound: BirdSound) {
         guard !isMuted else { return }
+        
+        // Play audio file
+        playAudioFile(sound.audioFileName)
         
         #if DEBUG
         print("🐦 Playing bird sound: \(sound.description)")
@@ -227,6 +285,43 @@ class SoundManager: ObservableObject {
         if hapticsEnabled {
             let generator = UIImpactFeedbackGenerator(style: .light)
             generator.impactOccurred()
+        }
+    }
+    
+    /// Play an audio file by name
+    private func playAudioFile(_ fileName: String) {
+        // First try to reuse cached player if not currently playing
+        if let cachedPlayer = audioPlayers[fileName], !cachedPlayer.isPlaying {
+            cachedPlayer.volume = sfxVolume
+            cachedPlayer.currentTime = 0
+            cachedPlayer.play()
+            return
+        }
+        
+        // Load a new player for concurrent playback
+        guard let url = Bundle.main.url(forResource: fileName, withExtension: "wav") else {
+            #if DEBUG
+            print("⚠️ Sound file not found: \(fileName).wav")
+            #endif
+            return
+        }
+        
+        do {
+            let newPlayer = try AVAudioPlayer(contentsOf: url)
+            newPlayer.volume = sfxVolume
+            newPlayer.play()
+            
+            // Store reference to prevent deallocation
+            activePlayers.append(newPlayer)
+            
+            // Periodic cleanup: only clean when array gets large
+            if activePlayers.count > 10 {
+                activePlayers.removeAll { !$0.isPlaying }
+            }
+        } catch {
+            #if DEBUG
+            print("❌ Failed to play sound \(fileName): \(error)")
+            #endif
         }
     }
     
@@ -283,14 +378,29 @@ class SoundManager: ObservableObject {
     // MARK: - SpriteKit Integration
     
     func getSKAction(for sound: SoundEffect) -> SKAction {
-        // Returns a placeholder action since we don't have actual sound files
-        // In production, this would return SKAction.playSoundFileNamed
+        // Try to use native SpriteKit sound playback for better performance
+        if Bundle.main.url(forResource: sound.audioFileName, withExtension: "wav") != nil {
+            return SKAction.group([
+                SKAction.playSoundFileNamed("\(sound.audioFileName).wav", waitForCompletion: false),
+                SKAction.run { [weak self] in
+                    self?.provideFeedback(for: sound)
+                }
+            ])
+        }
+        
+        // Fallback to manual playback
         return SKAction.run { [weak self] in
             self?.playSound(sound)
         }
     }
     
     func getSKAction(for birdSound: BirdSound) -> SKAction {
+        // Try to use native SpriteKit sound playback
+        if Bundle.main.url(forResource: birdSound.audioFileName, withExtension: "wav") != nil {
+            return SKAction.playSoundFileNamed("\(birdSound.audioFileName).wav", waitForCompletion: false)
+        }
+        
+        // Fallback to manual playback
         return SKAction.run { [weak self] in
             self?.playBirdSound(birdSound)
         }

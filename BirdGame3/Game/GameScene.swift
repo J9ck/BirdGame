@@ -70,6 +70,9 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         physicsWorld.contactDelegate = self
         physicsWorld.gravity = CGVector(dx: 0, dy: -5)
         
+        // Add background image
+        addBackgroundImage()
+        
         // Add ground
         let ground = SKSpriteNode(color: SKColor(red: 0.2, green: 0.3, blue: 0.2, alpha: 1.0), size: CGSize(width: size.width, height: 100))
         ground.position = CGPoint(x: size.width / 2, y: 50)
@@ -80,6 +83,18 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         
         // Add some background elements
         addBackgroundElements()
+    }
+    
+    private func addBackgroundImage() {
+        // Try to load background image from assets
+        let backgroundName = "arena_background"
+        if let _ = UIImage(named: backgroundName) {
+            let backgroundSprite = SKSpriteNode(imageNamed: backgroundName)
+            backgroundSprite.position = CGPoint(x: size.width / 2, y: size.height / 2)
+            backgroundSprite.size = size
+            backgroundSprite.zPosition = -10
+            addChild(backgroundSprite)
+        }
     }
     
     private func addBackgroundElements() {
