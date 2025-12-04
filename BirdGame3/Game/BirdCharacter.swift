@@ -15,9 +15,13 @@ class BirdCharacter: SKNode {
     let isPlayer: Bool
     
     private var bodyNode: SKShapeNode!
+    private var spriteNode: SKSpriteNode?
     private var eyeNode: SKShapeNode!
     private var beakNode: SKShapeNode!
     private var wingNode: SKShapeNode!
+    
+    /// Whether to use sprite images instead of procedural shapes
+    private var useSpriteImage: Bool = true
     
     var currentHealth: Double
     var maxHealth: Double
@@ -60,6 +64,43 @@ class BirdCharacter: SKNode {
     // MARK: - Setup
     
     private func setupVisuals() {
+        // Try to use sprite image first
+        if useSpriteImage, let _ = UIImage(named: birdType.rawValue) {
+            setupSpriteVisuals()
+        } else {
+            setupProceduralVisuals()
+        }
+        
+        // Add idle animation
+        startIdleAnimation()
+    }
+    
+    private func setupSpriteVisuals() {
+        let bodySize = sizeForType()
+        
+        // Create sprite from bird image asset
+        spriteNode = SKSpriteNode(imageNamed: birdType.rawValue)
+        spriteNode?.size = CGSize(width: bodySize.width * 2, height: bodySize.height * 2)
+        if let sprite = spriteNode {
+            addChild(sprite)
+        }
+        
+        // Create invisible body node for animations (used by animations)
+        bodyNode = SKShapeNode(ellipseOf: bodySize)
+        bodyNode.fillColor = .clear
+        bodyNode.strokeColor = .clear
+        bodyNode.alpha = 0
+        addChild(bodyNode)
+        
+        // Create placeholder nodes for wing animations
+        wingNode = SKShapeNode(ellipseOf: CGSize(width: bodySize.width * 0.5, height: bodySize.height * 0.3))
+        wingNode.fillColor = .clear
+        wingNode.strokeColor = .clear
+        wingNode.alpha = 0
+        addChild(wingNode)
+    }
+    
+    private func setupProceduralVisuals() {
         let bodySize = sizeForType()
         let color = colorForType()
         
@@ -106,9 +147,6 @@ class BirdCharacter: SKNode {
         wingNode.lineWidth = 1
         wingNode.position = CGPoint(x: -bodySize.width * 0.1, y: 0)
         addChild(wingNode)
-        
-        // Add idle animation
-        startIdleAnimation()
         
         // Add type-specific details
         addTypeSpecificDetails()
