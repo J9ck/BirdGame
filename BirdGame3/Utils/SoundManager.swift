@@ -105,6 +105,11 @@ class SoundManager: ObservableObject {
         case emoteLaugh = "emote_laugh"
         case emoteDance = "emote_dance"
         
+        /// The audio file name for this sound effect (without extension)
+        var audioFileName: String {
+            return rawValue
+        }
+        
         // Description for debugging
         var description: String {
             switch self {
@@ -171,13 +176,13 @@ class SoundManager: ObservableObject {
         }
     }
     
-    // Bird-specific sounds
+    // Bird-specific sounds with file mappings
     enum BirdSound: String {
-        case pigeonCoo = "coo"
-        case hummingbirdBuzz = "buzz"
-        case eagleScreech = "screech"
-        case crowCaw = "caw"
-        case pelicanGulp = "gulp"
+        case pigeonCoo = "pigeon_coo"
+        case hummingbirdBuzz = "hummingbird_buzz"
+        case eagleScreech = "eagle_screech"
+        case crowCaw = "crow_caw"
+        case pelicanGulp = "pelican_gulp"
         
         var description: String {
             switch self {
@@ -399,14 +404,29 @@ class SoundManager: ObservableObject {
     // MARK: - SpriteKit Integration
     
     func getSKAction(for sound: SoundEffect) -> SKAction {
-        // Returns a placeholder action since we don't have actual sound files
-        // In production, this would return SKAction.playSoundFileNamed
+        // Try to use native SpriteKit sound playback for better performance
+        if Bundle.main.url(forResource: sound.audioFileName, withExtension: "wav") != nil {
+            return SKAction.group([
+                SKAction.playSoundFileNamed("\(sound.audioFileName).wav", waitForCompletion: false),
+                SKAction.run { [weak self] in
+                    self?.provideFeedback(for: sound)
+                }
+            ])
+        }
+        
+        // Fallback to manual playback
         return SKAction.run { [weak self] in
             self?.playSound(sound)
         }
     }
     
     func getSKAction(for birdSound: BirdSound) -> SKAction {
+        // Try to use native SpriteKit sound playback
+        if Bundle.main.url(forResource: birdSound.audioFileName, withExtension: "wav") != nil {
+            return SKAction.playSoundFileNamed("\(birdSound.audioFileName).wav", waitForCompletion: false)
+        }
+        
+        // Fallback to manual playback
         return SKAction.run { [weak self] in
             self?.playBirdSound(birdSound)
         }

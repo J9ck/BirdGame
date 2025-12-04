@@ -1,5 +1,5 @@
 {
-  "images" : [
+  "images": [
     {
       "filename" : "AppIcon.png",
       "idiom" : "universal",
@@ -57,8 +57,8 @@
       "size" : "512x512"
     }
   ],
-  "info" : {
-    "author" : "xcode",
-    "version" : 1
+  "info": {
+    "author": "xcode",
+    "version": 1
   }
 }

@@ -119,87 +119,15 @@ class GameScene: SKScene, SKPhysicsContactDelegate {
         addBackgroundElements()
     }
     
-    private func setupBirdDomeArena() {
-        backgroundColor = SKColor(red: 0.1, green: 0.1, blue: 0.15, alpha: 1.0)
-    }
-    
-    private func setupBowlingAlleyArena() {
-        // Neon arcade vibes
-        backgroundColor = SKColor(red: 0.18, green: 0.11, blue: 0.31, alpha: 1.0)
-        
-        // Add neon glow effects
-        let neonPink = SKColor(red: 1.0, green: 0.08, blue: 0.58, alpha: 0.3)
-        let neonBlue = SKColor(red: 0.0, green: 0.75, blue: 1.0, alpha: 0.3)
-        
-        let leftGlow = SKShapeNode(rectOf: CGSize(width: size.width / 3, height: size.height))
-        leftGlow.fillColor = neonPink
-        leftGlow.strokeColor = .clear
-        leftGlow.position = CGPoint(x: size.width / 6, y: size.height / 2)
-        leftGlow.zPosition = -20
-        addChild(leftGlow)
-        
-        let rightGlow = SKShapeNode(rectOf: CGSize(width: size.width / 3, height: size.height))
-        rightGlow.fillColor = neonBlue
-        rightGlow.strokeColor = .clear
-        rightGlow.position = CGPoint(x: size.width * 5/6, y: size.height / 2)
-        rightGlow.zPosition = -20
-        addChild(rightGlow)
-        
-        // Add bowling pins in background
-        addBowlingPinsBackground()
-        
-        // Play bowling alley music (deferred to ensure MusicManager is ready)
-        DispatchQueue.main.async {
-            MusicManager.shared.playMusic(.bowlingAlley)
-        }
-    }
-    
-    private func setupSkyTempleArena() {
-        // Ethereal sky colors
-        backgroundColor = SKColor(red: 0.4, green: 0.6, blue: 0.9, alpha: 1.0)
-        
-        // Add floating clouds
-        for _ in 0..<8 {
-            let cloud = SKShapeNode(ellipseOf: CGSize(width: CGFloat.random(in: 100...200), height: CGFloat.random(in: 40...80)))
-            cloud.fillColor = .white
-            cloud.strokeColor = .clear
-            cloud.alpha = 0.7
-            cloud.position = CGPoint(x: CGFloat.random(in: -100...size.width + 100), y: CGFloat.random(in: 0...size.height))
-            cloud.zPosition = -15
-            addChild(cloud)
-        }
-    }
-    
-    private func setupAncientTreeArena() {
-        // Forest green tones
-        backgroundColor = SKColor(red: 0.15, green: 0.25, blue: 0.15, alpha: 1.0)
-        
-        // Add tree trunk in center background
-        let trunk = SKShapeNode(rectOf: CGSize(width: 80, height: size.height))
-        trunk.fillColor = SKColor(red: 0.4, green: 0.25, blue: 0.15, alpha: 0.5)
-        trunk.strokeColor = .clear
-        trunk.position = CGPoint(x: size.width / 2, y: size.height / 2)
-        trunk.zPosition = -15
-        addChild(trunk)
-    }
-    
-    private func addBowlingPinsBackground() {
-        // Decorative bowling pins
-        let pinPositions: [CGPoint] = [
-            CGPoint(x: size.width * 0.15, y: size.height * 0.7),
-            CGPoint(x: size.width * 0.85, y: size.height * 0.7),
-            CGPoint(x: size.width * 0.1, y: size.height * 0.5),
-            CGPoint(x: size.width * 0.9, y: size.height * 0.5)
-        ]
-        
-        for pos in pinPositions {
-            let pin = SKShapeNode(ellipseOf: CGSize(width: 15, height: 30))
-            pin.fillColor = .white
-            pin.strokeColor = .lightGray
-            pin.position = pos
-            pin.zPosition = -10
-            pin.alpha = 0.4
-            addChild(pin)
+    private func addBackgroundImage() {
+        // Try to load background image from assets
+        let backgroundName = "arena_background"
+        if let _ = UIImage(named: backgroundName) {
+            let backgroundSprite = SKSpriteNode(imageNamed: backgroundName)
+            backgroundSprite.position = CGPoint(x: size.width / 2, y: size.height / 2)
+            backgroundSprite.size = size
+            backgroundSprite.zPosition = -10
+            addChild(backgroundSprite)
         }
     }
     
