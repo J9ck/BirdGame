@@ -64,8 +64,11 @@ class BirdCharacter: SKNode {
     // MARK: - Setup
     
     private func setupVisuals() {
-        // Try to use sprite image first
-        if useSpriteImage, let _ = UIImage(named: birdType.rawValue) {
+        // Try to use sprite image first - check for file existence without loading image
+        let imageExists = Bundle.main.path(forResource: birdType.rawValue, ofType: "png") != nil ||
+                          Bundle.main.path(forResource: "\(birdType.rawValue)@2x", ofType: "png") != nil
+        
+        if useSpriteImage && imageExists {
             setupSpriteVisuals()
         } else {
             setupProceduralVisuals()

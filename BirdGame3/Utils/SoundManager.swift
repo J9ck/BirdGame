@@ -290,25 +290,38 @@ class SoundManager: ObservableObject {
     
     /// Play an audio file by name
     private func playAudioFile(_ fileName: String) {
-        // Try to get cached player or load new one
-        if let player = loadAudioPlayer(for: fileName) {
-            // Create a copy for concurrent playback
-            if let url = Bundle.main.url(forResource: fileName, withExtension: "wav"),
-               let newPlayer = try? AVAudioPlayer(contentsOf: url) {
-                newPlayer.volume = sfxVolume
-                newPlayer.play()
-                
-                // Store reference to prevent deallocation
-                activePlayers.append(newPlayer)
-                
-                // Clean up finished players
+        // First try to reuse cached player if not currently playing
+        if let cachedPlayer = audioPlayers[fileName], !cachedPlayer.isPlaying {
+            cachedPlayer.volume = sfxVolume
+            cachedPlayer.currentTime = 0
+            cachedPlayer.play()
+            return
+        }
+        
+        // Load a new player for concurrent playback
+        guard let url = Bundle.main.url(forResource: fileName, withExtension: "wav") else {
+            #if DEBUG
+            print("⚠️ Sound file not found: \(fileName).wav")
+            #endif
+            return
+        }
+        
+        do {
+            let newPlayer = try AVAudioPlayer(contentsOf: url)
+            newPlayer.volume = sfxVolume
+            newPlayer.play()
+            
+            // Store reference to prevent deallocation
+            activePlayers.append(newPlayer)
+            
+            // Periodic cleanup: only clean when array gets large
+            if activePlayers.count > 10 {
                 activePlayers.removeAll { !$0.isPlaying }
-            } else {
-                // Fallback to cached player
-                player.volume = sfxVolume
-                player.currentTime = 0
-                player.play()
             }
+        } catch {
+            #if DEBUG
+            print("❌ Failed to play sound \(fileName): \(error)")
+            #endif
         }
     }
     
