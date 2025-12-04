@@ -1,0 +1,19 @@
+{
+  "": {
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/master.swiftdeps"
+  },
+  "/home/runner/work/BirdGame/BirdGame/BirdGame3/Tests/ControlManagerTests.swift": {
+    "dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ControlManagerTests.d",
+    "object": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ControlManagerTests.swift.o",
+    "swiftmodule": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ControlManagerTests~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ControlManagerTests.swiftdeps",
+    "diagnostics": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ControlManagerTests.dia"
+  },
+  "/home/runner/work/BirdGame/BirdGame/BirdGame3/Tests/ModelTests.swift": {
+    "dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ModelTests.d",
+    "object": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ModelTests.swift.o",
+    "swiftmodule": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ModelTests~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ModelTests.swiftdeps",
+    "diagnostics": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ModelTests.dia"
+  }
+}

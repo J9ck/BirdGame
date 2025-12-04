@@ -1,0 +1,75 @@
+{
+  "": {
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/master.swiftdeps"
+  },
+  "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Managers/ControlManager.swift": {
+    "dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlManager.d",
+    "object": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlManager.swift.o",
+    "swiftmodule": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlManager~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlManager.swiftdeps",
+    "diagnostics": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlManager.dia"
+  },
+  "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/Bird.swift": {
+    "dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/Bird.d",
+    "object": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/Bird.swift.o",
+    "swiftmodule": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/Bird~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/Bird.swiftdeps",
+    "diagnostics": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/Bird.dia"
+  },
+  "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/BirdSkill.swift": {
+    "dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/BirdSkill.d",
+    "object": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/BirdSkill.swift.o",
+    "swiftmodule": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/BirdSkill~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/BirdSkill.swiftdeps",
+    "diagnostics": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/BirdSkill.dia"
+  },
+  "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/ControlInput.swift": {
+    "dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlInput.d",
+    "object": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlInput.swift.o",
+    "swiftmodule": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlInput~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlInput.swiftdeps",
+    "diagnostics": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlInput.dia"
+  },
+  "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/ContentView.swift": {
+    "dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ContentView.d",
+    "object": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ContentView.swift.o",
+    "swiftmodule": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ContentView~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ContentView.swiftdeps",
+    "diagnostics": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ContentView.dia"
+  },
+  "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/ActionButton.swift": {
+    "dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ActionButton.d",
+    "object": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ActionButton.swift.o",
+    "swiftmodule": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ActionButton~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ActionButton.swiftdeps",
+    "diagnostics": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ActionButton.dia"
+  },
+  "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/HealthBar.swift": {
+    "dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/HealthBar.d",
+    "object": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/HealthBar.swift.o",
+    "swiftmodule": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/HealthBar~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/HealthBar.swiftdeps",
+    "diagnostics": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/HealthBar.dia"
+  },
+  "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/SkillButton.swift": {
+    "dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/SkillButton.d",
+    "object": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/SkillButton.swift.o",
+    "swiftmodule": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/SkillButton~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/SkillButton.swiftdeps",
+    "diagnostics": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/SkillButton.dia"
+  },
+  "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/VirtualJoystick.swift": {
+    "dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/VirtualJoystick.d",
+    "object": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/VirtualJoystick.swift.o",
+    "swiftmodule": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/VirtualJoystick~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/VirtualJoystick.swiftdeps",
+    "diagnostics": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/VirtualJoystick.dia"
+  },
+  "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/GameControlsView.swift": {
+    "dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/GameControlsView.d",
+    "object": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/GameControlsView.swift.o",
+    "swiftmodule": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/GameControlsView~partial.swiftmodule",
+    "swift-dependencies": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/GameControlsView.swiftdeps",
+    "diagnostics": "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/GameControlsView.dia"
+  }
+}

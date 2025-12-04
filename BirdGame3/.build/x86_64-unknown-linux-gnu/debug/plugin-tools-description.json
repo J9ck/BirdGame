@@ -1,0 +1,913 @@
+{
+  "builtTestProducts" : [
+    {
+      "binaryPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.xctest",
+      "packagePath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3",
+      "productName" : "BirdGame3PackageTests"
+    }
+  ],
+  "copyCommands" : {
+
+  },
+  "explicitTargetDependencyImportCheckingMode" : {
+    "none" : {
+
+    }
+  },
+  "generatedSourceTargetSet" : [
+    "BirdGame3PackageDiscoveredTests"
+  ],
+  "pluginDescriptions" : [
+
+  ],
+  "swiftCommands" : {
+    "C.BirdGame3-x86_64-unknown-linux-gnu-debug.module" : {
+      "executable" : "/usr/share/swift/usr/bin/swiftc",
+      "fileList" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/sources",
+      "importPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Managers/ControlManager.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/Bird.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/BirdSkill.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/ControlInput.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/ActionButton.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/HealthBar.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/SkillButton.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/VirtualJoystick.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/GameControlsView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/swift-version--1BFCD5C06E9F820A.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "BirdGame3",
+      "moduleOutputPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3.swiftmodule",
+      "objects" : [
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlManager.swift.o",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/Bird.swift.o",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/BirdSkill.swift.o",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlInput.swift.o",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ContentView.swift.o",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ActionButton.swift.o",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/HealthBar.swift.o",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/SkillButton.swift.o",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/VirtualJoystick.swift.o",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/GameControlsView.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-j4",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/include/BirdGame3-Swift.h",
+        "-color-diagnostics",
+        "-swift-version",
+        "5",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "birdgame3",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ],
+      "outputFileMapPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlManager.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/Bird.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/BirdSkill.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlInput.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ActionButton.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/HealthBar.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/SkillButton.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/VirtualJoystick.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/GameControlsView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Managers/ControlManager.swift",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/Bird.swift",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/BirdSkill.swift",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/ControlInput.swift",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/ContentView.swift",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/ActionButton.swift",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/HealthBar.swift",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/SkillButton.swift",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/VirtualJoystick.swift",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/GameControlsView.swift"
+      ],
+      "tempsPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.BirdGame3PackageDiscoveredTests-x86_64-unknown-linux-gnu-debug.module" : {
+      "executable" : "/usr/share/swift/usr/bin/swiftc",
+      "fileList" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/sources",
+      "importPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.derived/BirdGame3Tests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.derived/all-discovered-tests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/swift-version--1BFCD5C06E9F820A.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3Tests.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "BirdGame3PackageDiscoveredTests",
+      "moduleOutputPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3PackageDiscoveredTests.swiftmodule",
+      "objects" : [
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/BirdGame3Tests.swift.o",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/all-discovered-tests.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-j4",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/include/BirdGame3PackageDiscoveredTests-Swift.h",
+        "-color-diagnostics",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "birdgame3",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ],
+      "outputFileMapPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/BirdGame3Tests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/all-discovered-tests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3PackageDiscoveredTests.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.derived/BirdGame3Tests.swift",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.derived/all-discovered-tests.swift"
+      ],
+      "tempsPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.BirdGame3PackageTests-x86_64-unknown-linux-gnu-debug.module" : {
+      "executable" : "/usr/share/swift/usr/bin/swiftc",
+      "fileList" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.build/sources",
+      "importPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.derived/runner.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/swift-version--1BFCD5C06E9F820A.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3Tests.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3PackageDiscoveredTests.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "BirdGame3PackageTests",
+      "moduleOutputPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3PackageTests.swiftmodule",
+      "objects" : [
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.build/runner.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-j4",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-emit-objc-header",
+        "-emit-objc-header-path",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.build/include/BirdGame3PackageTests-Swift.h",
+        "-color-diagnostics",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "birdgame3",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ],
+      "outputFileMapPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.build/runner.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3PackageTests.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.derived/runner.swift"
+      ],
+      "tempsPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.build",
+      "wholeModuleOptimization" : false
+    },
+    "C.BirdGame3Tests-x86_64-unknown-linux-gnu-debug.module" : {
+      "executable" : "/usr/share/swift/usr/bin/swiftc",
+      "fileList" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/sources",
+      "importPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules",
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Tests/ControlManagerTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Tests/ModelTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/swift-version--1BFCD5C06E9F820A.txt"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3.swiftmodule"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/sources"
+        }
+      ],
+      "isLibrary" : true,
+      "moduleName" : "BirdGame3Tests",
+      "moduleOutputPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3Tests.swiftmodule",
+      "objects" : [
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ControlManagerTests.swift.o",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ModelTests.swift.o"
+      ],
+      "otherArguments" : [
+        "-target",
+        "x86_64-unknown-linux-gnu",
+        "-incremental",
+        "-enable-batch-mode",
+        "-serialize-diagnostics",
+        "-index-store-path",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/index/store",
+        "-Onone",
+        "-enable-testing",
+        "-Xfrontend",
+        "-enable-cross-import-overlays",
+        "-j4",
+        "-DSWIFT_PACKAGE",
+        "-DDEBUG",
+        "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+        "-module-cache-path",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/ModuleCache",
+        "-parseable-output",
+        "-parse-as-library",
+        "-color-diagnostics",
+        "-swift-version",
+        "5",
+        "-g",
+        "-Xcc",
+        "-fPIC",
+        "-Xcc",
+        "-g",
+        "-package-name",
+        "birdgame3",
+        "-Xcc",
+        "-fno-omit-frame-pointer"
+      ],
+      "outputFileMapPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/output-file-map.json",
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ControlManagerTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ModelTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3Tests.swiftmodule"
+        }
+      ],
+      "prepareForIndexing" : false,
+      "sources" : [
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/Tests/ControlManagerTests.swift",
+        "/home/runner/work/BirdGame/BirdGame/BirdGame3/Tests/ModelTests.swift"
+      ],
+      "tempsPath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build",
+      "wholeModuleOptimization" : false
+    }
+  },
+  "swiftFrontendCommands" : {
+
+  },
+  "swiftTargetScanArgs" : {
+    "BirdGame3" : [
+      "/usr/share/swift/usr/bin/swiftc",
+      "-module-name",
+      "BirdGame3",
+      "-package-name",
+      "birdgame3",
+      "-c",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Managers/ControlManager.swift",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/Bird.swift",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/BirdSkill.swift",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/ControlInput.swift",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/ContentView.swift",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/ActionButton.swift",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/HealthBar.swift",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/SkillButton.swift",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/VirtualJoystick.swift",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/GameControlsView.swift",
+      "-I",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules",
+      "-target",
+      "x86_64-unknown-linux-gnu",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-j4",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/include/BirdGame3-Swift.h",
+      "-color-diagnostics",
+      "-swift-version",
+      "5",
+      "-g",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "birdgame3",
+      "-Xcc",
+      "-fno-omit-frame-pointer",
+      "-driver-use-frontend-path",
+      "/usr/share/swift/usr/bin/swiftc"
+    ],
+    "BirdGame3PackageDiscoveredTests" : [
+      "/usr/share/swift/usr/bin/swiftc",
+      "-module-name",
+      "BirdGame3PackageDiscoveredTests",
+      "-package-name",
+      "birdgame3",
+      "-c",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.derived/BirdGame3Tests.swift",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.derived/all-discovered-tests.swift",
+      "-I",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules",
+      "-target",
+      "x86_64-unknown-linux-gnu",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-j4",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/include/BirdGame3PackageDiscoveredTests-Swift.h",
+      "-color-diagnostics",
+      "-g",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "birdgame3",
+      "-Xcc",
+      "-fno-omit-frame-pointer",
+      "-driver-use-frontend-path",
+      "/usr/share/swift/usr/bin/swiftc"
+    ],
+    "BirdGame3PackageTests" : [
+      "/usr/share/swift/usr/bin/swiftc",
+      "-module-name",
+      "BirdGame3PackageTests",
+      "-package-name",
+      "birdgame3",
+      "-c",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.derived/runner.swift",
+      "-I",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules",
+      "-target",
+      "x86_64-unknown-linux-gnu",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-j4",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-emit-objc-header",
+      "-emit-objc-header-path",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.build/include/BirdGame3PackageTests-Swift.h",
+      "-color-diagnostics",
+      "-g",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "birdgame3",
+      "-Xcc",
+      "-fno-omit-frame-pointer",
+      "-driver-use-frontend-path",
+      "/usr/share/swift/usr/bin/swiftc"
+    ],
+    "BirdGame3Tests" : [
+      "/usr/share/swift/usr/bin/swiftc",
+      "-module-name",
+      "BirdGame3Tests",
+      "-package-name",
+      "birdgame3",
+      "-c",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/Tests/ControlManagerTests.swift",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/Tests/ModelTests.swift",
+      "-I",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules",
+      "-target",
+      "x86_64-unknown-linux-gnu",
+      "-incremental",
+      "-enable-batch-mode",
+      "-serialize-diagnostics",
+      "-index-store-path",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/index/store",
+      "-Onone",
+      "-enable-testing",
+      "-Xfrontend",
+      "-enable-cross-import-overlays",
+      "-j4",
+      "-DSWIFT_PACKAGE",
+      "-DDEBUG",
+      "-DSWIFT_MODULE_RESOURCE_BUNDLE_UNAVAILABLE",
+      "-module-cache-path",
+      "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/ModuleCache",
+      "-parseable-output",
+      "-parse-as-library",
+      "-color-diagnostics",
+      "-swift-version",
+      "5",
+      "-g",
+      "-Xcc",
+      "-fPIC",
+      "-Xcc",
+      "-g",
+      "-package-name",
+      "birdgame3",
+      "-Xcc",
+      "-fno-omit-frame-pointer",
+      "-driver-use-frontend-path",
+      "/usr/share/swift/usr/bin/swiftc"
+    ]
+  },
+  "targetDependencyMap" : {
+    "BirdGame3" : [
+
+    ],
+    "BirdGame3PackageDiscoveredTests" : [
+      "BirdGame3Tests",
+      "BirdGame3"
+    ],
+    "BirdGame3PackageTests" : [
+      "BirdGame3PackageDiscoveredTests",
+      "BirdGame3Tests",
+      "BirdGame3"
+    ],
+    "BirdGame3Tests" : [
+      "BirdGame3"
+    ]
+  },
+  "testDiscoveryCommands" : {
+    "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.derived/all-discovered-tests.swift" : {
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ControlManagerTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ModelTests.swift.o"
+        }
+      ],
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.derived/BirdGame3Tests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.derived/all-discovered-tests.swift"
+        }
+      ]
+    }
+  },
+  "testEntryPointCommands" : {
+    "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.derived/runner.swift" : {
+      "inputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/Modules/BirdGame3PackageDiscoveredTests.swiftmodule"
+        }
+      ],
+      "outputs" : [
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.derived/runner.swift"
+        }
+      ]
+    }
+  },
+  "traitConfiguration" : {
+    "default" : {
+
+    }
+  },
+  "writeCommands" : {
+    "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Managers/ControlManager.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/Bird.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/BirdSkill.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Models/ControlInput.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/ContentView.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/ActionButton.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/HealthBar.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/SkillButton.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/Controls/VirtualJoystick.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Sources/Views/GameControlsView.swift"
+        }
+      ],
+      "outputFilePath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/sources"
+    },
+    "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.derived/BirdGame3Tests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.derived/all-discovered-tests.swift"
+        }
+      ],
+      "outputFilePath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/sources"
+    },
+    "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.derived/runner.swift"
+        }
+      ],
+      "outputFilePath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.build/sources"
+    },
+    "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.product/Objects.LinkFileList" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<link-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ActionButton.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/Bird.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/BirdGame3.swiftmodule.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/BirdSkill.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ContentView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlInput.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/ControlManager.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/GameControlsView.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/HealthBar.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/SkillButton.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3.build/VirtualJoystick.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/BirdGame3PackageDiscoveredTests.swiftmodule.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/BirdGame3Tests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageDiscoveredTests.build/all-discovered-tests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.build/BirdGame3PackageTests.swiftmodule.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.build/runner.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/BirdGame3Tests.swiftmodule.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ControlManagerTests.swift.o"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/ModelTests.swift.o"
+        }
+      ],
+      "outputFilePath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3PackageTests.product/Objects.LinkFileList"
+    },
+    "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/sources" : {
+      "alwaysOutOfDate" : false,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<sources-file-list>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Tests/ControlManagerTests.swift"
+        },
+        {
+          "kind" : "file",
+          "name" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/Tests/ModelTests.swift"
+        }
+      ],
+      "outputFilePath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/BirdGame3Tests.build/sources"
+    },
+    "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/swift-version--1BFCD5C06E9F820A.txt" : {
+      "alwaysOutOfDate" : true,
+      "inputs" : [
+        {
+          "kind" : "virtual",
+          "name" : "<swift-get-version>"
+        },
+        {
+          "kind" : "file",
+          "name" : "/usr/share/swift/usr/bin/swiftc"
+        }
+      ],
+      "outputFilePath" : "/home/runner/work/BirdGame/BirdGame/BirdGame3/.build/x86_64-unknown-linux-gnu/debug/swift-version--1BFCD5C06E9F820A.txt"
+    }
+  }
+}
