@@ -152,6 +152,9 @@ struct SettingsView: View {
                 }
                 
                 // Speed
+                // Speed slider with documented range
+                // AVSpeechUtterance rate ranges from 0 (slowest) to 1 (fastest)
+                // 0.4-0.65 provides natural speech without being too fast or robotic
                 VStack(alignment: .leading, spacing: 8) {
                     HStack {
                         Text("Voice Speed")
@@ -160,7 +163,7 @@ struct SettingsView: View {
                         Text(speedLabel)
                             .foregroundColor(.gray)
                     }
-                    Slider(value: $voiceChat.voiceSpeed, in: 0.4...0.65)
+                    Slider(value: $voiceChat.voiceSpeed, in: VoiceChatManager.minVoiceSpeed...VoiceChatManager.maxVoiceSpeed)
                         .tint(.cyan)
                 }
                 
@@ -274,7 +277,7 @@ struct SettingsView: View {
         CurrencyManager.shared.reset()
         SkinManager.shared.reset()
         PrestigeManager.shared.reset()
-        // Note: PlayerStats reset would need to be implemented
+        gameState.resetPlayerStats()
     }
 }
 

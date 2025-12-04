@@ -192,4 +192,11 @@ class GameState: ObservableObject {
             UserDefaults.standard.set(data, forKey: statsKey)
         }
     }
+    
+    /// Reset player stats to default values
+    func resetPlayerStats() {
+        playerStats = PlayerStats()
+        arcadeLevel = 1
+        saveStats()
+    }
 }

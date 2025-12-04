@@ -29,6 +29,17 @@ class VoiceChatManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate 
     @Published var currentlySpeaking: Bool = false
     @Published var lastMessage: String = ""
     
+    // MARK: - Constants
+    
+    /// Minimum voice speed (AVSpeechUtterance rate - slowest natural speech)
+    static let minVoiceSpeed: Float = 0.4
+    /// Maximum voice speed (AVSpeechUtterance rate - fastest comprehensible speech)
+    static let maxVoiceSpeed: Float = 0.65
+    /// Default British voice identifier (Daniel)
+    static let defaultVoiceIdentifier = "com.apple.ttsbundle.Daniel-compact"
+    /// Fallback US English voice identifier
+    static let fallbackVoiceIdentifier = "com.apple.ttsbundle.Samantha-compact"
+    
     // MARK: - Private Properties
     
     private let synthesizer = AVSpeechSynthesizer()
@@ -36,8 +47,9 @@ class VoiceChatManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate 
     private var isProcessingQueue = false
     private var battleCommentaryTimer: Timer?
     
-    // Voice options
-    private var selectedVoiceIdentifier: String = "com.apple.ttsbundle.Daniel-compact" // Default British voice
+    // Voice options - validated on first use
+    private var selectedVoiceIdentifier: String = VoiceChatManager.defaultVoiceIdentifier
+    private var validatedVoice: AVSpeechSynthesisVoice?
     
     // Persistence keys
     private let enabledKey = "birdgame3_voicechat_enabled"
@@ -51,6 +63,7 @@ class VoiceChatManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate 
         synthesizer.delegate = self
         loadSettings()
         setupAudioSession()
+        validateAndSetVoice()
     }
     
     private func setupAudioSession() {
@@ -60,6 +73,33 @@ class VoiceChatManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate 
         } catch {
             print("Failed to setup audio session: \(error)")
         }
+    }
+    
+    /// Validate the selected voice exists, falling back to alternatives if not
+    private func validateAndSetVoice() {
+        // Try the selected voice first
+        if let voice = AVSpeechSynthesisVoice(identifier: selectedVoiceIdentifier) {
+            validatedVoice = voice
+            return
+        }
+        
+        // Try the fallback voice
+        if let voice = AVSpeechSynthesisVoice(identifier: Self.fallbackVoiceIdentifier) {
+            validatedVoice = voice
+            selectedVoiceIdentifier = Self.fallbackVoiceIdentifier
+            return
+        }
+        
+        // Fall back to any available English voice
+        let englishVoices = AVSpeechSynthesisVoice.speechVoices().filter { $0.language.starts(with: "en") }
+        if let voice = englishVoices.first {
+            validatedVoice = voice
+            selectedVoiceIdentifier = voice.identifier
+            return
+        }
+        
+        // Last resort: system default
+        validatedVoice = AVSpeechSynthesisVoice(language: "en-US")
     }
     
     // MARK: - Public Methods
@@ -220,13 +260,8 @@ class VoiceChatManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate 
     private func speakMessage(_ message: VoiceMessage) {
         let utterance = AVSpeechUtterance(string: message.text)
         
-        // Configure voice
-        if let voice = AVSpeechSynthesisVoice(identifier: selectedVoiceIdentifier) {
-            utterance.voice = voice
-        } else {
-            // Fallback to any English voice
-            utterance.voice = AVSpeechSynthesisVoice(language: "en-US")
-        }
+        // Use pre-validated voice for better performance and reliability
+        utterance.voice = validatedVoice ?? AVSpeechSynthesisVoice(language: "en-US")
         
         utterance.rate = voiceSpeed
         utterance.volume = volume
@@ -272,6 +307,7 @@ class VoiceChatManager: NSObject, ObservableObject, AVSpeechSynthesizerDelegate 
     func setVoice(identifier: String) {
         selectedVoiceIdentifier = identifier
         UserDefaults.standard.set(identifier, forKey: "birdgame3_voicechat_voice")
+        validateAndSetVoice() // Revalidate with new voice
     }
     
     // MARK: - Persistence
