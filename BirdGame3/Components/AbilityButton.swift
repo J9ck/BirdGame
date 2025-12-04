@@ -60,6 +60,11 @@ struct AbilityButton: View {
         }
         .disabled(!isReady)
         .opacity(isReady ? 1.0 : 0.7)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("Special ability, \(abilityName)")
+        .accessibilityValue(isReady ? "Ready" : "On cooldown, \(String(format: "%.1f", cooldownRemaining)) seconds remaining")
+        .accessibilityHint(isReady ? "Double tap to use special ability" : "Wait for cooldown to finish")
+        .accessibilityAddTraits(.isButton)
     }
 }
 

@@ -58,6 +58,9 @@ struct HealthBar: View {
             .frame(height: 12)
         }
         .frame(width: 120)
+        .accessibilityElement(children: .ignore)
+        .accessibilityLabel("\(isPlayer ? "Your" : "Opponent's") health")
+        .accessibilityValue("\(Int(healthPercentage * 100)) percent, \(Int(currentHealth)) of \(Int(maxHealth))")
     }
 }
 

@@ -68,8 +68,8 @@ struct ResultsView: View {
                             .foregroundColor(gameState.playerWon ? .green : .red)
                         
                         Text(gameState.playerWon ?
-                             victoryMessages.randomElement()! :
-                             defeatMessages.randomElement()!)
+                             (victoryMessages.randomElement() ?? "You won!") :
+                             (defeatMessages.randomElement() ?? "Better luck next time!"))
                             .font(.headline)
                             .foregroundColor(.white)
                             .multilineTextAlignment(.center)

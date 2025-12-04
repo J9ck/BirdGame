@@ -726,9 +726,9 @@ class AccountManager: ObservableObject {
     // MARK: - Helpers
     
     private func generateFriendCode() -> String {
-        let chars = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789"
-        let part1 = String((0..<4).map { _ in chars.randomElement()! })
-        let part2 = String((0..<4).map { _ in chars.randomElement()! })
+        let chars = Array("ABCDEFGHJKLMNPQRSTUVWXYZ23456789")
+        let part1 = String((0..<4).compactMap { _ in chars.randomElement() })
+        let part2 = String((0..<4).compactMap { _ in chars.randomElement() })
         return "\(part1)-\(part2)"
     }
     

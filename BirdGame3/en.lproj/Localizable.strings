@@ -1,0 +1,167 @@
+/* 
+  Localizable.strings
+  BirdGame3
+
+  English localization strings for Bird Game 3.
+  This file provides the base strings for localization support.
+*/
+
+// MARK: - App Info
+"app_name" = "Bird Game 3";
+"app_subtitle" = "The Legendary Bird Combat Experience";
+"app_version" = "v3.47.2 (hummingbird nerf edition)";
+
+// MARK: - Main Menu
+"menu_play_online" = "PLAY ONLINE";
+"menu_play_online_subtitle" = "Squad up with friends";
+"menu_open_world" = "OPEN WORLD";
+"menu_open_world_subtitle" = "Explore, build nests, survive";
+"menu_quick_match" = "QUICK MATCH";
+"menu_quick_match_subtitle" = "Fight a random opponent";
+"menu_arcade" = "ARCADE MODE";
+"menu_arcade_subtitle" = "Climb the ranks!";
+"menu_training" = "TRAINING";
+"menu_training_subtitle" = "Git gud scrub";
+"menu_shop" = "SKIN SHOP";
+"menu_shop_subtitle" = "Drip or drown";
+"menu_settings" = "Settings";
+
+// MARK: - Status
+"players_online" = "%d players online";
+"your_rank" = "Your Rank: %@";
+"wins" = "Wins";
+"losses" = "Losses";
+"ping" = "Ping";
+
+// MARK: - Game
+"loading" = "LOADING...";
+"victory" = "VICTORY!";
+"defeat" = "DEFEAT!";
+"perfect" = "PERFECT!";
+"health" = "Health";
+"attack" = "Attack";
+"special" = "Special";
+"pause" = "Pause";
+"resume" = "Resume";
+"quit" = "Quit";
+
+// MARK: - Characters
+"bird_pigeon" = "Pigeon";
+"bird_pigeon_tagline" = "Coo coo mothercooo";
+"bird_hummingbird" = "Hummingbird";
+"bird_hummingbird_tagline" = "Has been nerfed 47 times. Still OP.";
+"bird_eagle" = "Eagle";
+"bird_eagle_tagline" = "FREEDOM INTENSIFIES";
+"bird_crow" = "Crow";
+"bird_crow_tagline" = "Will steal your lunch AND your win";
+"bird_pelican" = "Pelican";
+"bird_pelican_tagline" = "Thicc boy with a pocket dimension for a mouth";
+
+// MARK: - Results
+"play_again" = "Play Again";
+"return_to_menu" = "Main Menu";
+"match_stats" = "Match Stats";
+"damage_dealt" = "Damage Dealt";
+"damage_received" = "Damage Received";
+"match_duration" = "Duration";
+"rewards_earned" = "Rewards Earned";
+"xp_gained" = "XP Gained";
+
+// MARK: - Shop
+"shop_title" = "Skin Shop";
+"shop_buy" = "Buy";
+"shop_equip" = "Equip";
+"shop_equipped" = "Equipped";
+"shop_owned" = "Owned";
+"shop_locked" = "Locked";
+"not_enough_currency" = "Not enough coins!";
+
+// MARK: - Settings
+"settings_title" = "Settings";
+"settings_sound" = "Sound";
+"settings_music" = "Music";
+"settings_haptics" = "Haptic Feedback";
+"settings_notifications" = "Notifications";
+"settings_accessibility" = "Accessibility";
+"settings_privacy" = "Privacy Policy";
+"settings_terms" = "Terms of Service";
+"settings_credits" = "Credits";
+"settings_reset_progress" = "Reset Progress";
+"settings_reset_warning" = "This will delete all your progress. Are you sure?";
+"settings_cancel" = "Cancel";
+"settings_confirm" = "Confirm";
+
+// MARK: - Account
+"login" = "Login";
+"logout" = "Logout";
+"register" = "Register";
+"username" = "Username";
+"password" = "Password";
+"email" = "Email";
+"forgot_password" = "Forgot Password?";
+"guest_mode" = "Play as Guest";
+"account_required" = "Account Required";
+"login_required_message" = "Please log in to access this feature.";
+
+// MARK: - Multiplayer
+"finding_match" = "Finding Match...";
+"match_found" = "Match Found!";
+"connecting" = "Connecting...";
+"connection_failed" = "Connection Failed";
+"try_again" = "Try Again";
+"waiting_for_players" = "Waiting for Players";
+"ready" = "Ready";
+"not_ready" = "Not Ready";
+
+// MARK: - Open World
+"open_world_title" = "Open World";
+"inventory" = "Inventory";
+"nest" = "Nest";
+"map" = "Map";
+"scan" = "Scan";
+"hunger" = "Hunger";
+"energy" = "Energy";
+"players_nearby" = "%d players nearby";
+
+// MARK: - Accessibility
+"accessibility_menu_button" = "Menu button";
+"accessibility_play_button" = "Play game button";
+"accessibility_back_button" = "Go back";
+"accessibility_settings_button" = "Open settings";
+"accessibility_health_bar" = "Health bar at %d percent";
+"accessibility_attack_button" = "Attack button";
+"accessibility_special_button" = "Special ability button";
+"accessibility_joystick" = "Movement joystick";
+
+// MARK: - Errors
+"error_network" = "Network Error";
+"error_network_message" = "Please check your internet connection and try again.";
+"error_server" = "Server Error";
+"error_server_message" = "Something went wrong. Please try again later.";
+"error_unknown" = "Unknown Error";
+"error_unknown_message" = "An unexpected error occurred.";
+"ok" = "OK";
+
+// MARK: - Challenges
+"daily_challenges" = "Daily Challenges";
+"weekly_challenges" = "Weekly Challenges";
+"challenge_complete" = "Challenge Complete!";
+"time_remaining" = "Time Remaining: %@";
+
+// MARK: - Ranks
+"rank_egg" = "Egg";
+"rank_hatchling" = "Hatchling";
+"rank_fledgling" = "Fledgling";
+"rank_skyward_scrub" = "Skyward Scrub";
+"rank_wing_commander" = "Wing Commander";
+"rank_talon_terror" = "Talon Terror";
+"rank_legendary" = "LEGENDARY BIRD GOD";
+
+// MARK: - Loading Tips
+"tip_spam_pecks" = "Pro tip: Just spam pecks";
+"tip_hummingbird_nerf" = "Hummingbird has been nerfed 47 times and is still OP";
+"tip_blocking" = "Remember: Blocking is for cowards (but also smart)";
+"tip_pelican" = "Pelican mains are built different";
+"tip_lag" = "If you lose, it's definitely lag";
+"tip_eagle" = "Eagle mains are just pigeon mains in denial";
+"tip_crow" = "Crow players are legally required to be mysterious";

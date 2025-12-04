@@ -333,6 +333,19 @@ struct MenuButton: View {
         }
         .scaleEffect(isPressed ? 0.95 : 1.0)
         .animation(.spring(response: 0.3), value: isPressed)
+        .accessibilityElement(children: .combine)
+        .accessibilityLabel(accessibleTitle)
+        .accessibilityHint(subtitle)
+    }
+    
+    private var accessibleTitle: String {
+        // Remove emoji from title for accessibility
+        title.replacingOccurrences(of: "🎮 ", with: "")
+             .replacingOccurrences(of: "🌍 ", with: "")
+             .replacingOccurrences(of: "⚔️ ", with: "")
+             .replacingOccurrences(of: "🏆 ", with: "")
+             .replacingOccurrences(of: "🎯 ", with: "")
+             .replacingOccurrences(of: "🛒 ", with: "")
     }
     
     private var backgroundGradient: LinearGradient {
