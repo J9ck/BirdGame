@@ -43,6 +43,7 @@
 		A10000000000000000000035 /* LobbyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000035 /* LobbyView.swift */; };
 		A10000000000000000000036 /* ItemShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000036 /* ItemShopView.swift */; };
 		A10000000000000000000037 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000037 /* LoginView.swift */; };
+		A10000000000000000000038 /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000038 /* SupabaseManager.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -83,6 +84,7 @@
 		A20000000000000000000035 /* LobbyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LobbyView.swift; sourceTree = "<group>"; };
 		A20000000000000000000036 /* ItemShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemShopView.swift; sourceTree = "<group>"; };
 		A20000000000000000000037 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
+		A20000000000000000000038 /* SupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseManager.swift; sourceTree = "<group>"; };
 		A30000000000000000000001 /* BirdGame3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BirdGame3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -201,6 +203,7 @@
 				A20000000000000000000032 /* OpenWorldManager.swift */,
 				A20000000000000000000033 /* AccountManager.swift */,
 				A20000000000000000000034 /* LiveVoiceChatManager.swift */,
+				A20000000000000000000038 /* SupabaseManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -317,6 +320,7 @@
 				A10000000000000000000035 /* LobbyView.swift in Sources */,
 				A10000000000000000000036 /* ItemShopView.swift in Sources */,
 				A10000000000000000000037 /* LoginView.swift in Sources */,
+				A10000000000000000000038 /* SupabaseManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
