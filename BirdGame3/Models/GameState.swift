@@ -10,17 +10,25 @@ import SwiftUI
 
 enum GameScreen {
     case mainMenu
+    case login
+    case lobby
     case characterSelect
     case game
     case results
     case shop
     case settings
+    case openWorld
+    case nestBuilder
 }
 
 enum GameMode {
     case quickMatch
     case arcade
     case training
+    case squadBattle
+    case openWorld
+    case nestWars
+    case battleRoyale
 }
 
 class GameState: ObservableObject {
@@ -83,6 +91,23 @@ class GameState: ObservableObject {
     
     func openSettings() {
         navigateTo(.settings)
+    }
+    
+    func openLobby() {
+        // Check if logged in first
+        if AccountManager.shared.isLoggedIn {
+            navigateTo(.lobby)
+        } else {
+            navigateTo(.login)
+        }
+    }
+    
+    func openOpenWorld() {
+        if AccountManager.shared.isLoggedIn {
+            navigateTo(.openWorld)
+        } else {
+            navigateTo(.login)
+        }
     }
     
     func startBattle() {

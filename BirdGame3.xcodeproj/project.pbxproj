@@ -33,6 +33,16 @@
 		A10000000000000000000025 /* VoiceChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000025 /* VoiceChatManager.swift */; };
 		A10000000000000000000026 /* VirtualJoystick.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000026 /* VirtualJoystick.swift */; };
 		A10000000000000000000027 /* ActionButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000027 /* ActionButton.swift */; };
+		A10000000000000000000028 /* TutorialView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000028 /* TutorialView.swift */; };
+		A10000000000000000000029 /* PauseMenuView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000029 /* PauseMenuView.swift */; };
+		A10000000000000000000030 /* MultiplayerManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000030 /* MultiplayerManager.swift */; };
+		A10000000000000000000031 /* ItemShopManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000031 /* ItemShopManager.swift */; };
+		A10000000000000000000032 /* OpenWorldManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000032 /* OpenWorldManager.swift */; };
+		A10000000000000000000033 /* AccountManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000033 /* AccountManager.swift */; };
+		A10000000000000000000034 /* LiveVoiceChatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000034 /* LiveVoiceChatManager.swift */; };
+		A10000000000000000000035 /* LobbyView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000035 /* LobbyView.swift */; };
+		A10000000000000000000036 /* ItemShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000036 /* ItemShopView.swift */; };
+		A10000000000000000000037 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000037 /* LoginView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -63,6 +73,16 @@
 		A20000000000000000000025 /* VoiceChatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VoiceChatManager.swift; sourceTree = "<group>"; };
 		A20000000000000000000026 /* VirtualJoystick.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = VirtualJoystick.swift; sourceTree = "<group>"; };
 		A20000000000000000000027 /* ActionButton.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ActionButton.swift; sourceTree = "<group>"; };
+		A20000000000000000000028 /* TutorialView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TutorialView.swift; sourceTree = "<group>"; };
+		A20000000000000000000029 /* PauseMenuView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PauseMenuView.swift; sourceTree = "<group>"; };
+		A20000000000000000000030 /* MultiplayerManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MultiplayerManager.swift; sourceTree = "<group>"; };
+		A20000000000000000000031 /* ItemShopManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemShopManager.swift; sourceTree = "<group>"; };
+		A20000000000000000000032 /* OpenWorldManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWorldManager.swift; sourceTree = "<group>"; };
+		A20000000000000000000033 /* AccountManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AccountManager.swift; sourceTree = "<group>"; };
+		A20000000000000000000034 /* LiveVoiceChatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LiveVoiceChatManager.swift; sourceTree = "<group>"; };
+		A20000000000000000000035 /* LobbyView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LobbyView.swift; sourceTree = "<group>"; };
+		A20000000000000000000036 /* ItemShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemShopView.swift; sourceTree = "<group>"; };
+		A20000000000000000000037 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A30000000000000000000001 /* BirdGame3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BirdGame3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -118,6 +138,11 @@
 				A20000000000000000000012 /* ResultsView.swift */,
 				A20000000000000000000020 /* ShopView.swift */,
 				A20000000000000000000021 /* SettingsView.swift */,
+				A20000000000000000000028 /* TutorialView.swift */,
+				A20000000000000000000029 /* PauseMenuView.swift */,
+				A20000000000000000000035 /* LobbyView.swift */,
+				A20000000000000000000036 /* ItemShopView.swift */,
+				A20000000000000000000037 /* LoginView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -171,6 +196,11 @@
 				A20000000000000000000023 /* SkinManager.swift */,
 				A20000000000000000000024 /* PrestigeManager.swift */,
 				A20000000000000000000025 /* VoiceChatManager.swift */,
+				A20000000000000000000030 /* MultiplayerManager.swift */,
+				A20000000000000000000031 /* ItemShopManager.swift */,
+				A20000000000000000000032 /* OpenWorldManager.swift */,
+				A20000000000000000000033 /* AccountManager.swift */,
+				A20000000000000000000034 /* LiveVoiceChatManager.swift */,
 			);
 			path = Managers;
 			sourceTree = "<group>";
@@ -277,6 +307,16 @@
 				A10000000000000000000025 /* VoiceChatManager.swift in Sources */,
 				A10000000000000000000026 /* VirtualJoystick.swift in Sources */,
 				A10000000000000000000027 /* ActionButton.swift in Sources */,
+				A10000000000000000000028 /* TutorialView.swift in Sources */,
+				A10000000000000000000029 /* PauseMenuView.swift in Sources */,
+				A10000000000000000000030 /* MultiplayerManager.swift in Sources */,
+				A10000000000000000000031 /* ItemShopManager.swift in Sources */,
+				A10000000000000000000032 /* OpenWorldManager.swift in Sources */,
+				A10000000000000000000033 /* AccountManager.swift in Sources */,
+				A10000000000000000000034 /* LiveVoiceChatManager.swift in Sources */,
+				A10000000000000000000035 /* LobbyView.swift in Sources */,
+				A10000000000000000000036 /* ItemShopView.swift in Sources */,
+				A10000000000000000000037 /* LoginView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

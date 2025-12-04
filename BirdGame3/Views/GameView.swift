@@ -12,6 +12,8 @@ struct GameView: View {
     @EnvironmentObject var gameState: GameState
     @State private var scene: GameScene?
     @StateObject private var gameController = GameController()
+    @State private var isPaused: Bool = false
+    @State private var showPauseSettings: Bool = false
     
     var body: some View {
         ZStack {
@@ -29,14 +31,52 @@ struct GameView: View {
             
             // UI Overlay - Wolf-style controls
             VStack {
+                // Top bar with pause button
+                HStack {
+                    // Pause button
+                    Button(action: pauseGame) {
+                        Image(systemName: "pause.circle.fill")
+                            .font(.system(size: 32))
+                            .foregroundColor(.white.opacity(0.7))
+                            .shadow(color: .black.opacity(0.5), radius: 2)
+                    }
+                    .padding(.leading, 20)
+                    .padding(.top, 10)
+                    
+                    Spacer()
+                }
+                
                 Spacer()
                 
                 // Control buttons (Wolf style)
                 WolfStyleControlsView(controller: gameController)
             }
+            
+            // Pause menu overlay
+            if isPaused {
+                PauseMenuView(
+                    isPaused: $isPaused,
+                    showSettings: $showPauseSettings,
+                    onResume: resumeGame,
+                    onQuit: {
+                        scene?.isPaused = false
+                        VoiceChatManager.shared.stopBattleCommentary()
+                    }
+                )
+            }
+            
+            // In-game settings overlay
+            if showPauseSettings {
+                InGameSettingsView(isPresented: $showPauseSettings)
+            }
         }
         .onAppear {
             createScene()
+        }
+        .onDisappear {
+            // Clean up when leaving game view
+            scene?.isPaused = true
+            VoiceChatManager.shared.stopBattleCommentary()
         }
     }
     
@@ -50,6 +90,30 @@ struct GameView: View {
         gameController.gameState = gameState
         gameController.scene = newScene
         scene = newScene
+    }
+    
+    private func pauseGame() {
+        guard !isPaused else { return }
+        
+        // Haptic feedback
+        let generator = UIImpactFeedbackGenerator(style: .medium)
+        generator.impactOccurred()
+        
+        scene?.isPaused = true
+        VoiceChatManager.shared.stop()
+        
+        withAnimation(.easeInOut(duration: 0.2)) {
+            isPaused = true
+        }
+    }
+    
+    private func resumeGame() {
+        scene?.isPaused = false
+        
+        // Resume voice commentary if enabled
+        if VoiceChatManager.shared.isEnabled {
+            VoiceChatManager.shared.speak("And we're back! Let's go!", priority: .normal)
+        }
     }
 }
 

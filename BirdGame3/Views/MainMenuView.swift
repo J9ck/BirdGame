@@ -11,11 +11,14 @@ struct MainMenuView: View {
     @EnvironmentObject var gameState: GameState
     @ObservedObject var currencyManager = CurrencyManager.shared
     @ObservedObject var prestigeManager = PrestigeManager.shared
+    @ObservedObject var account = AccountManager.shared
+    @ObservedObject var multiplayer = MultiplayerManager.shared
     
     @State private var showingLoadingTips = false
     @State private var currentTip = ""
     @State private var titleScale: CGFloat = 1.0
     @State private var pigeonRotation: Double = 0
+    @State private var showAccountSheet = false
     
     private let loadingTips = [
         "Pro tip: Just spam pecks",
@@ -111,7 +114,7 @@ struct MainMenuView: View {
                     Circle()
                         .fill(Color.green)
                         .frame(width: 8, height: 8)
-                    Text("\(gameState.fakeOnlinePlayers.formatted()) players online")
+                    Text("\(multiplayer.fakeOnlineCount.formatted()) players online")
                         .font(.caption)
                         .foregroundColor(.green)
                 }
@@ -124,6 +127,16 @@ struct MainMenuView: View {
                 
                 // Menu buttons
                 VStack(spacing: 12) {
+                    // MULTIPLAYER BUTTON (PRIMARY)
+                    MenuButton(title: "🎮 PLAY ONLINE", subtitle: "Squad up with friends", style: .multiplayer) {
+                        gameState.openLobby()
+                    }
+                    
+                    // OPEN WORLD BUTTON
+                    MenuButton(title: "🌍 OPEN WORLD", subtitle: "Explore, build nests, survive", style: .openWorld) {
+                        gameState.openOpenWorld()
+                    }
+                    
                     MenuButton(title: "⚔️ QUICK MATCH", subtitle: "Fight a random opponent") {
                         showLoadingTip {
                             gameState.startQuickMatch()
@@ -171,12 +184,47 @@ struct MainMenuView: View {
                 LoadingTipOverlay(tip: currentTip)
             }
         }
+        .sheet(isPresented: $showAccountSheet) {
+            if account.isLoggedIn {
+                AccountProfileView()
+            } else {
+                LoginView()
+            }
+        }
     }
     
     // MARK: - Top Bar
     
     private var topBar: some View {
         HStack {
+            // Account button
+            Button(action: { showAccountSheet = true }) {
+                HStack(spacing: 8) {
+                    ZStack {
+                        Circle()
+                            .fill(Color.blue.opacity(0.3))
+                            .frame(width: 36, height: 36)
+                        
+                        if account.isLoggedIn {
+                            Text("🐦")
+                                .font(.title3)
+                        } else {
+                            Image(systemName: "person.fill")
+                                .foregroundColor(.gray)
+                        }
+                    }
+                    
+                    if account.isLoggedIn, let user = account.currentAccount {
+                        Text(user.displayName)
+                            .font(.caption)
+                            .foregroundColor(.white)
+                    }
+                }
+                .padding(4)
+                .background(Color.black.opacity(0.3))
+                .cornerRadius(20)
+            }
+            
             // Settings button
             Button(action: { gameState.openSettings() }) {
                 Image(systemName: "gearshape.fill")
@@ -259,6 +307,8 @@ struct MenuButton: View {
     enum MenuButtonStyle {
         case primary
         case shop
+        case multiplayer
+        case openWorld
     }
     
     @State private var isPressed = false
@@ -299,6 +349,18 @@ struct MenuButton: View {
                 startPoint: .leading,
                 endPoint: .trailing
             )
+        case .multiplayer:
+            return LinearGradient(
+                colors: [Color.green, Color.blue],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
+        case .openWorld:
+            return LinearGradient(
+                colors: [Color.teal, Color.green],
+                startPoint: .leading,
+                endPoint: .trailing
+            )
         }
     }
     
@@ -306,6 +368,8 @@ struct MenuButton: View {
         switch style {
         case .primary: return .purple
         case .shop: return .orange
+        case .multiplayer: return .green
+        case .openWorld: return .teal
         }
     }
 }
