@@ -44,7 +44,8 @@
 		A10000000000000000000036 /* ItemShopView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000036 /* ItemShopView.swift */; };
 		A10000000000000000000037 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000037 /* LoginView.swift */; };
 		A10000000000000000000038 /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000038 /* SupabaseManager.swift */; };
-		A10000000000000000000039 /* Sounds in Resources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000039 /* Sounds */; };
+		A10000000000000000000039 /* BowlingAlleyScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000039 /* BowlingAlleyScene.swift */; };
+		A10000000000000000000040 /* ChairBNBEasterEgg.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000040 /* ChairBNBEasterEgg.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -86,7 +87,8 @@
 		A20000000000000000000036 /* ItemShopView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ItemShopView.swift; sourceTree = "<group>"; };
 		A20000000000000000000037 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A20000000000000000000038 /* SupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseManager.swift; sourceTree = "<group>"; };
-		A20000000000000000000039 /* Sounds */ = {isa = PBXFileReference; lastKnownFileType = folder; path = Sounds; sourceTree = "<group>"; };
+		A20000000000000000000039 /* BowlingAlleyScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BowlingAlleyScene.swift; sourceTree = "<group>"; };
+		A20000000000000000000040 /* ChairBNBEasterEgg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChairBNBEasterEgg.swift; sourceTree = "<group>"; };
 		A30000000000000000000001 /* BirdGame3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BirdGame3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -159,6 +161,8 @@
 				A20000000000000000000006 /* GameScene.swift */,
 				A20000000000000000000007 /* BirdCharacter.swift */,
 				A20000000000000000000008 /* CombatSystem.swift */,
+				A20000000000000000000039 /* BowlingAlleyScene.swift */,
+				A20000000000000000000040 /* ChairBNBEasterEgg.swift */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -325,6 +329,8 @@
 				A10000000000000000000036 /* ItemShopView.swift in Sources */,
 				A10000000000000000000037 /* LoginView.swift in Sources */,
 				A10000000000000000000038 /* SupabaseManager.swift in Sources */,
+				A10000000000000000000039 /* BowlingAlleyScene.swift in Sources */,
+				A10000000000000000000040 /* ChairBNBEasterEgg.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

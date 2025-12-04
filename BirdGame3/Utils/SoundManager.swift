@@ -4,6 +4,12 @@
 //
 //  Complete audio management for epic bird sounds
 //
+//  ASSET SOURCES (Royalty-Free):
+//  - Freesound: https://freesound.org/search/?q=bird
+//  - Mixkit: https://mixkit.co/free-sound-effects/bird/
+//  - OpenGameArt: https://opengameart.org/art-search?keys=bird+sound
+//  See ASSETS_README.md for complete asset guide
+//
 
 import AVFoundation
 import SpriteKit
@@ -14,11 +20,14 @@ class SoundManager: ObservableObject {
     static let shared = SoundManager()
     
     private var audioPlayers: [String: AVAudioPlayer] = [:]
-    private var activePlayers: [AVAudioPlayer] = []
+    private var loadedSounds: [String: URL] = [:]
     
     // Published properties for settings
     @Published var musicVolume: Float = 0.7 {
-        didSet { save() }
+        didSet {
+            save()
+            updateMusicVolume()
+        }
     }
     @Published var sfxVolume: Float = 0.8 {
         didSet { save() }
@@ -27,7 +36,12 @@ class SoundManager: ObservableObject {
         didSet { save() }
     }
     @Published var isMuted: Bool = false {
-        didSet { save() }
+        didSet {
+            save()
+            if isMuted {
+                stopAllSounds()
+            }
+        }
     }
     
     // Persistence keys
@@ -155,6 +169,11 @@ class SoundManager: ObservableObject {
                 return .soft
             }
         }
+        
+        /// File name for the sound effect (without extension)
+        var fileName: String {
+            return rawValue
+        }
     }
     
     // Bird-specific sounds with file mappings
@@ -175,9 +194,15 @@ class SoundManager: ObservableObject {
             }
         }
         
-        /// The audio file name for this bird sound (without extension)
-        var audioFileName: String {
-            return rawValue
+        /// File name for the bird sound (without extension)
+        var fileName: String {
+            switch self {
+            case .pigeonCoo: return "pigeon_coo"
+            case .hummingbirdBuzz: return "hummingbird_buzz"
+            case .eagleScreech: return "eagle_screech"
+            case .crowCaw: return "crow_caw"
+            case .pelicanGulp: return "pelican_gulp"
+            }
         }
     }
     
@@ -196,45 +221,51 @@ class SoundManager: ObservableObject {
         }
     }
     
-    /// Preload commonly used sounds for better performance
+    /// Preload common sounds for better performance
     private func preloadSounds() {
-        // Preload bird sounds
-        for sound in [BirdSound.pigeonCoo, .hummingbirdBuzz, .eagleScreech, .crowCaw, .pelicanGulp] {
-            _ = loadAudioPlayer(for: sound.audioFileName)
-        }
+        // Preload bird sounds if files exist in bundle
+        let soundFiles: [(name: String, ext: String)] = [
+            ("pigeon_coo", "mp3"),
+            ("pigeon_peck", "mp3"),
+            ("hummingbird_buzz", "mp3"),
+            ("hummingbird_zip", "mp3"),
+            ("eagle_screech", "mp3"),
+            ("eagle_attack", "mp3"),
+            ("crow_caw", "mp3"),
+            ("crow_attack", "mp3"),
+            ("pelican_gulp", "mp3"),
+            ("pelican_slap", "mp3"),
+            ("hit", "mp3"),
+            ("block", "mp3"),
+            ("victory", "mp3"),
+            ("defeat", "mp3"),
+            ("menu_select", "mp3"),
+            ("bowling_strike", "mp3")
+        ]
         
-        // Preload common sound effects
-        for sound in [SoundEffect.peck, .hit, .block, .ability, .menuSelect, .countdown] {
-            _ = loadAudioPlayer(for: sound.audioFileName)
+        for file in soundFiles {
+            if let url = Bundle.main.url(forResource: file.name, withExtension: file.ext) {
+                loadedSounds[file.name] = url
+                #if DEBUG
+                print("🔊 Preloaded sound: \(file.name).\(file.ext)")
+                #endif
+            }
         }
     }
     
-    /// Load an audio player for a given sound file name
-    private func loadAudioPlayer(for fileName: String) -> AVAudioPlayer? {
-        // Check cache first
-        if let cachedPlayer = audioPlayers[fileName] {
-            return cachedPlayer
+    private func updateMusicVolume() {
+        // Access MusicManager safely - it's a singleton that initializes on first access
+        DispatchQueue.main.async {
+            MusicManager.shared.setVolume(self.musicVolume)
         }
-        
-        // Try to load from bundle
-        guard let url = Bundle.main.url(forResource: fileName, withExtension: "wav") else {
-            #if DEBUG
-            print("⚠️ Sound file not found: \(fileName).wav")
-            #endif
-            return nil
+    }
+    
+    private func stopAllSounds() {
+        for player in audioPlayers.values {
+            player.stop()
         }
-        
-        do {
-            let player = try AVAudioPlayer(contentsOf: url)
-            player.prepareToPlay()
-            audioPlayers[fileName] = player
-            return player
-        } catch {
-            #if DEBUG
-            print("❌ Failed to load sound \(fileName): \(error)")
-            #endif
-            return nil
-        }
+        // Clear stopped players to prevent memory leaks
+        audioPlayers.removeAll()
     }
     
     // MARK: - Persistence
@@ -258,12 +289,16 @@ class SoundManager: ObservableObject {
     func playSound(_ sound: SoundEffect) {
         guard !isMuted else { return }
         
-        // Play audio file
-        playAudioFile(sound.audioFileName)
-        
-        #if DEBUG
-        print("🔊 Playing sound: \(sound.description)")
-        #endif
+        // Try to play actual sound file first
+        let soundFileName = sound.fileName
+        if let url = loadedSounds[soundFileName] ?? Bundle.main.url(forResource: soundFileName, withExtension: "mp3") {
+            playAudioFile(url: url, volume: sfxVolume)
+        } else {
+            // Fallback to debug output and haptics
+            #if DEBUG
+            print("🔊 Playing sound: \(sound.description)")
+            #endif
+        }
         
         // Haptic feedback
         if hapticsEnabled {
@@ -274,12 +309,15 @@ class SoundManager: ObservableObject {
     func playBirdSound(_ sound: BirdSound) {
         guard !isMuted else { return }
         
-        // Play audio file
-        playAudioFile(sound.audioFileName)
-        
-        #if DEBUG
-        print("🐦 Playing bird sound: \(sound.description)")
-        #endif
+        // Try to play actual sound file
+        let soundFileName = sound.fileName
+        if let url = loadedSounds[soundFileName] ?? Bundle.main.url(forResource: soundFileName, withExtension: "mp3") {
+            playAudioFile(url: url, volume: sfxVolume)
+        } else {
+            #if DEBUG
+            print("🐦 Playing bird sound: \(sound.description)")
+            #endif
+        }
         
         // Light haptic for bird sounds
         if hapticsEnabled {
@@ -288,39 +326,27 @@ class SoundManager: ObservableObject {
         }
     }
     
-    /// Play an audio file by name
-    private func playAudioFile(_ fileName: String) {
-        // First try to reuse cached player if not currently playing
-        if let cachedPlayer = audioPlayers[fileName], !cachedPlayer.isPlaying {
-            cachedPlayer.volume = sfxVolume
-            cachedPlayer.currentTime = 0
-            cachedPlayer.play()
-            return
-        }
-        
-        // Load a new player for concurrent playback
-        guard let url = Bundle.main.url(forResource: fileName, withExtension: "wav") else {
-            #if DEBUG
-            print("⚠️ Sound file not found: \(fileName).wav")
-            #endif
-            return
-        }
-        
+    /// Play an audio file from URL
+    private func playAudioFile(url: URL, volume: Float) {
         do {
-            let newPlayer = try AVAudioPlayer(contentsOf: url)
-            newPlayer.volume = sfxVolume
-            newPlayer.play()
+            let player = try AVAudioPlayer(contentsOf: url)
+            player.volume = volume
+            player.delegate = AudioPlayerDelegate.shared  // Set delegate for cleanup
+            player.prepareToPlay()
+            player.play()
             
             // Store reference to prevent deallocation
-            activePlayers.append(newPlayer)
+            let key = url.lastPathComponent
             
-            // Periodic cleanup: only clean when array gets large
-            if activePlayers.count > 10 {
-                activePlayers.removeAll { !$0.isPlaying }
+            // Clean up old player for this sound if it exists and is not playing
+            if let oldPlayer = audioPlayers[key], !oldPlayer.isPlaying {
+                audioPlayers.removeValue(forKey: key)
             }
+            
+            audioPlayers[key] = player
         } catch {
             #if DEBUG
-            print("❌ Failed to play sound \(fileName): \(error)")
+            print("❌ Failed to play audio: \(error)")
             #endif
         }
     }
@@ -425,6 +451,17 @@ class SynthesizedSoundGenerator {
     // More synthesized sounds could be added here
 }
 
+// MARK: - Audio Player Delegate (for cleanup)
+
+class AudioPlayerDelegate: NSObject, AVAudioPlayerDelegate {
+    static let shared = AudioPlayerDelegate()
+    
+    func audioPlayerDidFinishPlaying(_ player: AVAudioPlayer, successfully flag: Bool) {
+        // Player finished - will be cleaned up on next playAudioFile call
+        // This prevents memory leaks by allowing players to be released
+    }
+}
+
 // MARK: - Music Manager
 
 class MusicManager {
@@ -433,6 +470,7 @@ class MusicManager {
     
     private var backgroundMusicPlayer: AVAudioPlayer?
     private var isMusicEnabled: Bool = true
+    private var currentVolume: Float = 0.7
     
     enum MusicTrack: String, CaseIterable {
         case mainMenu = "menu_theme"
@@ -443,6 +481,7 @@ class MusicManager {
         case lobby = "lobby_theme"
         case shop = "shop_theme"
         case boss = "boss_theme"
+        case bowlingAlley = "bowling_theme"  // Fun retro arcade music for bowling alley
         
         var description: String {
             switch self {
@@ -454,18 +493,40 @@ class MusicManager {
             case .lobby: return "🎵 Social hangout beats"
             case .shop: return "🎵 Shopping muzak"
             case .boss: return "🎵 Intense boss battle"
+            case .bowlingAlley: return "🎵 Retro bowling arcade funk"
             }
+        }
+        
+        /// File name for the music track (without extension)
+        var fileName: String {
+            return rawValue
         }
     }
     
     func playMusic(_ track: MusicTrack) {
         guard isMusicEnabled else { return }
         
-        #if DEBUG
-        print("🎵 Playing music: \(track.description)")
-        #endif
+        // Stop current music
+        stopMusic()
         
-        // In production, this would load and play actual music files
+        // Try to load and play the music file
+        if let url = Bundle.main.url(forResource: track.fileName, withExtension: "mp3") {
+            do {
+                backgroundMusicPlayer = try AVAudioPlayer(contentsOf: url)
+                backgroundMusicPlayer?.volume = currentVolume
+                backgroundMusicPlayer?.numberOfLoops = -1  // Loop forever
+                backgroundMusicPlayer?.prepareToPlay()
+                backgroundMusicPlayer?.play()
+            } catch {
+                #if DEBUG
+                print("❌ Failed to play music: \(error)")
+                #endif
+            }
+        } else {
+            #if DEBUG
+            print("🎵 Playing music: \(track.description)")
+            #endif
+        }
     }
     
     func stopMusic() {
@@ -478,6 +539,11 @@ class MusicManager {
         if !isMusicEnabled {
             stopMusic()
         }
+    }
+    
+    func setVolume(_ volume: Float) {
+        currentVolume = volume
+        backgroundMusicPlayer?.volume = volume
     }
     
     var musicEnabled: Bool {

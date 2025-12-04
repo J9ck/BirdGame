@@ -905,38 +905,46 @@ struct SpecialLocation: Identifiable {
 extension OpenWorldManager {
     
     // MARK: - Special Locations
+    //
+    // Asset Sources (Royalty-Free):
+    // - Bowling: https://opengameart.org/art-search?keys=bowling
+    // - Backgrounds: https://kenney.nl/assets, https://opengameart.org
+    // - See ASSETS_README.md for complete asset guide
+    //
     
     static let specialLocations: [SpecialLocation] = [
         // Bowling Alley - Hidden achievement for Crow only
+        // A fun, vivid bowling alley with neon details and arcade vibes!
         SpecialLocation(
             id: "bowling_alley",
-            name: "Bowling Alley",
+            name: "🎳 Bird Bowl Alley 🎳",
             position: WorldPosition(x: 4200, y: 1337, z: 50),
             radius: 50,
             isHidden: true,
             requiredBird: .crow,
             achievementId: nil,
             badgeId: "badge_bowling_crow",
-            description: "A mysterious bowling alley. Only crows understand why this place is special."
+            description: "A mysterious neon-lit bowling alley. Only crows understand why this place is special. Features retro arcade machines, disco lights, and oversized bowling pins!"
         ),
         
         // CHairBNB - Easter egg reference
+        // A cozy bird rental property with modified signage
         SpecialLocation(
             id: "chairbnb",
-            name: "CHairBNB",
+            name: "🪑 CHairBNB 🏠",
             position: WorldPosition(x: -2500, y: 3141, z: 75),
             radius: 40,
             isHidden: true,
             requiredBird: nil,
             achievementId: nil,
             badgeId: "badge_chairbnb",
-            description: "A cozy rental spot with a suspiciously modified sign. 'CH' has been spray painted in front of 'airBNB'."
+            description: "A cozy bird rental spot with a suspiciously modified sign. 'CH' has been spray painted in front of 'airBNB'. Features comfy oversized chairs, a bird bath, and 5-star reviews from other feathered guests!"
         ),
         
         // Regular discoverable locations
         SpecialLocation(
             id: "ancient_tree",
-            name: "The Ancient Tree",
+            name: "🌳 The Ancient Tree",
             position: WorldPosition(x: 0, y: 0, z: 200),
             radius: 100,
             isHidden: false,
@@ -948,7 +956,7 @@ extension OpenWorldManager {
         
         SpecialLocation(
             id: "sky_temple",
-            name: "Sky Temple",
+            name: "⛩️ Sky Temple",
             position: WorldPosition(x: 5000, y: 5000, z: 450),
             radius: 80,
             isHidden: false,
@@ -956,6 +964,31 @@ extension OpenWorldManager {
             achievementId: nil,
             badgeId: nil,
             description: "A temple floating high in the sky. Only the bravest birds dare to visit."
+        ),
+        
+        // New fun locations
+        SpecialLocation(
+            id: "pigeon_plaza",
+            name: "🐦 Pigeon Plaza",
+            position: WorldPosition(x: 1000, y: 1000, z: 30),
+            radius: 60,
+            isHidden: false,
+            requiredBird: nil,
+            achievementId: nil,
+            badgeId: nil,
+            description: "A busy town square where pigeons gather to discuss the latest memes. Breadcrumbs are always in supply!"
+        ),
+        
+        SpecialLocation(
+            id: "eagle_peak",
+            name: "🦅 Eagle's Peak",
+            position: WorldPosition(x: 3000, y: 2000, z: 400),
+            radius: 70,
+            isHidden: false,
+            requiredBird: .eagle,
+            achievementId: nil,
+            badgeId: nil,
+            description: "The highest point in the world. FREEDOM INTENSIFIES up here. Only eagles can truly appreciate the view."
         )
     ]
     
