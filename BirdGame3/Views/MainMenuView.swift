@@ -339,13 +339,12 @@ struct MenuButton: View {
     }
     
     private var accessibleTitle: String {
-        // Remove emoji from title for accessibility
-        title.replacingOccurrences(of: "🎮 ", with: "")
-             .replacingOccurrences(of: "🌍 ", with: "")
-             .replacingOccurrences(of: "⚔️ ", with: "")
-             .replacingOccurrences(of: "🏆 ", with: "")
-             .replacingOccurrences(of: "🎯 ", with: "")
-             .replacingOccurrences(of: "🛒 ", with: "")
+        // Remove emojis from title for accessibility using scalar properties
+        let filtered = title.unicodeScalars.filter { scalar in
+            !scalar.properties.isEmoji || scalar.properties.isEmojiPresentation == false
+        }
+        return String(String.UnicodeScalarView(filtered))
+            .trimmingCharacters(in: .whitespaces)
     }
     
     private var backgroundGradient: LinearGradient {
