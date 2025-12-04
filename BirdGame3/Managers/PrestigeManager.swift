@@ -33,11 +33,34 @@ class PrestigeManager: ObservableObject {
     static let maxLevel = 50
     static let maxPrestige = 10
     
-    // XP requirements per level (increases exponentially)
+    // XP requirements per level - gets progressively harder
+    // Level 1-10: Easy grind (100-250 XP per level)
+    // Level 11-25: Medium grind (300-800 XP per level)
+    // Level 26-40: Hard grind (1000-3000 XP per level)
+    // Level 41-50: Very hard grind (4000-10000 XP per level)
     private func xpRequired(forLevel level: Int) -> Int {
-        let baseXP = 100
-        let multiplier = 1.15
-        return Int(Double(baseXP) * pow(multiplier, Double(level - 1)))
+        switch level {
+        case 1...10:
+            // Easy: Base 100, +15 per level
+            return 100 + (level - 1) * 15
+        case 11...25:
+            // Medium: Base 300, exponential growth 1.12x
+            let baseXP = 300
+            let multiplier = 1.12
+            return Int(Double(baseXP) * pow(multiplier, Double(level - 11)))
+        case 26...40:
+            // Hard: Base 1000, exponential growth 1.15x
+            let baseXP = 1000
+            let multiplier = 1.15
+            return Int(Double(baseXP) * pow(multiplier, Double(level - 26)))
+        case 41...50:
+            // Very Hard: Base 4000, exponential growth 1.2x
+            let baseXP = 4000
+            let multiplier = 1.2
+            return Int(Double(baseXP) * pow(multiplier, Double(level - 41)))
+        default:
+            return 10000
+        }
     }
     
     // Total XP to reach a level from level 1
@@ -61,6 +84,42 @@ class PrestigeManager: ObservableObject {
     private let xpKey = "birdgame3_xp"
     private let prestigeKey = "birdgame3_prestige"
     private let totalXPKey = "birdgame3_totalXP"
+    private let xpBoostKey = "birdgame3_xpBoostExpiry"
+    
+    // MARK: - XP Boost
+    
+    @Published private(set) var xpBoostExpiry: Date? {
+        didSet { saveXPBoost() }
+    }
+    
+    var hasActiveXPBoost: Bool {
+        guard let expiry = xpBoostExpiry else { return false }
+        return Date() < expiry
+    }
+    
+    var xpBoostTimeRemaining: TimeInterval {
+        guard let expiry = xpBoostExpiry else { return 0 }
+        return max(0, expiry.timeIntervalSince(Date()))
+    }
+    
+    func activateXPBoost(hours: Int) {
+        let duration = TimeInterval(hours * 60 * 60)
+        if let existing = xpBoostExpiry, existing > Date() {
+            // Extend existing boost
+            xpBoostExpiry = existing.addingTimeInterval(duration)
+        } else {
+            // New boost
+            xpBoostExpiry = Date().addingTimeInterval(duration)
+        }
+    }
+    
+    private func saveXPBoost() {
+        UserDefaults.standard.set(xpBoostExpiry, forKey: xpBoostKey)
+    }
+    
+    private func loadXPBoost() {
+        xpBoostExpiry = UserDefaults.standard.object(forKey: xpBoostKey) as? Date
+    }
     
     // MARK: - Initialization
     
@@ -69,6 +128,7 @@ class PrestigeManager: ObservableObject {
         self.currentXP = UserDefaults.standard.integer(forKey: xpKey)
         self.prestigeLevel = UserDefaults.standard.integer(forKey: prestigeKey)
         self.totalXPEarned = UserDefaults.standard.integer(forKey: totalXPKey)
+        self.xpBoostExpiry = UserDefaults.standard.object(forKey: xpBoostKey) as? Date
         
         // First launch defaults
         if currentLevel == 0 {
@@ -79,18 +139,27 @@ class PrestigeManager: ObservableObject {
     
     // MARK: - XP Methods
     
-    /// Add XP and handle level ups
+    /// Add XP and handle level ups (applies XP boost if active)
     @discardableResult
     func addXP(_ amount: Int) -> [LevelUpReward] {
         var rewards: [LevelUpReward] = []
         
-        currentXP += amount
-        totalXPEarned += amount
+        // Apply XP boost multiplier
+        var finalAmount = amount
+        if hasActiveXPBoost {
+            finalAmount = Int(Double(amount) * 2.0) // 2x XP boost
+        }
+        
+        currentXP += finalAmount
+        totalXPEarned += finalAmount
         
         // Check for level ups
         while currentXP >= xpToNextLevel && currentLevel < Self.maxLevel {
             currentXP -= xpToNextLevel
             currentLevel += 1
+            
+            // Track achievement
+            AchievementManager.shared.trackLevelUp(level: currentLevel)
             
             // Grant level up rewards
             let reward = getLevelUpReward(for: currentLevel)

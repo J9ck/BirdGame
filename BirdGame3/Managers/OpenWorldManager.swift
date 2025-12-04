@@ -887,3 +887,151 @@ enum WorldEventType {
     case weatherChange
     case worldBoss
 }
+
+// MARK: - Special Hidden Locations
+
+struct SpecialLocation: Identifiable {
+    let id: String
+    let name: String
+    let position: WorldPosition
+    let radius: Double
+    let isHidden: Bool
+    let requiredBird: BirdType?
+    let achievementId: String?
+    let badgeId: String?
+    let description: String
+}
+
+extension OpenWorldManager {
+    
+    // MARK: - Special Locations
+    
+    static let specialLocations: [SpecialLocation] = [
+        // Bowling Alley - Hidden achievement for Crow only
+        SpecialLocation(
+            id: "bowling_alley",
+            name: "Bowling Alley",
+            position: WorldPosition(x: 4200, y: 1337, z: 50),
+            radius: 50,
+            isHidden: true,
+            requiredBird: .crow,
+            achievementId: nil,
+            badgeId: "badge_bowling_crow",
+            description: "A mysterious bowling alley. Only crows understand why this place is special."
+        ),
+        
+        // CHairBNB - Easter egg reference
+        SpecialLocation(
+            id: "chairbnb",
+            name: "CHairBNB",
+            position: WorldPosition(x: -2500, y: 3141, z: 75),
+            radius: 40,
+            isHidden: true,
+            requiredBird: nil,
+            achievementId: nil,
+            badgeId: "badge_chairbnb",
+            description: "A cozy rental spot with a suspiciously modified sign. 'CH' has been spray painted in front of 'airBNB'."
+        ),
+        
+        // Regular discoverable locations
+        SpecialLocation(
+            id: "ancient_tree",
+            name: "The Ancient Tree",
+            position: WorldPosition(x: 0, y: 0, z: 200),
+            radius: 100,
+            isHidden: false,
+            requiredBird: nil,
+            achievementId: nil,
+            badgeId: nil,
+            description: "A massive ancient tree at the center of the world. Legend says it's been here since the beginning."
+        ),
+        
+        SpecialLocation(
+            id: "sky_temple",
+            name: "Sky Temple",
+            position: WorldPosition(x: 5000, y: 5000, z: 450),
+            radius: 80,
+            isHidden: false,
+            requiredBird: nil,
+            achievementId: nil,
+            badgeId: nil,
+            description: "A temple floating high in the sky. Only the bravest birds dare to visit."
+        )
+    ]
+    
+    /// Check if player has entered any special location
+    func checkSpecialLocations(currentBird: BirdType) {
+        for location in Self.specialLocations {
+            let distance = playerState.position.distance(to: location.position)
+            
+            if distance <= location.radius {
+                // Check if bird requirement is met
+                if let requiredBird = location.requiredBird {
+                    if currentBird == requiredBird {
+                        triggerLocationDiscovery(location, withCorrectBird: true)
+                    }
+                    // Don't trigger if wrong bird for hidden locations
+                } else {
+                    triggerLocationDiscovery(location, withCorrectBird: true)
+                }
+            }
+        }
+    }
+    
+    private func triggerLocationDiscovery(_ location: SpecialLocation, withCorrectBird: Bool) {
+        let discoveryKey = "birdgame3_discovered_\(location.id)"
+        
+        // Check if already discovered
+        guard !UserDefaults.standard.bool(forKey: discoveryKey) else { return }
+        
+        // Mark as discovered
+        UserDefaults.standard.set(true, forKey: discoveryKey)
+        
+        // Unlock badge if applicable
+        if let badgeId = location.badgeId, withCorrectBird {
+            if location.id == "bowling_alley" {
+                AchievementManager.shared.trackBowlingAlleyVisit(asCrow: true)
+                ProfileIconManager.shared.unlockIcon("icon_bowling")
+            } else if location.id == "chairbnb" {
+                AchievementManager.shared.trackChairBNBVisit()
+                ProfileIconManager.shared.unlockIcon("icon_chairbnb")
+            } else {
+                AchievementManager.shared.unlockBadge(badgeId)
+            }
+        }
+        
+        // Add world event
+        let event = WorldEvent(
+            id: UUID().uuidString,
+            type: .resourceSpawn, // Reuse type for discovery
+            message: "Discovered: \(location.name)!",
+            timestamp: Date()
+        )
+        worldEvents.append(event)
+        
+        // Haptic feedback
+        let generator = UINotificationFeedbackGenerator()
+        generator.notificationOccurred(.success)
+    }
+    
+    /// Get directions to a special location
+    func getDirectionTo(locationId: String) -> (distance: Double, direction: String)? {
+        guard let location = Self.specialLocations.first(where: { $0.id == locationId && !$0.isHidden }) else {
+            return nil
+        }
+        
+        let distance = playerState.position.distance(to: location.position)
+        
+        let dx = location.position.x - playerState.position.x
+        let dy = location.position.y - playerState.position.y
+        
+        let direction: String
+        if abs(dx) > abs(dy) {
+            direction = dx > 0 ? "East" : "West"
+        } else {
+            direction = dy > 0 ? "North" : "South"
+        }
+        
+        return (distance, direction)
+    }
+}
