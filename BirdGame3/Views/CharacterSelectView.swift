@@ -4,12 +4,6 @@
 //
 //  Choose your feathered warrior wisely
 //
-//
-//  CharacterSelectView.swift
-//  BirdGame3
-//
-//  Choose your feathered warrior wisely
-//
 
 import SwiftUI
 
@@ -46,25 +40,6 @@ struct CharacterSelectView: View {
                 
                 // Character carousel
                 if #available(iOS 17.0, *) {
-                    TabView(selection: $selectedIndex) {
-                        ForEach(Array(BirdType.allCases.enumerated()), id: \.element.id) { index, bird in
-                            CharacterCard(bird: bird, isSelected: gameState.selectedBird == bird)
-                                .tag(index)
-                                .onTapGesture {
-                                    withAnimation {
-                                        gameState.selectedBird = bird
-                                    }
-                                }
-                        }
-                    }
-                    .tabViewStyle(.page(indexDisplayMode: .always))
-                    .frame(height: 400)
-                    .onChange(of: selectedIndex) { _, newValue in
-                        gameState.selectedBird = BirdType.allCases[newValue]
-                    }
-                } else {
-                    // Fallback on earlier versions
-                };if #available(iOS 17.0, *) {
                     TabView(selection: $selectedIndex) {
                         ForEach(Array(BirdType.allCases.enumerated()), id: \.element.id) { index, bird in
                             CharacterCard(bird: bird, isSelected: gameState.selectedBird == bird)
