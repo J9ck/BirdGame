@@ -54,10 +54,28 @@ struct CharacterSelectView: View {
                     .tabViewStyle(.page(indexDisplayMode: .always))
                     .frame(height: 400)
                     .onChange(of: selectedIndex) { _, newValue in
+                        guard newValue >= 0 && newValue < BirdType.allCases.count else { return }
                         gameState.selectedBird = BirdType.allCases[newValue]
                     }
                 } else {
-                    // Fallback on earlier versions
+                    // Fallback for iOS 16 and earlier
+                    TabView(selection: $selectedIndex) {
+                        ForEach(Array(BirdType.allCases.enumerated()), id: \.element.id) { index, bird in
+                            CharacterCard(bird: bird, isSelected: gameState.selectedBird == bird)
+                                .tag(index)
+                                .onTapGesture {
+                                    withAnimation {
+                                        gameState.selectedBird = bird
+                                    }
+                                }
+                        }
+                    }
+                    .tabViewStyle(.page(indexDisplayMode: .always))
+                    .frame(height: 400)
+                    .onChange(of: selectedIndex) { newValue in
+                        guard newValue >= 0 && newValue < BirdType.allCases.count else { return }
+                        gameState.selectedBird = BirdType.allCases[newValue]
+                    }
                 }
                 
                 // Opponent preview (if not training)
