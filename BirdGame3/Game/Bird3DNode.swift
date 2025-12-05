@@ -503,6 +503,7 @@ extension BirdType {
         case .eagle: return 1.8
         case .crow: return 1.1
         case .pelican: return 1.5
+        case .owl: return 1.3
         }
     }
     
@@ -513,6 +514,7 @@ extension BirdType {
         case .eagle: return UIColor(red: 0.4, green: 0.3, blue: 0.2, alpha: 1.0)
         case .crow: return UIColor(red: 0.1, green: 0.1, blue: 0.15, alpha: 1.0)
         case .pelican: return UIColor(red: 0.95, green: 0.95, blue: 0.9, alpha: 1.0)
+        case .owl: return UIColor(red: 0.55, green: 0.4, blue: 0.25, alpha: 1.0)
         }
     }
     
@@ -523,6 +525,7 @@ extension BirdType {
         case .eagle: return UIColor(red: 1.0, green: 1.0, blue: 0.95, alpha: 1.0)
         case .crow: return UIColor(red: 0.1, green: 0.1, blue: 0.15, alpha: 1.0)
         case .pelican: return UIColor(red: 0.95, green: 0.95, blue: 0.9, alpha: 1.0)
+        case .owl: return UIColor(red: 0.6, green: 0.45, blue: 0.3, alpha: 1.0)
         }
     }
     
@@ -533,6 +536,7 @@ extension BirdType {
         case .eagle: return UIColor(red: 0.35, green: 0.25, blue: 0.15, alpha: 1.0)
         case .crow: return UIColor(red: 0.05, green: 0.05, blue: 0.1, alpha: 1.0)
         case .pelican: return UIColor(red: 0.9, green: 0.9, blue: 0.85, alpha: 1.0)
+        case .owl: return UIColor(red: 0.5, green: 0.35, blue: 0.2, alpha: 1.0)
         }
     }
     
@@ -543,6 +547,7 @@ extension BirdType {
         case .eagle: return UIColor(red: 0.3, green: 0.2, blue: 0.1, alpha: 1.0)
         case .crow: return UIColor(red: 0.05, green: 0.05, blue: 0.1, alpha: 1.0)
         case .pelican: return UIColor(red: 0.85, green: 0.85, blue: 0.8, alpha: 1.0)
+        case .owl: return UIColor(red: 0.45, green: 0.3, blue: 0.15, alpha: 1.0)
         }
     }
     
@@ -553,6 +558,7 @@ extension BirdType {
         case .eagle: return UIColor(red: 0.9, green: 0.7, blue: 0.2, alpha: 1.0)
         case .crow: return UIColor(red: 0.2, green: 0.2, blue: 0.2, alpha: 1.0)
         case .pelican: return UIColor(red: 0.9, green: 0.6, blue: 0.3, alpha: 1.0)
+        case .owl: return UIColor(red: 0.3, green: 0.25, blue: 0.2, alpha: 1.0)
         }
     }
 }

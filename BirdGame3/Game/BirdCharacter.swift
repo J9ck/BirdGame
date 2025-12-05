@@ -167,6 +167,8 @@ class BirdCharacter: SKNode {
             return CGSize(width: 45, height: 35)
         case .pelican:
             return CGSize(width: 80, height: 55)
+        case .owl:
+            return CGSize(width: 55, height: 50)
         }
     }
     
@@ -189,6 +191,9 @@ class BirdCharacter: SKNode {
         case .pelican:
             // Bright white with warm undertones
             return SKColor(red: 1.0, green: 0.97, blue: 0.92, alpha: 1.0)
+        case .owl:
+            // Warm tawny brown
+            return SKColor(red: 0.65, green: 0.45, blue: 0.3, alpha: 1.0)
         }
     }
     
@@ -209,6 +214,9 @@ class BirdCharacter: SKNode {
         case .pelican:
             // Bright orange pouch beak
             return SKColor(red: 1.0, green: 0.55, blue: 0.2, alpha: 1.0)
+        case .owl:
+            // Dark curved beak
+            return SKColor(red: 0.25, green: 0.2, blue: 0.15, alpha: 1.0)
         }
     }
     
@@ -241,6 +249,42 @@ class BirdCharacter: SKNode {
             chest.strokeColor = .clear
             chest.position = CGPoint(x: 5, y: -5)
             addChild(chest)
+            
+        case .owl:
+            // Add large round eyes with facial disc
+            let facialDisc = SKShapeNode(ellipseOf: CGSize(width: 40, height: 35))
+            facialDisc.fillColor = SKColor(red: 0.9, green: 0.85, blue: 0.75, alpha: 1.0)
+            facialDisc.strokeColor = SKColor(red: 0.7, green: 0.5, blue: 0.3, alpha: 1.0)
+            facialDisc.position = CGPoint(x: 15, y: 10)
+            addChild(facialDisc)
+            
+            // Add big owl eyes
+            let leftEye = SKShapeNode(circleOfRadius: 8)
+            leftEye.fillColor = .yellow
+            leftEye.strokeColor = .orange
+            leftEye.position = CGPoint(x: 5, y: 12)
+            addChild(leftEye)
+            
+            let rightEye = SKShapeNode(circleOfRadius: 8)
+            rightEye.fillColor = .yellow
+            rightEye.strokeColor = .orange
+            rightEye.position = CGPoint(x: 25, y: 12)
+            addChild(rightEye)
+            
+            // Add ear tufts
+            let leftTuft = SKShapeNode(ellipseOf: CGSize(width: 8, height: 15))
+            leftTuft.fillColor = colorForType().darker()
+            leftTuft.strokeColor = .clear
+            leftTuft.position = CGPoint(x: -5, y: 25)
+            leftTuft.zRotation = 0.3
+            addChild(leftTuft)
+            
+            let rightTuft = SKShapeNode(ellipseOf: CGSize(width: 8, height: 15))
+            rightTuft.fillColor = colorForType().darker()
+            rightTuft.strokeColor = .clear
+            rightTuft.position = CGPoint(x: 35, y: 25)
+            rightTuft.zRotation = -0.3
+            addChild(rightTuft)
             
         default:
             break
