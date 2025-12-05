@@ -406,23 +406,17 @@ struct ControlButton: View {
     }
 }
 
-// MARK: - Temporary shim for missing GameScene movement API
+// MARK: - GameScene Movement API Extension
 
-// This extension provides a stub for `movePlayerHorizontally(by:)` so that
-// GameView and GameController can compile even if GameScene hasn't implemented
-// this API yet. Replace the body with your actual movement logic in GameScene.
+// This extension provides the `movePlayerHorizontally(by:)` method that GameView
+// and GameController use for player movement. It delegates to the existing
+// movePlayer(byHorizontalAmount:) method in GameScene.
 extension GameScene {
+    /// Move the player horizontally by the given delta X value.
+    /// This method is called by GameView and GameController for movement input.
     @objc func movePlayerHorizontally(by deltaX: CGFloat) {
-        // TODO: Implement horizontal movement in GameScene.
-        // You can forward to your actual movement method here if it exists,
-        // for example: self.movePlayer(byX: deltaX)
-        #if DEBUG
-        // Debug log to help verify calls during development
-        print("[GameScene] movePlayerHorizontally(by:) called with deltaX =", deltaX)
-        #endif
-        // Optionally, broadcast an intent that the scene (or another component)
-        // can observe to perform movement.
-        NotificationCenter.default.post(name: Notification.Name("GameSceneMovePlayerHorizontally"), object: self, userInfo: ["deltaX": deltaX])
+        // Forward to the proper movement method in GameScene
+        movePlayer(byHorizontalAmount: deltaX)
     }
 }
 
