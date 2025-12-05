@@ -99,6 +99,10 @@ struct OpenWorldView: View {
     // 3D Scene reference
     @State private var scene3D: OpenWorld3DScene?
     
+    // Constants
+    private let maxAltitude: Double = 500
+    private let minAltitude: Double = 5
+    
     var body: some View {
         ZStack {
             // 3D Scene View as the main background
@@ -179,13 +183,13 @@ struct OpenWorldView: View {
                     // Fill
                     RoundedRectangle(cornerRadius: 4)
                         .fill(Color.blue)
-                        .frame(width: 8, height: geometry.size.height * CGFloat(altitudeSliderValue / 500))
+                        .frame(width: 8, height: geometry.size.height * CGFloat(altitudeSliderValue / maxAltitude))
                 }
                 .gesture(
                     DragGesture(minimumDistance: 0)
                         .onChanged { value in
-                            let newValue = 500 - (Double(value.location.y / geometry.size.height) * 500)
-                            altitudeSliderValue = max(5, min(500, newValue))
+                            let newValue = maxAltitude - (Double(value.location.y / geometry.size.height) * maxAltitude)
+                            altitudeSliderValue = max(minAltitude, min(maxAltitude, newValue))
                         }
                 )
             }

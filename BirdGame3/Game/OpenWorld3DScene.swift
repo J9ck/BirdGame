@@ -59,6 +59,19 @@ class OpenWorld3DScene: SCNScene {
         updateBiome(manager.playerState.currentBiome)
     }
     
+    // MARK: - Helper Methods
+    
+    /// Convert world position to scene coordinates relative to player
+    private func worldToScenePosition(_ worldPos: WorldPosition) -> SCNVector3 {
+        let playerX = openWorldManager?.playerState.position.x ?? 0
+        let playerY = openWorldManager?.playerState.position.y ?? 0
+        return SCNVector3(
+            Float(worldPos.x - playerX),
+            Float(worldPos.z),
+            Float(worldPos.y - playerY)
+        )
+    }
+    
     // MARK: - Scene Setup
     
     private func setupScene() {
@@ -266,12 +279,8 @@ class OpenWorld3DScene: SCNScene {
         // Add or update prey nodes
         for prey in nearbyPrey {
             if let existingNode = preyNodes[prey.id] {
-                // Update position
-                let targetPos = SCNVector3(
-                    Float(prey.position.x - (openWorldManager?.playerState.position.x ?? 0)),
-                    Float(prey.position.z),
-                    Float(prey.position.y - (openWorldManager?.playerState.position.y ?? 0))
-                )
+                // Update position using helper method
+                let targetPos = worldToScenePosition(prey.position)
                 
                 SCNTransaction.begin()
                 SCNTransaction.animationDuration = 0.3
@@ -329,11 +338,7 @@ class OpenWorld3DScene: SCNScene {
         geometry.materials = [material]
         
         node.geometry = geometry
-        node.position = SCNVector3(
-            Float(prey.position.x - (openWorldManager?.playerState.position.x ?? 0)),
-            Float(prey.position.z),
-            Float(prey.position.y - (openWorldManager?.playerState.position.y ?? 0))
-        )
+        node.position = worldToScenePosition(prey.position)
         
         // Add label
         let labelNode = createLabelNode(text: prey.type.emoji)
@@ -404,11 +409,7 @@ class OpenWorld3DScene: SCNScene {
         geometry.materials = [material]
         
         node.geometry = geometry
-        node.position = SCNVector3(
-            Float(resource.position.x - (openWorldManager?.playerState.position.x ?? 0)),
-            Float(resource.position.z),
-            Float(resource.position.y - (openWorldManager?.playerState.position.y ?? 0))
-        )
+        node.position = worldToScenePosition(resource.position)
         
         // Add floating animation for shiny objects
         if resource.type == .shinyObjects {
@@ -436,12 +437,8 @@ class OpenWorld3DScene: SCNScene {
         // Add or update player markers
         for player in players {
             if let existingNode = playerMarkerNodes[player.id] {
-                // Update position
-                let targetPos = SCNVector3(
-                    Float(player.position.x - (openWorldManager?.playerState.position.x ?? 0)),
-                    Float(player.position.z),
-                    Float(player.position.y - (openWorldManager?.playerState.position.y ?? 0))
-                )
+                // Update position using helper method
+                let targetPos = worldToScenePosition(player.position)
                 
                 SCNTransaction.begin()
                 SCNTransaction.animationDuration = 0.3
@@ -465,11 +462,7 @@ class OpenWorld3DScene: SCNScene {
         bodyGeometry.materials = [material]
         
         node.geometry = bodyGeometry
-        node.position = SCNVector3(
-            Float(player.position.x - (openWorldManager?.playerState.position.x ?? 0)),
-            Float(player.position.z),
-            Float(player.position.y - (openWorldManager?.playerState.position.y ?? 0))
-        )
+        node.position = worldToScenePosition(player.position)
         
         // Add name label
         let labelNode = createLabelNode(text: player.name)
@@ -511,11 +504,7 @@ class OpenWorld3DScene: SCNScene {
         
         let nestNode = createNestNode(nest)
         nestNode.name = "homeNest"
-        nestNode.position = SCNVector3(
-            Float(nest.position.x - (openWorldManager?.playerState.position.x ?? 0)),
-            Float(nest.position.z),
-            Float(nest.position.y - (openWorldManager?.playerState.position.y ?? 0))
-        )
+        nestNode.position = worldToScenePosition(nest.position)
         
         rootNode.addChildNode(nestNode)
     }

@@ -300,7 +300,8 @@ class Terrain3D {
                 case .mountain:
                     material.diffuse.contents = UIColor(red: 0.55, green: 0.55, blue: 0.6, alpha: 1.0)
                     rock.isHidden = false
-                    rock.scale = SCNVector3(rock.scale.x * 1.5, rock.scale.y * 1.5, rock.scale.z * 1.5)
+                    // Use absolute scale for mountain biome instead of cumulative
+                    rock.scale = SCNVector3(1.5, 1.2, 1.5)
                 case .swamp:
                     material.diffuse.contents = UIColor(red: 0.35, green: 0.35, blue: 0.3, alpha: 1.0)
                     rock.isHidden = Bool.random()

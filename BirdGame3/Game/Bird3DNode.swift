@@ -233,7 +233,7 @@ class Bird3DNode: SCNNode {
         let diveSequence = SCNAction.sequence([diveRotation, holdDive, recover])
         runAction(diveSequence)
         
-        // Fold wings during dive
+        // Fold wings during dive - apply to both wings
         let foldWings = SCNAction.run { [weak self] _ in
             self?.leftWing?.eulerAngles = SCNVector3(0, 0, Float.pi / 6)
             self?.rightWing?.eulerAngles = SCNVector3(0, 0, -Float.pi / 6)
@@ -242,7 +242,9 @@ class Bird3DNode: SCNNode {
             self?.animateFlying()
         }
         
-        leftWing?.runAction(SCNAction.sequence([foldWings, SCNAction.wait(duration: 0.8), unfoldWings]))
+        let wingSequence = SCNAction.sequence([foldWings, SCNAction.wait(duration: 0.8), unfoldWings])
+        leftWing?.runAction(wingSequence)
+        rightWing?.runAction(wingSequence)
     }
     
     /// Attack animation
