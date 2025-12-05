@@ -165,6 +165,41 @@ final class BirdGame3Tests: XCTestCase {
         }
     }
     
+    func testOwlBirdTypeExists() {
+        XCTAssertTrue(BirdType.allCases.contains(.owl))
+        XCTAssertEqual(BirdType.owl.displayName, "Owl")
+        XCTAssertEqual(BirdType.owl.emoji, "🦉")
+    }
+    
+    func testAllBirdTypesHaveSkills() {
+        for bird in BirdType.allCases {
+            let skills = bird.skills
+            XCTAssertGreaterThanOrEqual(skills.count, 3, "\(bird.displayName) should have at least 3 skills")
+            XCTAssertLessThanOrEqual(skills.count, 4, "\(bird.displayName) should have at most 4 skills")
+        }
+    }
+    
+    func testAllBirdTypesHavePassive() {
+        for bird in BirdType.allCases {
+            let passive = bird.passive
+            XCTAssertFalse(passive.name.isEmpty, "\(bird.displayName) should have a passive name")
+            XCTAssertFalse(passive.description.isEmpty, "\(bird.displayName) should have a passive description")
+        }
+    }
+    
+    func testBirdSkillsHaveValidData() {
+        for bird in BirdType.allCases {
+            for skill in bird.skills {
+                XCTAssertFalse(skill.id.isEmpty)
+                XCTAssertFalse(skill.name.isEmpty)
+                XCTAssertFalse(skill.description.isEmpty)
+                XCTAssertGreaterThan(skill.cooldown, 0)
+                XCTAssertGreaterThanOrEqual(skill.energyCost, 0)
+                XCTAssertFalse(skill.icon.isEmpty)
+            }
+        }
+    }
+    
     // MARK: - World Position Tests
     
     func testWorldPositionDistance() {

@@ -53,28 +53,56 @@ class CurrencyManager: ObservableObject {
     
     // MARK: - Currency Operations
     
-    /// Add coins
-    func addCoins(_ amount: Int) {
+    /// Add coins with optional reason tracking
+    func addCoins(_ amount: Int, reason: String? = nil) {
         coins += amount
+        if let reason = reason {
+            logTransaction(type: .coinEarned, amount: amount, reason: reason)
+        }
     }
     
-    /// Spend coins if player has enough
-    func spendCoins(_ amount: Int) -> Bool {
+    /// Spend coins if player has enough with optional reason tracking
+    func spendCoins(_ amount: Int, reason: String? = nil) -> Bool {
         guard coins >= amount else { return false }
         coins -= amount
+        if let reason = reason {
+            logTransaction(type: .coinSpent, amount: amount, reason: reason)
+        }
         return true
     }
     
-    /// Add feathers (premium currency)
-    func addFeathers(_ amount: Int) {
+    /// Add feathers (premium currency) with optional reason tracking
+    func addFeathers(_ amount: Int, reason: String? = nil) {
         feathers += amount
+        if let reason = reason {
+            logTransaction(type: .featherEarned, amount: amount, reason: reason)
+        }
     }
     
-    /// Spend feathers if player has enough
-    func spendFeathers(_ amount: Int) -> Bool {
+    /// Spend feathers if player has enough with optional reason tracking
+    func spendFeathers(_ amount: Int, reason: String? = nil) -> Bool {
         guard feathers >= amount else { return false }
         feathers -= amount
+        if let reason = reason {
+            logTransaction(type: .featherSpent, amount: amount, reason: reason)
+        }
         return true
+    }
+    
+    // MARK: - Transaction Logging
+    
+    private enum TransactionType: String {
+        case coinEarned = "coin_earned"
+        case coinSpent = "coin_spent"
+        case featherEarned = "feather_earned"
+        case featherSpent = "feather_spent"
+    }
+    
+    private func logTransaction(type: TransactionType, amount: Int, reason: String) {
+        // Log transaction for analytics/debugging (could be expanded for detailed history)
+        #if DEBUG
+        print("💰 [\(type.rawValue)] \(amount) - \(reason)")
+        #endif
     }
     
     /// Check if player can afford something
@@ -126,6 +154,41 @@ class CurrencyManager: ObservableObject {
         )
     }
     
+    // MARK: - Credit Multiplier System
+    
+    /// Active credit multipliers from cosmetics/accessories
+    @Published private(set) var creditMultiplier: Double = 1.0
+    
+    /// Set the credit multiplier based on equipped cosmetics
+    func updateCreditMultiplier(from equippedSkins: [BirdSkin]) {
+        var multiplier = 1.0
+        
+        for skin in equippedSkins {
+            // Rare skins give 5% bonus, Epic 10%, Legendary 15%, Mythic 25%
+            switch skin.rarity {
+            case .common:
+                break
+            case .rare:
+                multiplier += 0.05
+            case .epic:
+                multiplier += 0.10
+            case .legendary:
+                multiplier += 0.15
+            case .mythic:
+                multiplier += 0.25
+            }
+        }
+        
+        // Cap at 2x multiplier
+        creditMultiplier = min(2.0, multiplier)
+    }
+    
+    /// Apply credit multiplier to coin earnings
+    func addCoinsWithMultiplier(_ baseAmount: Int, reason: String? = nil) {
+        let multipliedAmount = Int(Double(baseAmount) * creditMultiplier)
+        addCoins(multipliedAmount, reason: reason)
+    }
+    
     // MARK: - Persistence
     
     private func save() {
@@ -137,6 +200,7 @@ class CurrencyManager: ObservableObject {
     func reset() {
         coins = 500
         feathers = 10
+        creditMultiplier = 1.0
         save()
     }
 }

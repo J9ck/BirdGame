@@ -1,17 +1,54 @@
 # 🐦 BIRD GAME 3 🐦
 
-> *"The legendary bird combat experience that the internet demanded"*
+> *"The legendary bird combat experience that the internet demanded - Now in 3D!"*
 
 [![Swift](https://img.shields.io/badge/Swift-5.0-orange.svg)](https://swift.org)
 [![iOS](https://img.shields.io/badge/iOS-15.0+-blue.svg)](https://developer.apple.com/ios/)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![3D](https://img.shields.io/badge/3D-SceneKit-purple.svg)](https://developer.apple.com/scenekit/)
 [![Hummingbird Status](https://img.shields.io/badge/Hummingbird-Still%20OP-red.svg)](https://github.com)
 
 ## 📖 What is Bird Game 3?
 
-Bird Game 3 is a fast-paced bird fighting game inspired by the viral AI-generated TikTok meme. Experience epic bird-on-bird combat with pigeons, eagles, hummingbirds, and more as they battle in chaotic matches filled with over-the-top trash talk and hilariously absurd UI elements.
+Bird Game 3 is a full **3D open-world MMORPG** experience for birds, modeled on "The Wolf: Animal Game MMORPG". Originally a fast-paced bird fighting game inspired by the viral AI-generated TikTok meme, it now features a complete 3D open world with flying mechanics, hunting, nest building, territory control, and multiplayer systems.
 
 **There is no Bird Game 1 or 2. Only 3. Don't ask questions.**
+
+## 🌟 Key Features
+
+### 🎮 3D Open World MMORPG
+- **Full 3D flight** with takeoff, landing, banking, gliding, diving, and sprint mechanics
+- **8 unique biomes** to explore: Forest, Plains, Desert, Mountain, Swamp, Beach, Tundra, Jungle
+- **Third-person camera** with follow, collision detection, lock-on targeting, and configurable sensitivity
+- **Day/night cycle** with dynamic lighting and weather effects
+
+### 🦅 6 Playable Bird Archetypes
+- **Pigeon** (Balanced) - The iconic coo machine
+- **Hummingbird** (Speed) - Still OP after 47 nerfs
+- **Eagle** (Power) - FREEDOM INTENSIFIES
+- **Crow** (Trickster/Control) - Knows your secrets
+- **Pelican** (Tank) - Thicc boy energy
+- **Owl** (Control/Sustain) - **NEW!** The silent night hunter
+
+### ⚔️ Combat & Skills System
+- **3-4 active skills per bird** with cooldowns and visual effects
+- **Lock-on targeting** for focused combat
+- **Status effects**: Bleed, Stun, Slow, and more
+- **Damage formulas** with ATK/DEF calculations
+- **Server-authoritative hit validation** for anti-cheat
+
+### 🪺 Progression Systems
+- **XP/Leveling** with skill unlocks
+- **Crafting system** with biome-specific recipes
+- **Quest/Mission system** with daily/weekly challenges
+- **Nest building** with upgrades and defenses
+- **Territory control** for flock competition
+
+### 🌐 Multiplayer & Social
+- **Party system** (up to 4 players)
+- **Flocks** (guilds) with territory wars
+- **Chat** and quick-chat options
+- **Anti-cheat basics** with server validation
 
 ## 🎮 Game Modes
 
@@ -96,6 +133,14 @@ Join a Flock (clan) and compete for territory control! Capture zones for bonus r
 - **Special Ability**: **Fish Slap** - Damage with knockback
 - **Playstyle**: Absorb everything. Slap with fish. Repeat.
 
+### 🦉 Owl (The Night Hunter) - **NEW!**
+> *"The silent night hunter. Who? WHO? That's classified."*
+
+- **Stats**: Balanced with sustain, bonus at night
+- **Special Ability**: **Silent Strike** - Backstab with bleed effect
+- **Passive**: **Night Hunter** - +25% damage and stealth at night
+- **Playstyle**: Patient. Calculated. Watches from the shadows.
+
 ## 📊 Stats Explained
 
 | Stat | Real Meaning | What We Tell You |
@@ -162,12 +207,13 @@ Bird Game 3 features a control scheme inspired by **"The Wolf: Animal Game MMORP
 ## 🔧 Technical Requirements
 
 - **Platform**: iOS 15.0+
-- **Framework**: SwiftUI + SpriteKit
+- **Frameworks**: SwiftUI + SceneKit (3D) + SpriteKit (2D Combat)
 - **Device**: iPhone (iPad supported)
 - **Storage**: Minimal (it's birds, not a AAA game)
 
 ## 🛠️ Building the Project
 
+### Quick Start
 1. Clone the repository:
 ```bash
 git clone https://github.com/J9ck/BirdGame.git
@@ -180,6 +226,41 @@ git clone https://github.com/J9ck/BirdGame.git
 4. Press `Cmd + R` to build and run
 
 5. Embrace the chaos
+
+### 3D Client Build Instructions
+
+The 3D open world uses **SceneKit** for iOS. Key components:
+
+| Directory | Purpose |
+|-----------|---------|
+| `BirdGame3/Game/` | 3D scene files (OpenWorld3DScene, Terrain3D, Bird3DNode, FlightController, CameraController) |
+| `BirdGame3/Managers/` | Game logic (OpenWorldManager, FlockManager, CraftingManager, QuestManager, SettingsManager) |
+| `BirdGame3/Views/` | SwiftUI views and UI components |
+
+**Performance Targets:**
+- 30/60 FPS on mid-tier devices
+- LOD system for terrain
+- Object pooling for prey/resources
+- Dynamic resolution scaling
+- Configurable graphics presets (Low/Medium/High/Ultra)
+
+**Graphics Settings (in SettingsManager):**
+- Shadow quality
+- Draw distance
+- Particle count
+- Anti-aliasing
+- Post-processing effects
+
+### Backend Setup (Supabase)
+
+See [BACKEND_SETUP.md](BACKEND_SETUP.md) and [SUPABASE_SETUP_GUIDE.md](SUPABASE_SETUP_GUIDE.md) for backend configuration.
+
+Database tables support:
+- `player_profiles` - User accounts and stats
+- `player_inventory` - Items and resources
+- `flocks` - Guild/clan data
+- `territories` - Territory control state
+- `sessions` - Game sessions for multiplayer
 
 ## 📝 Patch Notes (v3.47.2)
 

@@ -1201,5 +1201,194 @@ class SupabaseManager: ObservableObject {
  CREATE INDEX idx_chat_messages_channel ON chat_messages(channel_id);
  CREATE INDEX idx_chat_messages_created ON chat_messages(created_at DESC);
 
+ -- =====================================================
+ -- NEW TABLES FOR 3D MMORPG FEATURES
+ -- =====================================================
+
+ -- Territories (Flock-controlled zones)
+ CREATE TABLE territories (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     name TEXT UNIQUE NOT NULL,
+     center_x DOUBLE PRECISION NOT NULL,
+     center_y DOUBLE PRECISION NOT NULL,
+     center_z DOUBLE PRECISION DEFAULT 50,
+     radius DOUBLE PRECISION DEFAULT 800,
+     biome TEXT NOT NULL,
+     controlling_flock_id UUID REFERENCES flocks(id) ON DELETE SET NULL,
+     control_points INTEGER DEFAULT 0,
+     max_control_points INTEGER DEFAULT 100,
+     bonus_multiplier DOUBLE PRECISION DEFAULT 1.0,
+     last_captured_at TIMESTAMPTZ,
+     created_at TIMESTAMPTZ DEFAULT NOW(),
+     updated_at TIMESTAMPTZ DEFAULT NOW()
+ );
+
+ -- Territory Control History (for tracking captures)
+ CREATE TABLE territory_history (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     territory_id UUID REFERENCES territories(id) ON DELETE CASCADE,
+     flock_id UUID REFERENCES flocks(id) ON DELETE SET NULL,
+     captured_at TIMESTAMPTZ DEFAULT NOW(),
+     held_duration INTEGER, -- seconds held before loss
+     points_earned INTEGER DEFAULT 0
+ );
+
+ -- Game Sessions (for multiplayer state synchronization)
+ CREATE TABLE game_sessions (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     session_type TEXT NOT NULL CHECK (session_type IN ('open_world', 'squad_battle', 'nest_wars', 'battle_royale')),
+     host_id UUID REFERENCES player_profiles(id),
+     player_ids UUID[] DEFAULT ARRAY[]::UUID[],
+     max_players INTEGER DEFAULT 50,
+     current_players INTEGER DEFAULT 0,
+     region TEXT DEFAULT 'auto',
+     status TEXT DEFAULT 'active' CHECK (status IN ('active', 'starting', 'full', 'ended')),
+     server_address TEXT,
+     created_at TIMESTAMPTZ DEFAULT NOW(),
+     updated_at TIMESTAMPTZ DEFAULT NOW(),
+     ended_at TIMESTAMPTZ
+ );
+
+ -- Session Players (for tracking player state in sessions)
+ CREATE TABLE session_players (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     session_id UUID REFERENCES game_sessions(id) ON DELETE CASCADE,
+     player_id UUID REFERENCES player_profiles(id) ON DELETE CASCADE,
+     bird_type TEXT NOT NULL,
+     skin_id TEXT NOT NULL,
+     position_x DOUBLE PRECISION DEFAULT 0,
+     position_y DOUBLE PRECISION DEFAULT 0,
+     position_z DOUBLE PRECISION DEFAULT 50,
+     health DOUBLE PRECISION DEFAULT 100,
+     energy DOUBLE PRECISION DEFAULT 100,
+     is_alive BOOLEAN DEFAULT TRUE,
+     joined_at TIMESTAMPTZ DEFAULT NOW(),
+     last_update TIMESTAMPTZ DEFAULT NOW(),
+     UNIQUE(session_id, player_id)
+ );
+
+ -- Player Quests (tracking quest progress)
+ CREATE TABLE player_quests (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     player_id UUID REFERENCES player_profiles(id) ON DELETE CASCADE,
+     quest_id TEXT NOT NULL,
+     quest_type TEXT NOT NULL CHECK (quest_type IN ('daily', 'weekly', 'story', 'achievement', 'event')),
+     objectives JSONB DEFAULT '[]',
+     is_completed BOOLEAN DEFAULT FALSE,
+     is_claimed BOOLEAN DEFAULT FALSE,
+     started_at TIMESTAMPTZ DEFAULT NOW(),
+     completed_at TIMESTAMPTZ,
+     expires_at TIMESTAMPTZ
+ );
+
+ -- Crafted Items Inventory
+ CREATE TABLE player_crafted_items (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     player_id UUID REFERENCES player_profiles(id) ON DELETE CASCADE,
+     item_type TEXT NOT NULL,
+     item_id TEXT NOT NULL,
+     quantity INTEGER DEFAULT 1,
+     acquired_at TIMESTAMPTZ DEFAULT NOW(),
+     UNIQUE(player_id, item_id)
+ );
+
+ -- Crafting Queue
+ CREATE TABLE crafting_queue (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     player_id UUID REFERENCES player_profiles(id) ON DELETE CASCADE,
+     recipe_id TEXT NOT NULL,
+     started_at TIMESTAMPTZ DEFAULT NOW(),
+     completes_at TIMESTAMPTZ NOT NULL,
+     is_collected BOOLEAN DEFAULT FALSE
+ );
+
+ -- Combat Logs (for anti-cheat and analytics)
+ CREATE TABLE combat_logs (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     session_id UUID REFERENCES game_sessions(id) ON DELETE CASCADE,
+     attacker_id UUID REFERENCES player_profiles(id),
+     defender_id UUID,
+     damage_dealt DOUBLE PRECISION,
+     skill_id TEXT,
+     was_critical BOOLEAN DEFAULT FALSE,
+     attacker_position_x DOUBLE PRECISION,
+     attacker_position_y DOUBLE PRECISION,
+     attacker_position_z DOUBLE PRECISION,
+     defender_position_x DOUBLE PRECISION,
+     defender_position_y DOUBLE PRECISION,
+     defender_position_z DOUBLE PRECISION,
+     distance DOUBLE PRECISION,
+     timestamp TIMESTAMPTZ DEFAULT NOW(),
+     validation_status TEXT DEFAULT 'pending' CHECK (validation_status IN ('pending', 'valid', 'suspicious', 'rejected'))
+ );
+
+ -- Player Settings (synced across devices)
+ CREATE TABLE player_settings (
+     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+     player_id UUID REFERENCES player_profiles(id) ON DELETE CASCADE UNIQUE,
+     graphics_quality TEXT DEFAULT 'high',
+     target_fps INTEGER DEFAULT 60,
+     camera_sensitivity_x DOUBLE PRECISION DEFAULT 1.0,
+     camera_sensitivity_y DOUBLE PRECISION DEFAULT 1.0,
+     invert_camera_x BOOLEAN DEFAULT FALSE,
+     invert_camera_y BOOLEAN DEFAULT FALSE,
+     haptic_feedback BOOLEAN DEFAULT TRUE,
+     master_volume DOUBLE PRECISION DEFAULT 1.0,
+     music_volume DOUBLE PRECISION DEFAULT 0.7,
+     sfx_volume DOUBLE PRECISION DEFAULT 1.0,
+     push_notifications BOOLEAN DEFAULT TRUE,
+     updated_at TIMESTAMPTZ DEFAULT NOW()
+ );
+
+ -- Enable RLS on new tables
+ ALTER TABLE territories ENABLE ROW LEVEL SECURITY;
+ ALTER TABLE territory_history ENABLE ROW LEVEL SECURITY;
+ ALTER TABLE game_sessions ENABLE ROW LEVEL SECURITY;
+ ALTER TABLE session_players ENABLE ROW LEVEL SECURITY;
+ ALTER TABLE player_quests ENABLE ROW LEVEL SECURITY;
+ ALTER TABLE player_crafted_items ENABLE ROW LEVEL SECURITY;
+ ALTER TABLE crafting_queue ENABLE ROW LEVEL SECURITY;
+ ALTER TABLE combat_logs ENABLE ROW LEVEL SECURITY;
+ ALTER TABLE player_settings ENABLE ROW LEVEL SECURITY;
+
+ -- Policies for new tables
+ CREATE POLICY "Territories are viewable by everyone" ON territories FOR SELECT USING (true);
+ CREATE POLICY "Territory history is viewable by everyone" ON territory_history FOR SELECT USING (true);
+ 
+ CREATE POLICY "Game sessions are viewable by everyone" ON game_sessions FOR SELECT USING (true);
+ CREATE POLICY "Users can create game sessions" ON game_sessions FOR INSERT WITH CHECK (auth.uid() = host_id);
+ CREATE POLICY "Hosts can update sessions" ON game_sessions FOR UPDATE USING (auth.uid() = host_id);
+
+ CREATE POLICY "Session players viewable by session members" ON session_players FOR SELECT USING (true);
+ CREATE POLICY "Users can join sessions" ON session_players FOR INSERT WITH CHECK (auth.uid() = player_id);
+ CREATE POLICY "Users can update own session state" ON session_players FOR UPDATE USING (auth.uid() = player_id);
+
+ CREATE POLICY "Users can view own quests" ON player_quests FOR SELECT USING (auth.uid() = player_id);
+ CREATE POLICY "Users can update own quests" ON player_quests FOR ALL USING (auth.uid() = player_id);
+
+ CREATE POLICY "Users can view own crafted items" ON player_crafted_items FOR SELECT USING (auth.uid() = player_id);
+ CREATE POLICY "Users can manage own crafted items" ON player_crafted_items FOR ALL USING (auth.uid() = player_id);
+
+ CREATE POLICY "Users can view own crafting queue" ON crafting_queue FOR SELECT USING (auth.uid() = player_id);
+ CREATE POLICY "Users can manage own crafting queue" ON crafting_queue FOR ALL USING (auth.uid() = player_id);
+
+ CREATE POLICY "Combat logs viewable by participants" ON combat_logs FOR SELECT USING (auth.uid() = attacker_id);
+ CREATE POLICY "Combat logs insertable by attackers" ON combat_logs FOR INSERT WITH CHECK (auth.uid() = attacker_id);
+
+ CREATE POLICY "Users can view own settings" ON player_settings FOR SELECT USING (auth.uid() = player_id);
+ CREATE POLICY "Users can manage own settings" ON player_settings FOR ALL USING (auth.uid() = player_id);
+
+ -- Indexes for new tables
+ CREATE INDEX idx_territories_biome ON territories(biome);
+ CREATE INDEX idx_territories_flock ON territories(controlling_flock_id);
+ CREATE INDEX idx_game_sessions_status ON game_sessions(status);
+ CREATE INDEX idx_game_sessions_type ON game_sessions(session_type);
+ CREATE INDEX idx_session_players_session ON session_players(session_id);
+ CREATE INDEX idx_player_quests_player ON player_quests(player_id);
+ CREATE INDEX idx_player_quests_type ON player_quests(quest_type);
+ CREATE INDEX idx_combat_logs_session ON combat_logs(session_id);
+ CREATE INDEX idx_combat_logs_attacker ON combat_logs(attacker_id);
+ CREATE INDEX idx_combat_logs_timestamp ON combat_logs(timestamp DESC);
+
  */
 
