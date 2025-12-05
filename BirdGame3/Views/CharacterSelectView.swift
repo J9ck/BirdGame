@@ -4,12 +4,6 @@
 //
 //  Choose your feathered warrior wisely
 //
-//
-//  CharacterSelectView.swift
-//  BirdGame3
-//
-//  Choose your feathered warrior wisely
-//
 
 import SwiftUI
 
@@ -60,11 +54,11 @@ struct CharacterSelectView: View {
                     .tabViewStyle(.page(indexDisplayMode: .always))
                     .frame(height: 400)
                     .onChange(of: selectedIndex) { _, newValue in
+                        guard newValue >= 0 && newValue < BirdType.allCases.count else { return }
                         gameState.selectedBird = BirdType.allCases[newValue]
                     }
                 } else {
-                    // Fallback on earlier versions
-                };if #available(iOS 17.0, *) {
+                    // Fallback for iOS 16 and earlier
                     TabView(selection: $selectedIndex) {
                         ForEach(Array(BirdType.allCases.enumerated()), id: \.element.id) { index, bird in
                             CharacterCard(bird: bird, isSelected: gameState.selectedBird == bird)
@@ -78,11 +72,10 @@ struct CharacterSelectView: View {
                     }
                     .tabViewStyle(.page(indexDisplayMode: .always))
                     .frame(height: 400)
-                    .onChange(of: selectedIndex) { _, newValue in
+                    .onChange(of: selectedIndex) { newValue in
+                        guard newValue >= 0 && newValue < BirdType.allCases.count else { return }
                         gameState.selectedBird = BirdType.allCases[newValue]
                     }
-                } else {
-                    // Fallback on earlier versions
                 }
                 
                 // Opponent preview (if not training)

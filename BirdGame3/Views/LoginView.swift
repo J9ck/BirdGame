@@ -193,8 +193,8 @@ struct LoginView: View {
                 }
             }
         }
-        .onChange(of: account.isLoggedIn) { isLoggedIn in
-            if isLoggedIn {
+        .onChange(of: account.isLoggedIn) { newValue in
+            if newValue {
                 dismiss()
             }
         }

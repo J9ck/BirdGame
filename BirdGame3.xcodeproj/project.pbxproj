@@ -50,6 +50,9 @@
 		A10000000000000000000037 /* LoginView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000037 /* LoginView.swift */; };
 		A10000000000000000000038 /* SupabaseManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000038 /* SupabaseManager.swift */; };
 		A10000000000000000000040 /* ChairBNBEasterEgg.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000040 /* ChairBNBEasterEgg.swift */; };
+		A10000000000000000000041 /* OpenWorld3DScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000041 /* OpenWorld3DScene.swift */; };
+		A10000000000000000000042 /* Bird3DNode.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000042 /* Bird3DNode.swift */; };
+		A10000000000000000000043 /* Terrain3D.swift in Sources */ = {isa = PBXBuildFile; fileRef = A20000000000000000000043 /* Terrain3D.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -97,6 +100,9 @@
 		A20000000000000000000037 /* LoginView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoginView.swift; sourceTree = "<group>"; };
 		A20000000000000000000038 /* SupabaseManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupabaseManager.swift; sourceTree = "<group>"; };
 		A20000000000000000000040 /* ChairBNBEasterEgg.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChairBNBEasterEgg.swift; sourceTree = "<group>"; };
+		A20000000000000000000041 /* OpenWorld3DScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OpenWorld3DScene.swift; sourceTree = "<group>"; };
+		A20000000000000000000042 /* Bird3DNode.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bird3DNode.swift; sourceTree = "<group>"; };
+		A20000000000000000000043 /* Terrain3D.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Terrain3D.swift; sourceTree = "<group>"; };
 		A30000000000000000000001 /* BirdGame3.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BirdGame3.app; sourceTree = BUILT_PRODUCTS_DIR; };
 /* End PBXFileReference section */
 
@@ -172,6 +178,9 @@
 				A20000000000000000000007 /* BirdCharacter.swift */,
 				A20000000000000000000008 /* CombatSystem.swift */,
 				A20000000000000000000040 /* ChairBNBEasterEgg.swift */,
+				A20000000000000000000041 /* OpenWorld3DScene.swift */,
+				A20000000000000000000042 /* Bird3DNode.swift */,
+				A20000000000000000000043 /* Terrain3D.swift */,
 			);
 			path = Game;
 			sourceTree = "<group>";
@@ -345,6 +354,9 @@
 				A10000000000000000000037 /* LoginView.swift in Sources */,
 				A10000000000000000000038 /* SupabaseManager.swift in Sources */,
 				A10000000000000000000040 /* ChairBNBEasterEgg.swift in Sources */,
+				A10000000000000000000041 /* OpenWorld3DScene.swift in Sources */,
+				A10000000000000000000042 /* Bird3DNode.swift in Sources */,
+				A10000000000000000000043 /* Terrain3D.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

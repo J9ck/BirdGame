@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SceneKit
 
 @main
 struct BirdGame3App: App {
@@ -93,20 +94,30 @@ struct OpenWorldView: View {
     @State private var showHuntMessage = false
     @State private var joystickOffset: CGSize = .zero
     @State private var isMoving = false
+    @State private var altitudeSliderValue: Double = 50
+    
+    // 3D Scene reference
+    @State private var scene3D: OpenWorld3DScene?
+    
+    // Constants
+    private let maxAltitude: Double = 500
+    private let minAltitude: Double = 5
     
     var body: some View {
         ZStack {
-            // Dynamic background based on biome and time
-            biomeBackground
+            // 3D Scene View as the main background
+            OpenWorld3DViewRepresentable(
+                scene: scene3D,
+                birdType: gameState.selectedBird,
+                openWorldManager: openWorld,
+                joystickOffset: joystickOffset,
+                altitude: Float(altitudeSliderValue)
+            )
+            .ignoresSafeArea()
             
             VStack(spacing: 0) {
                 // Top HUD
                 topHUD
-                
-                Spacer()
-                
-                // Center area - World view with prey and players
-                centerWorldView
                 
                 Spacer()
                 
@@ -117,6 +128,10 @@ struct OpenWorldView: View {
             // Minimap in top-right
             minimap
                 .position(x: UIScreen.main.bounds.width - 70, y: 140)
+            
+            // Altitude slider on the right side
+            altitudeControl
+                .position(x: UIScreen.main.bounds.width - 40, y: UIScreen.main.bounds.height / 2)
             
             // Hunt message overlay
             if showHuntMessage {
@@ -141,6 +156,55 @@ struct OpenWorldView: View {
             // Voice chat overlay
             VoiceChatOverlay()
         }
+        .onAppear {
+            setupScene()
+        }
+    }
+    
+    private func setupScene() {
+        scene3D = OpenWorld3DScene(birdType: gameState.selectedBird, manager: openWorld)
+    }
+    
+    // MARK: - Altitude Control
+    
+    private var altitudeControl: some View {
+        VStack(spacing: 8) {
+            Text("🔼")
+                .font(.title2)
+            
+            // Vertical slider for altitude
+            GeometryReader { geometry in
+                ZStack(alignment: .bottom) {
+                    // Track
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.white.opacity(0.3))
+                        .frame(width: 8)
+                    
+                    // Fill
+                    RoundedRectangle(cornerRadius: 4)
+                        .fill(Color.blue)
+                        .frame(width: 8, height: geometry.size.height * CGFloat(altitudeSliderValue / maxAltitude))
+                }
+                .gesture(
+                    DragGesture(minimumDistance: 0)
+                        .onChanged { value in
+                            let newValue = maxAltitude - (Double(value.location.y / geometry.size.height) * maxAltitude)
+                            altitudeSliderValue = max(minAltitude, min(maxAltitude, newValue))
+                        }
+                )
+            }
+            .frame(width: 30, height: 150)
+            
+            Text("🔽")
+                .font(.title2)
+            
+            Text("\(Int(altitudeSliderValue))m")
+                .font(.caption2)
+                .foregroundColor(.white)
+        }
+        .padding(8)
+        .background(Color.black.opacity(0.5))
+        .cornerRadius(12)
     }
     
     // MARK: - Biome Background
@@ -1149,6 +1213,82 @@ struct NavigationCompat<Content: View>: View {
             NavigationStack { content() }
         } else {
             NavigationView { content() }
+        }
+    }
+}
+
+// MARK: - SceneKit View Representable for 3D Open World
+
+/// SwiftUI wrapper for the SceneKit 3D open world scene
+struct OpenWorld3DViewRepresentable: UIViewRepresentable {
+    let scene: OpenWorld3DScene?
+    let birdType: BirdType
+    let openWorldManager: OpenWorldManager
+    let joystickOffset: CGSize
+    let altitude: Float
+    
+    func makeUIView(context: Context) -> SCNView {
+        let scnView = SCNView()
+        scnView.backgroundColor = .black
+        scnView.allowsCameraControl = false
+        scnView.showsStatistics = false
+        scnView.antialiasingMode = .multisampling2X
+        
+        // Create scene if not provided
+        let worldScene = scene ?? OpenWorld3DScene(birdType: birdType, manager: openWorldManager)
+        scnView.scene = worldScene
+        
+        // Set up delegate for continuous updates
+        scnView.delegate = context.coordinator
+        scnView.isPlaying = true
+        
+        context.coordinator.scene = worldScene
+        context.coordinator.openWorldManager = openWorldManager
+        
+        return scnView
+    }
+    
+    func updateUIView(_ scnView: SCNView, context: Context) {
+        guard let worldScene = scnView.scene as? OpenWorld3DScene else { return }
+        
+        // Update movement based on joystick
+        if joystickOffset != .zero {
+            let direction = WorldPosition(
+                x: Double(joystickOffset.width) / 35.0,
+                y: Double(joystickOffset.height) / 35.0,
+                z: 0
+            )
+            worldScene.movePlayer(direction: direction, speed: 2.0)
+            openWorldManager.move(direction: direction, speed: 1.0)
+        }
+        
+        // Update altitude
+        worldScene.setPlayerAltitude(altitude)
+        
+        // Update biome visuals
+        worldScene.updateBiome(openWorldManager.playerState.currentBiome)
+        
+        // Update time of day
+        worldScene.updateTimeOfDay(openWorldManager.timeOfDay)
+        
+        // Update prey, resources, and players
+        worldScene.updatePrey(openWorldManager.nearbyPrey, huntingTarget: openWorldManager.huntingTarget)
+        worldScene.updateResources(openWorldManager.nearbyResources)
+        worldScene.updateOtherPlayers(openWorldManager.nearbyPlayers)
+        worldScene.updateNest(openWorldManager.homeNest)
+    }
+    
+    func makeCoordinator() -> Coordinator {
+        Coordinator()
+    }
+    
+    class Coordinator: NSObject, SCNSceneRendererDelegate {
+        var scene: OpenWorld3DScene?
+        weak var openWorldManager: OpenWorldManager?
+        
+        func renderer(_ renderer: SCNSceneRenderer, updateAtTime time: TimeInterval) {
+            // Called every frame - can be used for continuous updates
+            scene?.updateCamera()
         }
     }
 }
