@@ -210,11 +210,13 @@ class QuestManager: ObservableObject {
         let weeklyQuests = generateWeeklyQuests()
         activeQuests.append(contentsOf: weeklyQuests)
         
-        // Set next refresh time (next Monday)
+        // Set next refresh time (next Monday at start of day)
         let calendar = Calendar.current
-        if let nextWeek = calendar.date(byAdding: .weekOfYear, value: 1, to: Date()),
-           let monday = calendar.nextDate(after: Date(), matching: DateComponents(weekday: 2), matchingPolicy: .nextTime) {
-            weeklyQuestsRefreshTime = calendar.startOfDay(for: monday)
+        var components = calendar.dateComponents([.yearForWeekOfYear, .weekOfYear], from: Date())
+        components.weekOfYear! += 1
+        components.weekday = 2 // Monday
+        if let nextMonday = calendar.date(from: components) {
+            weeklyQuestsRefreshTime = calendar.startOfDay(for: nextMonday)
         }
         
         save()

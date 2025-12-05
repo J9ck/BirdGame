@@ -108,7 +108,7 @@ class CombatSystem {
     // MARK: - Server-Authoritative Hit Validation (Anti-Cheat)
     
     /// Validates a hit request on the server-side
-    /// Returns true if the hit is valid and should be processed
+    /// Returns a HitValidationResult containing validity status, reason for failure if any, and confidence score
     static func validateHitRequest(
         attackerId: String,
         defenderId: String,

@@ -116,6 +116,8 @@ class FlightController: ObservableObject {
     private let pitchingSpeed: Float = 1.5
     private let maxBankAngle: Float = .pi / 4 // 45 degrees
     private let maxPitchAngle: Float = .pi / 6 // 30 degrees
+    private let rotationSmoothing: Float = 5.0
+    private let velocitySmoothing: Float = 5.0
     
     // MARK: - Initialization
     
@@ -217,16 +219,15 @@ class FlightController: ObservableObject {
         )
         
         // Smooth velocity transition
-        let smoothing: Float = 5.0
-        velocity.x += (targetVelocity.x - velocity.x) * smoothing * dt
-        velocity.z += (targetVelocity.z - velocity.z) * smoothing * dt
+        velocity.x += (targetVelocity.x - velocity.x) * velocitySmoothing * dt
+        velocity.z += (targetVelocity.z - velocity.z) * velocitySmoothing * dt
         
         // Handle vertical movement based on state
         switch state {
         case .grounded:
             velocity.y = 0
         case .flying, .sprinting:
-            velocity.y += (targetVelocity.y - velocity.y) * smoothing * dt
+            velocity.y += (targetVelocity.y - velocity.y) * velocitySmoothing * dt
         case .gliding:
             // Gliding slowly descends
             velocity.y = max(-5.0, velocity.y - gravity * 0.1 * dt)
@@ -249,7 +250,7 @@ class FlightController: ObservableObject {
         // Update rotation to face movement direction
         if abs(direction.x) > 0.1 || abs(direction.y) > 0.1 {
             let targetYaw = atan2(direction.x, direction.y)
-            rotation.y += (targetYaw - rotation.y) * 5.0 * dt
+            rotation.y += (targetYaw - rotation.y) * rotationSmoothing * dt
         }
     }
     

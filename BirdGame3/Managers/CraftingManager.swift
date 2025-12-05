@@ -151,6 +151,7 @@ class CraftingManager: ObservableObject {
     // MARK: - Constants
     
     private let maxQueueSize = 3
+    private let cancelRefundRate: Double = 0.5 // 50% refund when cancelling
     private let saveKey = "birdgame3_crafting"
     
     // MARK: - Initialization
@@ -399,9 +400,10 @@ class CraftingManager: ObservableObject {
         guard let index = craftingQueue.firstIndex(where: { $0.id == jobId }),
               let recipe = recipes.first(where: { $0.id == craftingQueue[index].recipeId }) else { return }
         
-        // Refund 50% of resources
+        // Refund percentage of resources based on cancel refund rate
         for (resource, amount) in recipe.inputs {
-            _ = OpenWorldManager.shared.playerState.addResource(resource, amount: amount / 2)
+            let refundAmount = Int(Double(amount) * cancelRefundRate)
+            _ = OpenWorldManager.shared.playerState.addResource(resource, amount: refundAmount)
         }
         
         craftingQueue.remove(at: index)

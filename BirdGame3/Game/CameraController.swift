@@ -129,6 +129,9 @@ class CameraController: ObservableObject {
     /// Minimum distance from obstacles
     private let minDistanceFromObstacle: Float = 2.0
     
+    /// Minimum camera height from ground
+    private let minCameraHeight: Float = 5.0
+    
     // MARK: - Persistence
     
     private let settingsKey = "birdgame3_cameraSettings"
@@ -334,13 +337,13 @@ class CameraController: ObservableObject {
             desiredCamPos.z - playerPos.z
         )
         
-        let length = direction.magnitude
+        // Note: direction.magnitude would be used for raycast length
         
         // Check minimum height
-        if desiredCamPos.y < 5 {
+        if desiredCamPos.y < minCameraHeight {
             return SCNVector3(
                 desiredCamPos.x,
-                max(5, desiredCamPos.y),
+                max(minCameraHeight, desiredCamPos.y),
                 desiredCamPos.z
             )
         }

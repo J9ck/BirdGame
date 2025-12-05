@@ -165,6 +165,41 @@ final class BirdGame3Tests: XCTestCase {
         }
     }
     
+    func testOwlBirdTypeExists() {
+        XCTAssertTrue(BirdType.allCases.contains(.owl))
+        XCTAssertEqual(BirdType.owl.displayName, "Owl")
+        XCTAssertEqual(BirdType.owl.emoji, "🦉")
+    }
+    
+    func testAllBirdTypesHaveSkills() {
+        for bird in BirdType.allCases {
+            let skills = bird.skills
+            XCTAssertGreaterThanOrEqual(skills.count, 3, "\(bird.displayName) should have at least 3 skills")
+            XCTAssertLessThanOrEqual(skills.count, 4, "\(bird.displayName) should have at most 4 skills")
+        }
+    }
+    
+    func testAllBirdTypesHavePassive() {
+        for bird in BirdType.allCases {
+            let passive = bird.passive
+            XCTAssertFalse(passive.name.isEmpty, "\(bird.displayName) should have a passive name")
+            XCTAssertFalse(passive.description.isEmpty, "\(bird.displayName) should have a passive description")
+        }
+    }
+    
+    func testBirdSkillsHaveValidData() {
+        for bird in BirdType.allCases {
+            for skill in bird.skills {
+                XCTAssertFalse(skill.id.isEmpty)
+                XCTAssertFalse(skill.name.isEmpty)
+                XCTAssertFalse(skill.description.isEmpty)
+                XCTAssertGreaterThan(skill.cooldown, 0)
+                XCTAssertGreaterThanOrEqual(skill.energyCost, 0)
+                XCTAssertFalse(skill.icon.isEmpty)
+            }
+        }
+    }
+    
     // MARK: - World Position Tests
     
     func testWorldPositionDistance() {
@@ -470,5 +505,235 @@ final class BirdGame3Tests: XCTestCase {
         // Both should be hidden
         XCTAssertTrue(bowlingAlley?.isHidden ?? false)
         XCTAssertTrue(chairBNB?.isHidden ?? false)
+    }
+    
+    // MARK: - Combat System Tests
+    
+    func testCombatSystemHitValidation() {
+        let attackerPos = WorldPosition(x: 0, y: 0, z: 0)
+        let defenderPos = WorldPosition(x: 10, y: 0, z: 0)
+        
+        let result = CombatSystem.validateHitRequest(
+            attackerId: "attacker",
+            defenderId: "defender",
+            attackerPosition: attackerPos,
+            defenderPosition: defenderPos,
+            timestamp: Date().timeIntervalSince1970,
+            lastKnownPositions: [:]
+        )
+        
+        XCTAssertTrue(result.valid)
+        XCTAssertNil(result.reason)
+    }
+    
+    func testCombatSystemDistanceValidation() {
+        let attackerPos = WorldPosition(x: 0, y: 0, z: 0)
+        let defenderPos = WorldPosition(x: 100, y: 0, z: 0) // Too far
+        
+        let result = CombatSystem.validateHitRequest(
+            attackerId: "attacker",
+            defenderId: "defender",
+            attackerPosition: attackerPos,
+            defenderPosition: defenderPos,
+            timestamp: Date().timeIntervalSince1970,
+            lastKnownPositions: [:]
+        )
+        
+        XCTAssertFalse(result.valid)
+        XCTAssertEqual(result.reason, .distanceTooFar)
+    }
+    
+    func testStatusEffectTypes() {
+        for effectType in StatusEffectType.allCases {
+            XCTAssertFalse(effectType.emoji.isEmpty)
+            XCTAssertFalse(effectType.color.isEmpty)
+        }
+    }
+    
+    func testAbilityResultDefaults() {
+        let result = AbilityResult()
+        XCTAssertEqual(result.damage, 0)
+        XCTAssertFalse(result.multiHit)
+        XCTAssertEqual(result.hitCount, 1)
+        XCTAssertFalse(result.stunApplied)
+        XCTAssertFalse(result.knockback)
+        XCTAssertFalse(result.bleedApplied)
+    }
+    
+    // MARK: - Graphics Settings Tests
+    
+    func testGraphicsQualityPresets() {
+        for quality in GraphicsQuality.allCases {
+            XCTAssertGreaterThan(quality.drawDistance, 0)
+            XCTAssertGreaterThanOrEqual(quality.shadowQuality, 0)
+            XCTAssertGreaterThan(quality.particleCount, 0)
+        }
+    }
+    
+    func testSettingsPresets() {
+        for preset in SettingsPreset.allCases {
+            XCTAssertFalse(preset.description.isEmpty)
+            XCTAssertFalse(preset.emoji.isEmpty)
+        }
+    }
+    
+    func testDefaultGameSettings() {
+        let settings = GameSettings.default
+        XCTAssertEqual(settings.graphicsQuality, .high)
+        XCTAssertEqual(settings.targetFrameRate, .fps60)
+        XCTAssertTrue(settings.hapticFeedback)
+        XCTAssertEqual(settings.cameraSensitivityX, 1.0)
+        XCTAssertEqual(settings.cameraSensitivityY, 1.0)
+    }
+    
+    // MARK: - Camera Settings Tests
+    
+    func testCameraSettingsDefaults() {
+        let settings = CameraSettings.default
+        XCTAssertEqual(settings.sensitivityX, 1.0)
+        XCTAssertEqual(settings.sensitivityY, 1.0)
+        XCTAssertFalse(settings.invertX)
+        XCTAssertFalse(settings.invertY)
+        XCTAssertTrue(settings.collisionEnabled)
+    }
+    
+    func testCameraModes() {
+        for mode in CameraMode.allCases {
+            XCTAssertGreaterThan(mode.distance, 0)
+            XCTAssertGreaterThan(mode.fieldOfView, 0)
+        }
+    }
+    
+    func testCameraPresets() {
+        for preset in CameraPreset.allCases {
+            XCTAssertFalse(preset.rawValue.isEmpty)
+        }
+    }
+    
+    // MARK: - Flight State Tests
+    
+    func testFlightStates() {
+        for state in FlightState.allCases {
+            XCTAssertGreaterThanOrEqual(state.energyDrainRate, 0)
+            XCTAssertGreaterThanOrEqual(state.speedMultiplier, 0)
+        }
+    }
+    
+    func testFlightStateCanAttack() {
+        XCTAssertTrue(FlightState.flying.canAttack)
+        XCTAssertTrue(FlightState.gliding.canAttack)
+        XCTAssertTrue(FlightState.hovering.canAttack)
+        XCTAssertFalse(FlightState.grounded.canAttack)
+        XCTAssertFalse(FlightState.takeoff.canAttack)
+        XCTAssertFalse(FlightState.landing.canAttack)
+    }
+    
+    // MARK: - Crafting System Tests
+    
+    func testCraftingCategories() {
+        for category in CraftingCategory.allCases {
+            XCTAssertFalse(category.emoji.isEmpty)
+            XCTAssertFalse(category.rawValue.isEmpty)
+        }
+    }
+    
+    func testConsumableTypes() {
+        for consumable in ConsumableType.allCases {
+            XCTAssertFalse(consumable.effect.isEmpty)
+            XCTAssertFalse(consumable.emoji.isEmpty)
+        }
+    }
+    
+    func testToolTypes() {
+        for tool in ToolType.allCases {
+            XCTAssertFalse(tool.bonus.isEmpty)
+            XCTAssertFalse(tool.emoji.isEmpty)
+        }
+    }
+    
+    func testCraftingJobProgress() {
+        let now = Date()
+        let job = CraftingJob(
+            id: "test",
+            recipeId: "test_recipe",
+            recipeName: "Test Recipe",
+            startTime: now.addingTimeInterval(-30),
+            completionTime: now.addingTimeInterval(30)
+        )
+        
+        XCTAssertFalse(job.isComplete)
+        XCTAssertGreaterThan(job.progress, 0)
+        XCTAssertLessThan(job.progress, 1)
+        XCTAssertGreaterThan(job.timeRemaining, 0)
+    }
+    
+    func testCraftingJobComplete() {
+        let now = Date()
+        let job = CraftingJob(
+            id: "test",
+            recipeId: "test_recipe",
+            recipeName: "Test Recipe",
+            startTime: now.addingTimeInterval(-60),
+            completionTime: now.addingTimeInterval(-10)
+        )
+        
+        XCTAssertTrue(job.isComplete)
+        XCTAssertEqual(job.progress, 1.0, accuracy: 0.01)
+    }
+    
+    // MARK: - Quest System Tests
+    
+    func testQuestTypes() {
+        for questType in QuestType.allCases {
+            XCTAssertFalse(questType.emoji.isEmpty)
+            XCTAssertFalse(questType.rawValue.isEmpty)
+        }
+    }
+    
+    func testQuestObjectiveTypes() {
+        for objType in QuestObjectiveType.allCases {
+            XCTAssertFalse(objType.emoji.isEmpty)
+            XCTAssertFalse(objType.rawValue.isEmpty)
+        }
+    }
+    
+    func testQuestObjectiveProgress() {
+        var objective = QuestObjective(
+            id: "test",
+            type: .hunt,
+            description: "Hunt 5 prey",
+            targetValue: 5,
+            currentValue: 2,
+            targetId: nil
+        )
+        
+        XCTAssertFalse(objective.isComplete)
+        XCTAssertEqual(objective.progress, 0.4, accuracy: 0.01)
+        XCTAssertEqual(objective.progressText, "2/5")
+        
+        objective.currentValue = 5
+        XCTAssertTrue(objective.isComplete)
+        XCTAssertEqual(objective.progress, 1.0)
+    }
+    
+    func testQuestRewardDefaults() {
+        let reward = QuestReward.none
+        XCTAssertEqual(reward.coins, 0)
+        XCTAssertEqual(reward.feathers, 0)
+        XCTAssertEqual(reward.xp, 0)
+        XCTAssertNil(reward.items)
+    }
+    
+    // MARK: - AI Difficulty Tests
+    
+    func testAIDifficultyLevels() {
+        XCTAssertGreaterThan(AIDifficulty.easy.reactionTime, AIDifficulty.hard.reactionTime)
+        XCTAssertLessThan(AIDifficulty.easy.blockChance, AIDifficulty.hard.blockChance)
+    }
+    
+    func testAIDifficultyDisplayNames() {
+        for difficulty in AIDifficulty.allCases {
+            XCTAssertFalse(difficulty.displayName.isEmpty)
+        }
     }
 }
