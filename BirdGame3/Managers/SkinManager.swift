@@ -173,6 +173,37 @@ class SkinManager: ObservableObject {
                 colorScheme: SkinColorScheme(primary: "#1a1a2e", secondary: "#16213e", accent: "#0f3460", effect: .shadow),
                 price: SkinPrice(coins: 0, feathers: 50),
                 unlockRequirement: UnlockRequirement(type: .prestigeLevel, value: 3, description: "Reach Prestige 3")
+            ),
+            // NEW PIGEON SKINS - Urban, Fancy, Custom Names
+            BirdSkin(
+                id: "pigeon_urban",
+                birdType: "pigeon",
+                name: "Urban Pigeon",
+                description: "Street smart and city tough. Born in the concrete jungle.",
+                rarity: .rare,
+                colorScheme: SkinColorScheme(primary: "#4A4A4A", secondary: "#2D2D2D", accent: "#808080", effect: nil),
+                price: SkinPrice(coins: 350, feathers: 0),
+                unlockRequirement: nil
+            ),
+            BirdSkin(
+                id: "pigeon_fancy",
+                birdType: "pigeon",
+                name: "Fancy Pigeon",
+                description: "Top hat, monocle, and impeccable manners. Tea time, anyone?",
+                rarity: .epic,
+                colorScheme: SkinColorScheme(primary: "#8B4513", secondary: "#D2691E", accent: "#FFD700", effect: .sparkle),
+                price: SkinPrice(coins: 1200, feathers: 3),
+                unlockRequirement: nil
+            ),
+            BirdSkin(
+                id: "pigeon_custom_names",
+                birdType: "pigeon",
+                name: "Custom Names",
+                description: "A pigeon so cool, it gets a custom name tag. You are THE pigeon.",
+                rarity: .legendary,
+                colorScheme: SkinColorScheme(primary: "#FF6B6B", secondary: "#4ECDC4", accent: "#FFE66D", effect: .rainbow),
+                price: SkinPrice(coins: 2500, feathers: 15),
+                unlockRequirement: nil
             )
         ])
         
@@ -217,6 +248,27 @@ class SkinManager: ObservableObject {
                 colorScheme: SkinColorScheme(primary: "#191970", secondary: "#4B0082", accent: "#9400D3", effect: .rainbow),
                 price: SkinPrice(coins: 0, feathers: 25),
                 unlockRequirement: UnlockRequirement(type: .perfectWins, value: 10, description: "Get 10 perfect wins")
+            ),
+            // NEW HUMMINGBIRD SKINS - Rainbow Glow, Sapphire Shine
+            BirdSkin(
+                id: "hummingbird_rainbow_glow",
+                birdType: "hummingbird",
+                name: "Rainbow Glow",
+                description: "Every color of the spectrum, all at 80 wingbeats per second.",
+                rarity: .epic,
+                colorScheme: SkinColorScheme(primary: "#FF0000", secondary: "#00FF00", accent: "#0000FF", effect: .rainbow),
+                price: SkinPrice(coins: 1800, feathers: 8),
+                unlockRequirement: nil
+            ),
+            BirdSkin(
+                id: "hummingbird_sapphire_shine",
+                birdType: "hummingbird",
+                name: "Sapphire Shine",
+                description: "Deep blue brilliance that mesmerizes opponents mid-combo.",
+                rarity: .legendary,
+                colorScheme: SkinColorScheme(primary: "#0F52BA", secondary: "#1E90FF", accent: "#87CEEB", effect: .glow),
+                price: SkinPrice(coins: 0, feathers: 30),
+                unlockRequirement: UnlockRequirement(type: .birdWins, value: 30, description: "Win 30 battles as Hummingbird")
             )
         ])
         
@@ -261,6 +313,27 @@ class SkinManager: ObservableObject {
                 colorScheme: SkinColorScheme(primary: "#1E90FF", secondary: "#FFD700", accent: "#87CEEB", effect: .electric),
                 price: SkinPrice(coins: 0, feathers: 25),
                 unlockRequirement: UnlockRequirement(type: .birdWins, value: 25, description: "Win 25 battles as Eagle")
+            ),
+            // NEW EAGLE SKINS - Spotted, Clear Majestic
+            BirdSkin(
+                id: "eagle_spotted",
+                birdType: "eagle",
+                name: "Spotted Eagle",
+                description: "Camouflaged hunter of the mountain ranges. Spots everything.",
+                rarity: .rare,
+                colorScheme: SkinColorScheme(primary: "#8B7355", secondary: "#D2B48C", accent: "#F5DEB3", effect: nil),
+                price: SkinPrice(coins: 600, feathers: 0),
+                unlockRequirement: nil
+            ),
+            BirdSkin(
+                id: "eagle_clear_majestic",
+                birdType: "eagle",
+                name: "Clear Majestic",
+                description: "Crystal clarity, majestic presence. FREEDOM in its purest form.",
+                rarity: .mythic,
+                colorScheme: SkinColorScheme(primary: "#E8E8E8", secondary: "#FFFAFA", accent: "#F0F8FF", effect: .sparkle),
+                price: SkinPrice(coins: 0, feathers: 60),
+                unlockRequirement: UnlockRequirement(type: .prestigeLevel, value: 5, description: "Reach Prestige 5")
             )
         ])
         
@@ -349,6 +422,37 @@ class SkinManager: ObservableObject {
                 colorScheme: SkinColorScheme(primary: "#2E0854", secondary: "#006064", accent: "#00BCD4", effect: .shadow),
                 price: SkinPrice(coins: 0, feathers: 25),
                 unlockRequirement: UnlockRequirement(type: .wins, value: 100, description: "Win 100 battles total")
+            ),
+            // NEW PELICAN SKINS - Inner Rage Cage variants
+            BirdSkin(
+                id: "pelican_inner_rage",
+                birdType: "pelican",
+                name: "Inner Rage",
+                description: "The fury inside that pouch is barely contained. RELEASE THE FISH!",
+                rarity: .epic,
+                colorScheme: SkinColorScheme(primary: "#DC143C", secondary: "#8B0000", accent: "#FF4500", effect: .fire),
+                price: SkinPrice(coins: 1800, feathers: 8),
+                unlockRequirement: nil
+            ),
+            BirdSkin(
+                id: "pelican_cage_breaker",
+                birdType: "pelican",
+                name: "Cage Breaker",
+                description: "The rage cage has been expanded. Nothing can contain this thicc boy now.",
+                rarity: .legendary,
+                colorScheme: SkinColorScheme(primary: "#4B0082", secondary: "#9400D3", accent: "#FF1493", effect: .electric),
+                price: SkinPrice(coins: 0, feathers: 35),
+                unlockRequirement: UnlockRequirement(type: .birdWins, value: 40, description: "Win 40 battles as Pelican")
+            ),
+            BirdSkin(
+                id: "pelican_void_pouch",
+                birdType: "pelican",
+                name: "Void Pouch",
+                description: "That pouch doesn't just hold fish... it holds entire dimensions of RAGE.",
+                rarity: .mythic,
+                colorScheme: SkinColorScheme(primary: "#0D0D0D", secondary: "#1C1C1C", accent: "#6A0DAD", effect: .shadow),
+                price: SkinPrice(coins: 0, feathers: 75),
+                unlockRequirement: UnlockRequirement(type: .prestigeLevel, value: 4, description: "Reach Prestige 4")
             )
         ])
         

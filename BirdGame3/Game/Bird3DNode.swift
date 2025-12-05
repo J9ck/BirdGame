@@ -17,6 +17,9 @@ class Bird3DNode: SCNNode {
     /// The type of bird this node represents
     let birdType: BirdType
     
+    /// Optional skin applied to this bird
+    private var appliedSkin: BirdSkin?
+    
     /// Wing nodes for animation
     private var leftWing: SCNNode?
     private var rightWing: SCNNode?
@@ -38,10 +41,218 @@ class Bird3DNode: SCNNode {
         setupBirdModel()
     }
     
+    /// Initialize with a bird type and optional skin
+    init(birdType: BirdType, skin: BirdSkin?) {
+        self.birdType = birdType
+        self.appliedSkin = skin
+        super.init()
+        setupBirdModel()
+    }
+    
     required init?(coder: NSCoder) {
         self.birdType = .pigeon
         super.init(coder: coder)
         setupBirdModel()
+    }
+    
+    // MARK: - Factory Methods
+    
+    /// Create a 3D bird node for each bird type with their specific model characteristics
+    static func createBirdModel(for birdType: BirdType, skin: BirdSkin? = nil) -> Bird3DNode {
+        return Bird3DNode(birdType: birdType, skin: skin)
+    }
+    
+    /// Create bird model for pigeon with specific characteristics
+    static func createPigeonModel(skin: BirdSkin? = nil) -> Bird3DNode {
+        return Bird3DNode(birdType: .pigeon, skin: skin)
+    }
+    
+    /// Create bird model for eagle with specific characteristics
+    static func createEagleModel(skin: BirdSkin? = nil) -> Bird3DNode {
+        return Bird3DNode(birdType: .eagle, skin: skin)
+    }
+    
+    /// Create bird model for crow with specific characteristics
+    static func createCrowModel(skin: BirdSkin? = nil) -> Bird3DNode {
+        return Bird3DNode(birdType: .crow, skin: skin)
+    }
+    
+    /// Create bird model for pelican with specific characteristics
+    static func createPelicanModel(skin: BirdSkin? = nil) -> Bird3DNode {
+        return Bird3DNode(birdType: .pelican, skin: skin)
+    }
+    
+    /// Create bird model for hummingbird with specific characteristics
+    static func createHummingbirdModel(skin: BirdSkin? = nil) -> Bird3DNode {
+        return Bird3DNode(birdType: .hummingbird, skin: skin)
+    }
+    
+    // MARK: - Skin Application
+    
+    /// Apply a skin to the bird, updating its colors and effects
+    func applySkin(_ skin: BirdSkin) {
+        self.appliedSkin = skin
+        updateColorsFromSkin()
+        applySpecialEffect(skin.colorScheme.effect)
+    }
+    
+    /// Update bird colors based on applied skin
+    private func updateColorsFromSkin() {
+        guard let skin = appliedSkin else { return }
+        
+        let primaryColor = UIColor(hex: skin.colorScheme.primary) ?? birdType.bodyColor
+        let secondaryColor = UIColor(hex: skin.colorScheme.secondary) ?? birdType.wingColor
+        let accentColor = UIColor(hex: skin.colorScheme.accent) ?? birdType.beakColor
+        
+        // Update body color
+        if let bodyNode = childNode(withName: "body", recursively: true),
+           let material = bodyNode.geometry?.firstMaterial {
+            material.diffuse.contents = primaryColor
+        }
+        
+        // Update head color
+        if let headNode = childNode(withName: "head", recursively: true),
+           let material = headNode.geometry?.firstMaterial {
+            material.diffuse.contents = primaryColor
+        }
+        
+        // Update wing colors
+        if let leftWing = childNode(withName: "leftWing", recursively: true),
+           let material = leftWing.geometry?.firstMaterial {
+            material.diffuse.contents = secondaryColor
+        }
+        if let rightWing = childNode(withName: "rightWing", recursively: true),
+           let material = rightWing.geometry?.firstMaterial {
+            material.diffuse.contents = secondaryColor
+        }
+        
+        // Update beak color
+        if let beakNode = childNode(withName: "beak", recursively: true),
+           let material = beakNode.geometry?.firstMaterial {
+            material.diffuse.contents = accentColor
+        }
+        
+        // Update tail color
+        if let tailNode = childNode(withName: "tail", recursively: true),
+           let material = tailNode.geometry?.firstMaterial {
+            material.diffuse.contents = secondaryColor
+        }
+    }
+    
+    /// Apply special visual effects based on skin
+    private func applySpecialEffect(_ effect: SkinColorScheme.SkinEffect?) {
+        guard let effect = effect else { return }
+        
+        switch effect {
+        case .glow:
+            applyGlowEffect()
+        case .sparkle:
+            applySparkleEffect()
+        case .fire:
+            applyFireEffect()
+        case .ice:
+            applyIceEffect()
+        case .electric:
+            applyElectricEffect()
+        case .shadow:
+            applyShadowEffect()
+        case .rainbow:
+            applyRainbowEffect()
+        }
+    }
+    
+    private func applyGlowEffect() {
+        // Add emission to all materials
+        enumerateChildNodes { node, _ in
+            if let material = node.geometry?.firstMaterial {
+                material.emission.contents = material.diffuse.contents
+                material.emission.intensity = 0.3
+            }
+        }
+    }
+    
+    private func applySparkleEffect() {
+        // Add particle system for sparkles
+        let particles = SCNParticleSystem()
+        particles.particleColor = .white
+        particles.particleSize = 0.1
+        particles.birthRate = 20
+        particles.emissionDuration = 0.1
+        particles.particleLifeSpan = 1.0
+        particles.spreadingAngle = 180
+        addParticleSystem(particles)
+    }
+    
+    private func applyFireEffect() {
+        let particles = SCNParticleSystem()
+        particles.particleColor = UIColor.orange
+        particles.particleSize = 0.2
+        particles.birthRate = 50
+        particles.particleLifeSpan = 0.5
+        particles.spreadingAngle = 30
+        addParticleSystem(particles)
+    }
+    
+    private func applyIceEffect() {
+        enumerateChildNodes { node, _ in
+            if let material = node.geometry?.firstMaterial {
+                material.emission.contents = UIColor.cyan
+                material.emission.intensity = 0.2
+                material.specular.contents = UIColor.white
+                material.shininess = 0.9
+            }
+        }
+    }
+    
+    private func applyElectricEffect() {
+        let electricAction = SCNAction.sequence([
+            SCNAction.run { node in
+                node.enumerateChildNodes { child, _ in
+                    if let material = child.geometry?.firstMaterial {
+                        material.emission.contents = UIColor.yellow
+                        material.emission.intensity = 0.5
+                    }
+                }
+            },
+            SCNAction.wait(duration: 0.1),
+            SCNAction.run { node in
+                node.enumerateChildNodes { child, _ in
+                    if let material = child.geometry?.firstMaterial {
+                        material.emission.intensity = 0.1
+                    }
+                }
+            },
+            SCNAction.wait(duration: 0.2)
+        ])
+        runAction(SCNAction.repeatForever(electricAction))
+    }
+    
+    private func applyShadowEffect() {
+        enumerateChildNodes { node, _ in
+            if let material = node.geometry?.firstMaterial {
+                material.diffuse.intensity = 0.7
+                material.transparency = 0.9
+            }
+        }
+    }
+    
+    private func applyRainbowEffect() {
+        let colors: [UIColor] = [.red, .orange, .yellow, .green, .blue, .purple]
+        var colorIndex = 0
+        
+        let rainbowAction = SCNAction.repeatForever(SCNAction.sequence([
+            SCNAction.run { [weak self] _ in
+                self?.enumerateChildNodes { node, _ in
+                    if let material = node.geometry?.firstMaterial {
+                        material.emission.contents = colors[colorIndex % colors.count]
+                        material.emission.intensity = 0.3
+                    }
+                }
+                colorIndex += 1
+            },
+            SCNAction.wait(duration: 0.3)
+        ]))
+        runAction(rainbowAction, forKey: "rainbow")
     }
     
     // MARK: - Setup
@@ -351,5 +562,32 @@ extension BirdType {
 extension SCNVector3 {
     static var zero: SCNVector3 {
         return SCNVector3(0, 0, 0)
+    }
+}
+
+// MARK: - UIColor Hex Extension for Bird3DNode
+
+extension UIColor {
+    convenience init?(hex: String) {
+        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
+        var int: UInt64 = 0
+        Scanner(string: hex).scanHexInt64(&int)
+        let a, r, g, b: UInt64
+        switch hex.count {
+        case 3: // RGB (12-bit)
+            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
+        case 6: // RGB (24-bit)
+            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
+        case 8: // ARGB (32-bit)
+            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
+        default:
+            return nil
+        }
+        self.init(
+            red: CGFloat(r) / 255,
+            green: CGFloat(g) / 255,
+            blue: CGFloat(b) / 255,
+            alpha: CGFloat(a) / 255
+        )
     }
 }
