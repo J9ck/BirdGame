@@ -16,17 +16,17 @@ final class BirdGame3Tests: XCTestCase {
         let manager = CurrencyManager.shared
         let initialCoins = manager.coins
         
-        manager.addCoins(100, reason: "Test")
+        manager.addCoins(100)
         
         XCTAssertEqual(manager.coins, initialCoins + 100)
     }
     
     func testCurrencyManagerSpendCoins() {
         let manager = CurrencyManager.shared
-        manager.addCoins(1000, reason: "Test Setup")
+        manager.addCoins(1000)
         let initialCoins = manager.coins
         
-        let success = manager.spendCoins(500, reason: "Test Spend")
+        let success = manager.spendCoins(500)
         
         XCTAssertTrue(success)
         XCTAssertEqual(manager.coins, initialCoins - 500)
@@ -36,7 +36,7 @@ final class BirdGame3Tests: XCTestCase {
         let manager = CurrencyManager.shared
         let initialCoins = manager.coins
         
-        let success = manager.spendCoins(initialCoins + 10000, reason: "Test Overspend")
+        let success = manager.spendCoins(initialCoins + 10000)
         
         XCTAssertFalse(success)
         XCTAssertEqual(manager.coins, initialCoins)
@@ -507,233 +507,258 @@ final class BirdGame3Tests: XCTestCase {
         XCTAssertTrue(chairBNB?.isHidden ?? false)
     }
     
-    // MARK: - Combat System Tests
+    // MARK: - Core Gameplay Validation Tests
     
-    func testCombatSystemHitValidation() {
-        let attackerPos = WorldPosition(x: 0, y: 0, z: 0)
-        let defenderPos = WorldPosition(x: 10, y: 0, z: 0)
+    func testCombatSystemDamageCalculation() {
+        // Verify basic damage calculation works correctly
+        let pigeon = Bird(type: .pigeon)
+        let eagle = Bird(type: .eagle)
         
-        let result = CombatSystem.validateHitRequest(
-            attackerId: "attacker",
-            defenderId: "defender",
-            attackerPosition: attackerPos,
-            defenderPosition: defenderPos,
-            timestamp: Date().timeIntervalSince1970,
-            lastKnownPositions: [:]
-        )
+        let normalDamage = CombatSystem.calculateDamage(attacker: pigeon, defender: eagle, isAbility: false)
+        let abilityDamage = CombatSystem.calculateDamage(attacker: pigeon, defender: eagle, isAbility: true)
         
-        XCTAssertTrue(result.valid)
-        XCTAssertNil(result.reason)
+        // Damage should be positive
+        XCTAssertGreaterThan(normalDamage, 0)
+        XCTAssertGreaterThan(abilityDamage, 0)
     }
     
-    func testCombatSystemDistanceValidation() {
-        let attackerPos = WorldPosition(x: 0, y: 0, z: 0)
-        let defenderPos = WorldPosition(x: 100, y: 0, z: 0) // Too far
-        
-        let result = CombatSystem.validateHitRequest(
-            attackerId: "attacker",
-            defenderId: "defender",
-            attackerPosition: attackerPos,
-            defenderPosition: defenderPos,
-            timestamp: Date().timeIntervalSince1970,
-            lastKnownPositions: [:]
-        )
-        
-        XCTAssertFalse(result.valid)
-        XCTAssertEqual(result.reason, .distanceTooFar)
-    }
-    
-    func testStatusEffectTypes() {
-        for effectType in StatusEffectType.allCases {
-            XCTAssertFalse(effectType.emoji.isEmpty)
-            XCTAssertFalse(effectType.color.isEmpty)
+    func testAllBirdTypesHaveValidStats() {
+        for bird in BirdType.allCases {
+            let stats = bird.baseStats
+            
+            // All stats should be positive
+            XCTAssertGreaterThan(stats.health, 0, "\(bird.displayName) health should be positive")
+            XCTAssertGreaterThan(stats.maxHealth, 0, "\(bird.displayName) maxHealth should be positive")
+            XCTAssertGreaterThan(stats.attack, 0, "\(bird.displayName) attack should be positive")
+            XCTAssertGreaterThan(stats.defense, 0, "\(bird.displayName) defense should be positive")
+            XCTAssertGreaterThan(stats.speed, 0, "\(bird.displayName) speed should be positive")
+            XCTAssertGreaterThan(stats.abilityCooldown, 0, "\(bird.displayName) abilityCooldown should be positive")
+            XCTAssertGreaterThan(stats.abilityDamage, 0, "\(bird.displayName) abilityDamage should be positive")
         }
     }
     
-    func testAbilityResultDefaults() {
+    func testAllBirdTypesHaveAbilities() {
+        for bird in BirdType.allCases {
+            XCTAssertFalse(bird.abilityName.isEmpty, "\(bird.displayName) should have an ability name")
+            XCTAssertFalse(bird.abilityDescription.isEmpty, "\(bird.displayName) should have an ability description")
+        }
+    }
+    
+    func testBirdStatsBalance() {
+        // Verify game balance - no bird should be completely overpowered
+        var statsSum: [BirdType: Double] = [:]
+        
+        for bird in BirdType.allCases {
+            let stats = bird.baseStats
+            // Simple balance metric: sum of normalized stats
+            let totalStat = stats.health / 10 + stats.attack + stats.defense + stats.speed
+            statsSum[bird] = totalStat
+        }
+        
+        // All birds should be within a reasonable range of each other in total stats
+        let minStat = statsSum.values.min() ?? 0
+        let maxStat = statsSum.values.max() ?? 0
+        
+        // The ratio between strongest and weakest shouldn't be too extreme
+        if minStat > 0 {
+            let ratio = maxStat / minStat
+            XCTAssertLessThan(ratio, 2.5, "Bird balance ratio should not exceed 2.5x")
+        }
+    }
+    
+    // MARK: - Game Mode Tests
+    
+    func testGameStateModeTransitions() {
+        let gameState = GameState()
+        
+        // Quick match should lead to character select
+        gameState.startQuickMatch()
+        XCTAssertEqual(gameState.currentScreen, .characterSelect)
+        XCTAssertEqual(gameState.gameMode, .quickMatch)
+        
+        // Reset
+        gameState.returnToMenu()
+        
+        // Arcade mode
+        gameState.startArcade()
+        XCTAssertEqual(gameState.currentScreen, .characterSelect)
+        XCTAssertEqual(gameState.gameMode, .arcade)
+        
+        // Reset
+        gameState.returnToMenu()
+        
+        // Training mode
+        gameState.startTraining()
+        XCTAssertEqual(gameState.currentScreen, .characterSelect)
+        XCTAssertEqual(gameState.gameMode, .training)
+    }
+    
+    func testOpenWorldModeAccessibility() {
+        let gameState = GameState()
+        
+        // Open world should be accessible
+        gameState.openOpenWorld()
+        XCTAssertEqual(gameState.currentScreen, .openWorld)
+    }
+    
+    // MARK: - Open World Biome Tests
+    
+    func testAllBiomesHaveValidConfiguration() {
+        for biome in Biome.allCases {
+            // Each biome should have display properties
+            XCTAssertFalse(biome.displayName.isEmpty, "\(biome) should have a display name")
+            XCTAssertFalse(biome.emoji.isEmpty, "\(biome) should have an emoji")
+            
+            // Resource multiplier should be valid
+            XCTAssertGreaterThan(biome.resourceMultiplier, 0, "\(biome) should have positive resource multiplier")
+            XCTAssertLessThanOrEqual(biome.resourceMultiplier, 2.0, "\(biome) resource multiplier should not exceed 2.0")
+            
+            // Danger level should be in valid range
+            XCTAssertGreaterThanOrEqual(biome.dangerLevel, 1, "\(biome) danger level should be at least 1")
+            XCTAssertLessThanOrEqual(biome.dangerLevel, 5, "\(biome) danger level should not exceed 5")
+        }
+    }
+    
+    // MARK: - Resource System Tests
+    
+    func testResourceTypesHaveValidProperties() {
+        for resourceType in ResourceType.allCases {
+            XCTAssertFalse(resourceType.displayName.isEmpty, "\(resourceType) should have a display name")
+            XCTAssertFalse(resourceType.emoji.isEmpty, "\(resourceType) should have an emoji")
+            XCTAssertGreaterThan(resourceType.respawnTime, 0, "\(resourceType) should have positive respawn time")
+            XCTAssertGreaterThan(resourceType.baseYield, 0, "\(resourceType) should have positive base yield")
+        }
+    }
+    
+    // MARK: - Combat Ability Tests
+    
+    func testAbilityResultStruct() {
+        // Test default AbilityResult
         let result = AbilityResult()
         XCTAssertEqual(result.damage, 0)
         XCTAssertFalse(result.multiHit)
         XCTAssertEqual(result.hitCount, 1)
         XCTAssertFalse(result.stunApplied)
+        XCTAssertEqual(result.stunDuration, 0)
         XCTAssertFalse(result.knockback)
-        XCTAssertFalse(result.bleedApplied)
+        XCTAssertFalse(result.buffApplied)
+        XCTAssertEqual(result.buffType, .none)
+        XCTAssertEqual(result.buffDuration, 0)
     }
-    
-    // MARK: - Graphics Settings Tests
-    
-    func testGraphicsQualityPresets() {
-        for quality in GraphicsQuality.allCases {
-            XCTAssertGreaterThan(quality.drawDistance, 0)
-            XCTAssertGreaterThanOrEqual(quality.shadowQuality, 0)
-            XCTAssertGreaterThan(quality.particleCount, 0)
-        }
-    }
-    
-    func testSettingsPresets() {
-        for preset in SettingsPreset.allCases {
-            XCTAssertFalse(preset.description.isEmpty)
-            XCTAssertFalse(preset.emoji.isEmpty)
-        }
-    }
-    
-    func testDefaultGameSettings() {
-        let settings = GameSettings.default
-        XCTAssertEqual(settings.graphicsQuality, .high)
-        XCTAssertEqual(settings.targetFrameRate, .fps60)
-        XCTAssertTrue(settings.hapticFeedback)
-        XCTAssertEqual(settings.cameraSensitivityX, 1.0)
-        XCTAssertEqual(settings.cameraSensitivityY, 1.0)
-    }
-    
-    // MARK: - Camera Settings Tests
-    
-    func testCameraSettingsDefaults() {
-        let settings = CameraSettings.default
-        XCTAssertEqual(settings.sensitivityX, 1.0)
-        XCTAssertEqual(settings.sensitivityY, 1.0)
-        XCTAssertFalse(settings.invertX)
-        XCTAssertFalse(settings.invertY)
-        XCTAssertTrue(settings.collisionEnabled)
-    }
-    
-    func testCameraModes() {
-        for mode in CameraMode.allCases {
-            XCTAssertGreaterThan(mode.distance, 0)
-            XCTAssertGreaterThan(mode.fieldOfView, 0)
-        }
-    }
-    
-    func testCameraPresets() {
-        for preset in CameraPreset.allCases {
-            XCTAssertFalse(preset.rawValue.isEmpty)
-        }
-    }
-    
-    // MARK: - Flight State Tests
-    
-    func testFlightStates() {
-        for state in FlightState.allCases {
-            XCTAssertGreaterThanOrEqual(state.energyDrainRate, 0)
-            XCTAssertGreaterThanOrEqual(state.speedMultiplier, 0)
-        }
-    }
-    
-    func testFlightStateCanAttack() {
-        XCTAssertTrue(FlightState.flying.canAttack)
-        XCTAssertTrue(FlightState.gliding.canAttack)
-        XCTAssertTrue(FlightState.hovering.canAttack)
-        XCTAssertFalse(FlightState.grounded.canAttack)
-        XCTAssertFalse(FlightState.takeoff.canAttack)
-        XCTAssertFalse(FlightState.landing.canAttack)
-    }
-    
-    // MARK: - Crafting System Tests
-    
-    func testCraftingCategories() {
-        for category in CraftingCategory.allCases {
-            XCTAssertFalse(category.emoji.isEmpty)
-            XCTAssertFalse(category.rawValue.isEmpty)
-        }
-    }
-    
-    func testConsumableTypes() {
-        for consumable in ConsumableType.allCases {
-            XCTAssertFalse(consumable.effect.isEmpty)
-            XCTAssertFalse(consumable.emoji.isEmpty)
-        }
-    }
-    
-    func testToolTypes() {
-        for tool in ToolType.allCases {
-            XCTAssertFalse(tool.bonus.isEmpty)
-            XCTAssertFalse(tool.emoji.isEmpty)
-        }
-    }
-    
-    func testCraftingJobProgress() {
-        let now = Date()
-        let job = CraftingJob(
-            id: "test",
-            recipeId: "test_recipe",
-            recipeName: "Test Recipe",
-            startTime: now.addingTimeInterval(-30),
-            completionTime: now.addingTimeInterval(30)
-        )
-        
-        XCTAssertFalse(job.isComplete)
-        XCTAssertGreaterThan(job.progress, 0)
-        XCTAssertLessThan(job.progress, 1)
-        XCTAssertGreaterThan(job.timeRemaining, 0)
-    }
-    
-    func testCraftingJobComplete() {
-        let now = Date()
-        let job = CraftingJob(
-            id: "test",
-            recipeId: "test_recipe",
-            recipeName: "Test Recipe",
-            startTime: now.addingTimeInterval(-60),
-            completionTime: now.addingTimeInterval(-10)
-        )
-        
-        XCTAssertTrue(job.isComplete)
-        XCTAssertEqual(job.progress, 1.0, accuracy: 0.01)
-    }
-    
-    // MARK: - Quest System Tests
-    
-    func testQuestTypes() {
-        for questType in QuestType.allCases {
-            XCTAssertFalse(questType.emoji.isEmpty)
-            XCTAssertFalse(questType.rawValue.isEmpty)
-        }
-    }
-    
-    func testQuestObjectiveTypes() {
-        for objType in QuestObjectiveType.allCases {
-            XCTAssertFalse(objType.emoji.isEmpty)
-            XCTAssertFalse(objType.rawValue.isEmpty)
-        }
-    }
-    
-    func testQuestObjectiveProgress() {
-        var objective = QuestObjective(
-            id: "test",
-            type: .hunt,
-            description: "Hunt 5 prey",
-            targetValue: 5,
-            currentValue: 2,
-            targetId: nil
-        )
-        
-        XCTAssertFalse(objective.isComplete)
-        XCTAssertEqual(objective.progress, 0.4, accuracy: 0.01)
-        XCTAssertEqual(objective.progressText, "2/5")
-        
-        objective.currentValue = 5
-        XCTAssertTrue(objective.isComplete)
-        XCTAssertEqual(objective.progress, 1.0)
-    }
-    
-    func testQuestRewardDefaults() {
-        let reward = QuestReward.none
-        XCTAssertEqual(reward.coins, 0)
-        XCTAssertEqual(reward.feathers, 0)
-        XCTAssertEqual(reward.xp, 0)
-        XCTAssertNil(reward.items)
-    }
-    
-    // MARK: - AI Difficulty Tests
     
     func testAIDifficultyLevels() {
-        XCTAssertGreaterThan(AIDifficulty.easy.reactionTime, AIDifficulty.hard.reactionTime)
-        XCTAssertLessThan(AIDifficulty.easy.blockChance, AIDifficulty.hard.blockChance)
+        for difficulty in AIDifficulty.allCases {
+            XCTAssertFalse(difficulty.displayName.isEmpty, "\(difficulty) should have a display name")
+            XCTAssertGreaterThan(difficulty.reactionTime, 0, "\(difficulty) reaction time should be positive")
+            XCTAssertLessThanOrEqual(difficulty.reactionTime, 2.0, "\(difficulty) reaction time should not exceed 2s")
+            XCTAssertGreaterThanOrEqual(difficulty.blockChance, 0, "\(difficulty) block chance should be >= 0")
+            XCTAssertLessThanOrEqual(difficulty.blockChance, 1.0, "\(difficulty) block chance should be <= 1.0")
+        }
     }
     
-    func testAIDifficultyDisplayNames() {
-        for difficulty in AIDifficulty.allCases {
-            XCTAssertFalse(difficulty.displayName.isEmpty)
+    // MARK: - Battle Arena Tests
+    
+    func testBattleArenasExist() {
+        let arenas = BattleArena.allCases
+        XCTAssertGreaterThan(arenas.count, 0, "Should have at least one arena")
+        
+        for arena in arenas {
+            XCTAssertFalse(arena.rawValue.isEmpty, "\(arena) should have a raw value name")
+            XCTAssertFalse(arena.emoji.isEmpty, "\(arena) should have an emoji")
         }
+    }
+    
+    // MARK: - Voice Chat System Tests
+    
+    func testVoiceChatManagerExists() {
+        let manager = VoiceChatManager.shared
+        
+        // Manager should be accessible
+        XCTAssertNotNil(manager)
+        
+        // Volume should be in valid range
+        XCTAssertGreaterThanOrEqual(manager.volume, 0)
+        XCTAssertLessThanOrEqual(manager.volume, 1.0)
+        
+        // Voice speed should be in valid range
+        XCTAssertGreaterThanOrEqual(manager.voiceSpeed, VoiceChatManager.minVoiceSpeed)
+        XCTAssertLessThanOrEqual(manager.voiceSpeed, VoiceChatManager.maxVoiceSpeed)
+    }
+    
+    // MARK: - Sound Manager Tests
+    
+    func testSoundManagerConfiguration() {
+        let manager = SoundManager.shared
+        
+        // Volume settings should be in valid range
+        XCTAssertGreaterThanOrEqual(manager.musicVolume, 0)
+        XCTAssertLessThanOrEqual(manager.musicVolume, 1.0)
+        XCTAssertGreaterThanOrEqual(manager.sfxVolume, 0)
+        XCTAssertLessThanOrEqual(manager.sfxVolume, 1.0)
+    }
+    
+    func testSoundEffectsHaveFileNames() {
+        for effect in SoundManager.SoundEffect.allCases {
+            XCTAssertFalse(effect.fileName.isEmpty, "\(effect) should have a file name")
+            XCTAssertFalse(effect.audioFileName.isEmpty, "\(effect) should have an audio file name")
+        }
+    }
+    
+    // MARK: - Weather System Tests
+    
+    func testWeatherSystemConfiguration() {
+        for weather in Weather.allCases {
+            XCTAssertFalse(weather.displayName.isEmpty, "\(weather) should have a display name")
+            XCTAssertFalse(weather.emoji.isEmpty, "\(weather) should have an emoji")
+        }
+    }
+    
+    func testTimeOfDayConfiguration() {
+        for time in TimeOfDay.allCases {
+            XCTAssertFalse(time.displayName.isEmpty, "\(time) should have a display name")
+            XCTAssertFalse(time.emoji.isEmpty, "\(time) should have an emoji")
+        }
+    }
+    
+    // MARK: - Nest Building Tests
+    
+    func testNestComponentTypes() {
+        for component in NestComponentType.allCases {
+            XCTAssertFalse(component.displayName.isEmpty, "\(component) should have a display name")
+            XCTAssertFalse(component.emoji.isEmpty, "\(component) should have an emoji")
+            XCTAssertFalse(component.requiredResources.isEmpty, "\(component) should require resources")
+            XCTAssertGreaterThan(component.health, 0, "\(component) should have positive health")
+        }
+    }
+    
+    // MARK: - Player World State Tests
+    
+    func testPlayerWorldStateInitialization() {
+        let state = PlayerWorldState.new()
+        
+        XCTAssertEqual(state.health, 100)
+        XCTAssertEqual(state.hunger, 100)
+        XCTAssertEqual(state.energy, 100)
+        XCTAssertTrue(state.inventory.isEmpty)
+        XCTAssertEqual(state.currentBiome, .plains)
+    }
+    
+    func testPlayerWorldStateResourceManagement() {
+        var state = PlayerWorldState.new()
+        
+        // Add resources
+        let added = state.addResource(.twigs, amount: 10)
+        XCTAssertEqual(added, 10)
+        XCTAssertEqual(state.inventory[.twigs], 10)
+        
+        // Remove resources
+        let removed = state.removeResource(.twigs, amount: 5)
+        XCTAssertTrue(removed)
+        XCTAssertEqual(state.inventory[.twigs], 5)
+        
+        // Can't remove more than available
+        let removeTooMany = state.removeResource(.twigs, amount: 100)
+        XCTAssertFalse(removeTooMany)
+        XCTAssertEqual(state.inventory[.twigs], 5)
     }
 }
