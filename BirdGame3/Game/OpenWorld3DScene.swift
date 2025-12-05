@@ -179,13 +179,26 @@ class OpenWorld3DScene: SCNScene {
         // Remove existing bird if any
         playerBird?.removeFromParentNode()
         
-        // Create new bird node
-        let bird = Bird3DNode(birdType: type)
+        // Get the equipped skin for this bird type
+        let equippedSkin = SkinManager.shared.equippedSkin(for: type)
+        
+        // Create new bird node with skin support
+        let bird = Bird3DNode.createBirdModel(for: type, skin: equippedSkin)
         bird.position = SCNVector3(0, 50, 0)
         bird.name = "playerBird"
         
+        // Apply skin if available
+        if let skin = equippedSkin {
+            bird.applySkin(skin)
+        }
+        
         rootNode.addChildNode(bird)
         playerBird = bird
+    }
+    
+    /// Update the player bird's skin (when changed in shop)
+    func updatePlayerBirdSkin(_ skin: BirdSkin) {
+        playerBird?.applySkin(skin)
     }
     
     // MARK: - Biome Updates
